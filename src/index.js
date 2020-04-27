@@ -1,7 +1,13 @@
+/*
+ * Maintained by jemo from 2020.4.27 to now
+ * Created by jemo on 2020.4.27 16:09:28
+ * index
+ */
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
