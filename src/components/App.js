@@ -5,11 +5,13 @@
  */
 
 import React from 'react';
+import DrawerMenu from './DrawerMenu';
 
 function App() {
+
   return (
     <div>
-      app
+      <DrawerMenu />
     </div>
   );
 }
