@@ -12,6 +12,7 @@ import MaterialTable from 'material-table';
 import tableIcons from './utils/TableIcons';
 import Button from '@material-ui/core/Button';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import Link from '@material-ui/core/Link';
 
 function Order() {
 
@@ -156,6 +157,7 @@ function Order() {
             cellStyle: {
               fontSize: 12,
             },
+            filtering: false,
           },
           {
             title: "商品总价(元)",
@@ -163,6 +165,7 @@ function Order() {
             cellStyle: {
               fontSize: 12,
             },
+            filtering: false,
           },
           {
             title: "实收金额(元)",
@@ -248,6 +251,7 @@ function Order() {
                 city,
                 district,
                 street,
+                detailUrl,
               } = rowData;
               return (
                 <div style={{
@@ -274,6 +278,19 @@ function Order() {
                       复制
                     </Button>
                   </CopyToClipboard>
+                  <Link
+                    href={detailUrl}
+                    target="_blank">
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      style={{
+                        marginTop: 10,
+                        marginLeft: 5,
+                      }}>
+                      下单
+                    </Button>
+                  </Link>
                 </div>
               );
             },
@@ -281,6 +298,9 @@ function Order() {
         ]}
         data={orderList}
         title="订单列表"
+        options={{
+          filtering: true,
+        }}
       />
       <div {...getRootProps()}>
         <input {...getInputProps()} />

@@ -19,7 +19,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Slide from '@material-ui/core/Slide';
 import Menu from '@material-ui/icons/Menu';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 //import VpnKeyIcon from '@material-ui/icons/VpnKey';
 //import Assessment from '@material-ui/icons/Assessment';
@@ -36,6 +36,10 @@ import Selection from './Selection';
 import SearchItem from './SearchItem';
 import Order from './Order';
 import PddItem from './PddItem';
+import AdData from './AdData';
+import AdUnit from './AdUnit';
+import AdUnitData from './AdUnitData';
+import Stall from './Stall';
 
 const drawerWidth = 180;
 
@@ -51,14 +55,11 @@ const useStyles = makeStyles((theme) => ({
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
+    marginRight: drawerWidth,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
   },
   hide: {
     display: 'none',
@@ -75,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
   },
   content: {
     flexGrow: 1,
@@ -84,14 +85,14 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: -drawerWidth,
+    marginRight: -drawerWidth,
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    marginLeft: 0,
+    marginRight: 0,
   },
 }));
 
@@ -131,25 +132,74 @@ function DrawerMenu(props) {
             })}
           >
             <Toolbar>
+              <Typography
+                variant="h6"
+                noWrap
+                style={{
+                  flexGrow: 1,
+                }}>
+                小木电商系统
+              </Typography>
               <IconButton
                 color="inherit"
                 aria-label="打开菜单"
                 onClick={handleDrawerOpen}
-                edge="start"
-                className={clsx(classes.menuButton, open && classes.hide)}
+                edge="end"
+                className={clsx(open && classes.hide)}
               >
                 <Menu />
               </IconButton>
-              <Typography variant="h6" noWrap>
-                小木电商系统
-              </Typography>
             </Toolbar>
           </AppBar>
         </HideOnScroll>
+        <main className={clsx(classes.content, {
+          [classes.contentShift]: open,
+        })}>
+          <div className={classes.drawerHeader} />
+          <Switch>
+            <Route exact path="/product">
+              <div>
+              商品
+              </div>
+            </Route>
+            <Route path="/product/search">
+              <SearchItem />
+            </Route>
+            <Route path="/product/pdd">
+              <PddItem />
+            </Route>
+            <Route path="/product/select/:id">
+              <Selection />
+            </Route>
+            <Route path="/authorize">
+              <Authorize />
+            </Route>
+            <Route path="/order">
+              <Order />
+            </Route>
+            <Route path="/adData">
+              <AdData />
+            </Route>
+            <Route path="/adPlan/:id">
+              <AdUnit />
+            </Route>
+            <Route path="/adUnit/:id">
+              <AdUnitData />
+            </Route>
+            <Route path="/stall">
+              <Stall />
+            </Route>
+            <Route path="/">
+              <div>
+              首页
+              </div>
+            </Route>
+          </Switch>
+        </main>
         <Drawer
           className={classes.drawer}
           variant="persistent"
-          anchor="left"
+          anchor="right"
           open={open}
           classes={{
             paper: classes.drawerPaper,
@@ -157,7 +207,7 @@ function DrawerMenu(props) {
         >
           <div className={classes.drawerHeader}>
             <IconButton onClick={handleDrawerClose}>
-              <ChevronLeft />
+              <ChevronRight />
             </IconButton>
           </div>
           <Divider />
@@ -227,6 +277,32 @@ function DrawerMenu(props) {
                 <ListItemText primary="订单" />
               </ListItem>
             </Link>
+            <Divider />
+            <Link to="/adData"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="推广计划" />
+              </ListItem>
+            </Link>
+            <Divider />
+            <Link to="/stall"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="档口" />
+              </ListItem>
+            </Link>
             {/*
             <Link to="/product/select"
               style={{
@@ -258,38 +334,6 @@ function DrawerMenu(props) {
             */}
           </List>
         </Drawer>
-        <main className={clsx(classes.content, {
-          [classes.contentShift]: open,
-        })}>
-          <div className={classes.drawerHeader} />
-          <Switch>
-            <Route exact path="/product">
-              <div>
-              商品
-              </div>
-            </Route>
-            <Route path="/product/search">
-              <SearchItem />
-            </Route>
-            <Route path="/product/pdd">
-              <PddItem />
-            </Route>
-            <Route path="/product/select/:id">
-              <Selection />
-            </Route>
-            <Route path="/authorize">
-              <Authorize />
-            </Route>
-            <Route path="/order">
-              <Order />
-            </Route>
-            <Route path="/">
-              <div>
-              首页
-              </div>
-            </Route>
-          </Switch>
-        </main>
       </div>
     </Router>
   )
