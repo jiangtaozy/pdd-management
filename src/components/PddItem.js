@@ -12,6 +12,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import axios from 'axios';
 import tableIcons from './utils/TableIcons';
 import MaterialTable from 'material-table';
+import { Link } from 'react-router-dom';
 
 function PddItem() {
 
@@ -143,7 +144,9 @@ function PddItem() {
                     <div style={{
                       color: '#666',
                     }}>
-                      商品编码：{outGoodsSn}
+                      <Link to={`/product/select/${outGoodsSn}`}>
+                        商品编码：{outGoodsSn}
+                      </Link>
                     </div>
                   </div>
                 </div>
