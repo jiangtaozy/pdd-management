@@ -300,7 +300,7 @@ function DrawerMenu(props) {
                 <ListItemIcon>
                   <FormatListBulletedIcon />
                 </ListItemIcon>
-                <ListItemText primary="档口" />
+                <ListItemText primary="供应商" />
               </ListItem>
             </Link>
             {/*

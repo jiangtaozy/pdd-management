@@ -2,7 +2,7 @@
  * Maintained by jemo from 2020.5.28 to now
  * Created by jemo on 2020.5.28 17:59:19
  * Stall
- * 档口
+ * 供应商
  */
 
 import React, { useState, useEffect } from 'react';
@@ -67,11 +67,12 @@ function Stall() {
   return (
     <div>
       <MaterialTable
-        title="档口"
+        title="供应商"
         data={stallList}
         icons={tableIcons}
         options={{
-          actionsColumnIndex: -1
+          actionsColumnIndex: -1,
+          filtering: true,
         }}
         localization={{
           header: {
@@ -85,7 +86,7 @@ function Stall() {
           },
           {
             title: '城市',
-            field: 'cityName',
+            field: 'city',
             lookup: {
               '杭州': '杭州',
             },
@@ -137,17 +138,25 @@ function Stall() {
             },
           },
           {
-            title: '档口网址',
-            field: 'stallUrl',
+            title: '网址',
+            field: 'url',
             render: rowData => {
-              const { stallUrl } = rowData
+              const { url } = rowData
               return (
                 <Link
                   target="_blank"
-                  href={stallUrl}>
-                  { stallUrl }
+                  href={url}>
+                  { url }
                 </Link>
               );
+            },
+          },
+          {
+            title: '类型',
+            field: 'siteType',
+            lookup: {
+              1: '1688',
+              2: '女装网',
             },
           },
         ]}

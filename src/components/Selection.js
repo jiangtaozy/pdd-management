@@ -110,11 +110,13 @@ function Selection() {
 
   return (
     <div>
-      <div>
-        { searchTitle }
-      </div>
       <MaterialTable
         icons={tableIcons}
+        title={
+          <div>
+            { searchTitle }
+          </div>
+        }
         columns={[
           {
             title: "商品信息",
@@ -227,7 +229,6 @@ function Selection() {
           },
         ]}
         data={itemList}
-        title="商品列表"
         options={{
           actionsColumnIndex: 11,
           rowStyle: rowData => ({
