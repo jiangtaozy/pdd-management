@@ -2,6 +2,7 @@
  * Maintained by jemo from 2020.5.9 to now
  * Created by jemo on 2020.5.9 16:10
  * Search Item
+ * 商品
  */
 
 import React, { useState, useEffect } from 'react';
@@ -25,6 +26,7 @@ function SearchItem() {
     message,
   } = state;
   const [itemList, setItemList] = useState([]);
+  const [ womenItemListUrl, setWomenItemListUrl ] = useState('');
 
   const fetchItemList = async () => {
     try {
@@ -80,6 +82,37 @@ function SearchItem() {
     }
     catch(err) {
       console.error('SearchItemHandleSearchTitleButtonClickError: ', err);
+      handleOpenSnackbar({
+        message: `出错了：${err.message}`,
+      })
+    }
+  }
+
+  async function handleWomenItemListUrlButtonClick() {
+    if(!womenItemListUrl) {
+      handleOpenSnackbar({
+        message: '请输入女装网商品列表地址',
+      })
+      return
+    }
+    try {
+      const { data } = await axios.post('/womenItemListUrl', {
+        womenItemListUrl,
+      });
+      if(data === 'ok') {
+        handleOpenSnackbar({
+          message: '操作成功',
+        })
+        setWomenItemListUrl('');
+        fetchItemList();
+      } else {
+        handleOpenSnackbar({
+          message: `出错了：${data}`,
+        })
+      }
+    }
+    catch(err) {
+      console.error('SearchItemHandleWomenItemListUrlButtonClickError: ', err);
       handleOpenSnackbar({
         message: `出错了：${err.message}`,
       })
@@ -198,7 +231,25 @@ function SearchItem() {
         }}
         onClick={handleSearchTitleButtonClick}
       >
-        增加
+        确定
+      </Button>
+      <TextField
+        label="输入女装网商品列表地址"
+        fullWidth
+        value={womenItemListUrl}
+        onChange={(event) => {
+          setWomenItemListUrl(event.target.value)
+        }}
+      />
+      <Button
+        variant="outlined"
+        color="primary"
+        style={{
+          marginTop: 10,
+        }}
+        onClick={handleWomenItemListUrlButtonClick}
+      >
+        确定
       </Button>
       <Snackbar
         anchorOrigin={{
