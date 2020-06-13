@@ -88,7 +88,6 @@ function AdUnitData () {
             adId: id,
           },
         });
-        console.log("data: ", data);
         setAdUnit(data);
       }
       catch(err) {

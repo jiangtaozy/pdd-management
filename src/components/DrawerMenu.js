@@ -40,6 +40,7 @@ import AdData from './AdData';
 import AdUnit from './AdUnit';
 import AdUnitData from './AdUnitData';
 import Stall from './Stall';
+import AdUnitList from './AdUnitList';
 
 const drawerWidth = 180;
 
@@ -186,6 +187,9 @@ function DrawerMenu(props) {
             <Route path="/adUnit/:id">
               <AdUnitData />
             </Route>
+            <Route path="/adUnitList">
+              <AdUnitList />
+            </Route>
             <Route path="/stall">
               <Stall />
             </Route>
@@ -288,6 +292,18 @@ function DrawerMenu(props) {
                   <FormatListBulletedIcon />
                 </ListItemIcon>
                 <ListItemText primary="推广计划" />
+              </ListItem>
+            </Link>
+            <Link to="/adUnitList"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="推广单元" />
               </ListItem>
             </Link>
             <Divider />

@@ -99,12 +99,13 @@ function Order() {
       <MaterialTable
         icons={tableIcons}
         columns={[
-          /*
           {
-            title: "id",
-            field: "id",
+            title: "订单编号",
+            field: "orderId",
+            cellStyle: {
+              fontSize: 12,
+            },
           },
-          */
           {
             title: "商品信息",
             render: rowData => {
@@ -140,6 +141,13 @@ function Order() {
           {
             title: "订单状态",
             field: "orderStatus",
+            lookup: {
+              '待发货': '待发货',
+              '未发货，退款成功': '未发货，退款成功',
+              '已发货，待签收': '已发货，待签收',
+              '已发货，退款成功': '已发货，退款成功',
+              '已签收': '已签收',
+            },
             cellStyle: {
               fontSize: 12,
             },
@@ -147,6 +155,10 @@ function Order() {
           {
             title: "售后状态",
             field: "afterSaleStatus",
+            lookup: {
+              '无售后或售后取消': '无售后或售后取消',
+              '退款成功': '退款成功',
+            },
             cellStyle: {
               fontSize: 12,
             },
