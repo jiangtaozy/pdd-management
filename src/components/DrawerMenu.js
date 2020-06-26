@@ -41,6 +41,7 @@ import AdUnit from './AdUnit';
 import AdUnitData from './AdUnitData';
 import Stall from './Stall';
 import AdUnitList from './AdUnitList';
+import DashBoard from './DashBoard';
 
 const drawerWidth = 180;
 
@@ -194,9 +195,7 @@ function DrawerMenu(props) {
               <Stall />
             </Route>
             <Route path="/">
-              <div>
-              首页
-              </div>
+              <DashBoard />
             </Route>
           </Switch>
         </main>

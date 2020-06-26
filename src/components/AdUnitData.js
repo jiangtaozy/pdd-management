@@ -192,6 +192,7 @@ function AdUnitData () {
               );
             }
           },
+          /*
           {
             title: '交易花费',
             field: 'transactionCost',
@@ -207,6 +208,7 @@ function AdUnitData () {
               );
             },
           },
+          */
           {
             title: '花费',
             field: 'spend',
@@ -289,6 +291,7 @@ function AdUnitData () {
               );
             },
           },
+          /*
           {
             title: '千次曝光花费',
             field: 'cpm',
@@ -304,6 +307,7 @@ function AdUnitData () {
               );
             },
           },
+          */
           {
             title: '店铺关注量',
             field: 'mallFavNum',
@@ -317,6 +321,38 @@ function AdUnitData () {
             cellStyle: {
               fontSize: 12,
             },
+          },
+          {
+            title: '点击关注率',
+            field: 'cmfr',
+            filtering: false,
+            cellStyle: {
+              fontSize: 12,
+            },
+            render: rowData => {
+              const { cmfr } = rowData;
+              return (
+                <div>
+                  {cmfr && `${(cmfr * 100).toFixed(2)}%`}
+                </div>
+              )
+            }
+          },
+          {
+            title: '点击收藏率',
+            field: 'cgfr',
+            filtering: false,
+            cellStyle: {
+              fontSize: 12,
+            },
+            render: rowData => {
+              const { cgfr } = rowData;
+              return (
+                <div>
+                  {cgfr && `${(cgfr * 100).toFixed(2)}%`}
+                </div>
+              )
+            }
           },
           {
             title: '查询量',

@@ -95,9 +95,13 @@ function PddItem() {
     <div>
       <MaterialTable
         icons={tableIcons}
+        options={{
+          filtering: true,
+        }}
         columns={[
           {
             title: "商品信息",
+            field: 'goodsName',
             render: rowData => {
               const {
                 thumbUrl,
@@ -151,6 +155,27 @@ function PddItem() {
                   </div>
                 </div>
               );
+            },
+          },
+          {
+            title: '商品id',
+            field: 'pddId',
+            cellStyle: {
+              fontSize: 12,
+            },
+          },
+          {
+            title: '商品编码',
+            field: 'outGoodsSn',
+            cellStyle: {
+              fontSize: 12,
+            },
+          },
+          {
+            title: '商品名称',
+            field: 'name',
+            cellStyle: {
+              fontSize: 12,
             },
           },
           {
