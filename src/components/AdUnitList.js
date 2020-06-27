@@ -95,6 +95,7 @@ function AdUnitList() {
             render: rowData => {
               const {
                 planName,
+                planId,
                 adId,
                 adName,
                 goodsId,
@@ -116,11 +117,16 @@ function AdUnitList() {
                   <div>
                     商品名：{goodsName}
                   </div>
+                  <div>
+                    计划Id：{planId}
+                  </div>
+                  <div>
+                    单元Id：{adId}
+                  </div>
                 </div>
               );
             }
           },
-          /*
           {
             title: '商品Id',
             field: 'goodsId',
@@ -128,6 +134,7 @@ function AdUnitList() {
               fontSize: 12,
             },
           },
+          /*
           {
             title: '商品名称',
             field: 'goodsName',

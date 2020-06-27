@@ -16,7 +16,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 function DashBoard() {
 
   const [itemCountList, setItemCountList] = useState([]);
-  const [chartType, setChartType] = useState('day');
+  const [chartType, setChartType] = useState('total');
   let startDate;
   let endDate;
   for(let i = 0; i < itemCountList.length; i++) {
@@ -59,6 +59,20 @@ function DashBoard() {
     }
     startDate = startMonth;
     endDate = endMonth;
+  } else if(chartType === 'total') {
+    data = [];
+    let total = 0;
+    for(let i = 0; i < itemCountList.length; i++) {
+      const {
+        date,
+        count,
+      } = itemCountList[i];
+      total += count;
+      data.push({
+        date,
+        count: total,
+      });
+    }
   }
   const [ snackbarState, setSnackbarState ] = useState({
     message: '',
@@ -197,6 +211,11 @@ function DashBoard() {
           row
           value={chartType}
           onChange={handleChartTypeChange}>
+          <FormControlLabel
+            value='total'
+            control={<Radio />}
+            label='累计'
+          />
           <FormControlLabel
             value='day'
             control={<Radio />}
