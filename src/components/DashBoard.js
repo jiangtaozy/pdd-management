@@ -14,8 +14,8 @@ function DashBoard() {
 
   return (
     <div>
-      <ItemCountChart />
       <AdDataChart />
+      <ItemCountChart />
     </div>
   );
 }

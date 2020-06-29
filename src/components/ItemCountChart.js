@@ -212,11 +212,6 @@ function ItemCountChart() {
           value={chartType}
           onChange={handleChartTypeChange}>
           <FormControlLabel
-            value='total'
-            control={<Radio />}
-            label='累计'
-          />
-          <FormControlLabel
             value='day'
             control={<Radio />}
             label='天'
@@ -225,6 +220,11 @@ function ItemCountChart() {
             value='month'
             control={<Radio />}
             label='月'
+          />
+          <FormControlLabel
+            value='total'
+            control={<Radio />}
+            label='累计'
           />
         </RadioGroup>
         <svg

@@ -17,6 +17,7 @@ function AdDataChart() {
 
   const [adDataList, setAdDataList] = useState([]);
   const [chartType, setChartType] = useState('total');
+  const [yKey, setYKey] = useState('spend');
   const [tooltipDisplay, setTooltipDisplay] = useState('none');
   const [tooltipTransform, setTooltipTransform] = useState('');
   const [tooltipXValue, setTooltipXValue] = useState('');
@@ -24,8 +25,7 @@ function AdDataChart() {
   let startDate;
   let endDate;
   for(let i = 0; i < adDataList.length; i++) {
-    const itemCount = adDataList[i];
-    const date = new Date(itemCount.date);
+    const date = new Date(adDataList[i].date);
     if(i === 0) {
       startDate = date;
       endDate = date;
@@ -39,9 +39,6 @@ function AdDataChart() {
     }
   }
   let data = adDataList;
-  //console.log("data: ", data);
-  // todo
-  /*
   if(chartType === 'month') {
     const startMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
     const endMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
@@ -49,20 +46,25 @@ function AdDataChart() {
     data = [];
     for(let i = 0; i < monthDifference; i++) {
       const month = new Date(startMonth.getFullYear(), startMonth.getMonth() + i, 1);
-      let monthCount = 0;
+      let monthTotal = 0;
       for(let j = 0; j < adDataList.length; j++) {
-        const itemCount = adDataList[j];
-        const date = new Date(itemCount.date);
+        const adDataItem = adDataList[j];
+        const date = new Date(adDataItem.date);
         if(date.getFullYear() === month.getFullYear() &&
           date.getMonth() === month.getMonth()) {
-          monthCount += itemCount.count;
+          monthTotal += adDataItem[yKey];
         }
       }
-      const itemMonthCount = {
-        date: month,
-        count: monthCount,
+      const monthData = {
+        date: `${month.getFullYear()}-${month.getMonth() + 1}-${month.getDate()}`,
       }
-      data.push(itemMonthCount);
+      if(yKey === 'ctr' || yKey === 'cvr' || yKey === 'cmfr' || yKey === 'cgfr') {
+        const monthDays = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+        monthTotal /= monthDays;
+      }
+      monthTotal = Math.round(monthTotal * 100) / 100;
+      monthData[yKey] = monthTotal;
+      data.push(monthData);
     }
     startDate = startMonth;
     endDate = endMonth;
@@ -70,18 +72,20 @@ function AdDataChart() {
     data = [];
     let total = 0;
     for(let i = 0; i < adDataList.length; i++) {
-      const {
-        date,
-        count,
-      } = adDataList[i];
-      total += count;
-      data.push({
-        date,
-        count: total,
-      });
+      total += adDataList[i][yKey];
+      const totalData = {
+        date: adDataList[i].date,
+      }
+      if(yKey === 'ctr' || yKey === 'cvr' || yKey === 'cmfr' || yKey === 'cgfr') {
+        const date = new Date(adDataList[i].date);
+        const totalDays = Math.round((date - startDate) / (1000 * 60 * 60 * 24)) + 1;
+        total /= totalDays;
+      }
+      total = Math.round(total * 10000) / 10000;
+      totalData[yKey] = total;
+      data.push(totalData);
     }
   }
-  */
   const [ snackbarState, setSnackbarState ] = useState({
     message: '',
     open: false,
@@ -96,14 +100,13 @@ function AdDataChart() {
     .domain([startDate, endDate])
     .range([margin, w])
   const y = d3.scaleLinear()
-    .domain([0, d3.max(data, d => d.click)])
+    .domain([0, d3.max(data, d => d[yKey])])
     .range([h, margin])
   const line = d3.line()
     .x(d => x(new Date(d.date)))
-    .y(d => y(d.click))
+    .y(d => y(d[yKey]))
     //.curve(d3.curveCatmullRom.alpha(0.1))
   const xFormat = d3.timeFormat('%Y-%m-%d')
-  //const yFormat = d3.format('.2')
   const xTicks = x.ticks(6).map(d => {
     return (
       <g transform={`translate(${x(d)}, ${h + 20})`}
@@ -135,7 +138,7 @@ function AdDataChart() {
       <g transform={`translate(${margin}, ${y(d)})`}
         key={d}>
         <text
-          x="-20"
+          x="-30"
           y="5"
           style={{
             fill: '#000',
@@ -186,10 +189,31 @@ function AdDataChart() {
     setChartType(event.target.value)
   }
 
+  const handleYKeyChange = (event) => {
+    setYKey(event.target.value)
+  }
+
   useEffect(() => {
     const fetchAdDataList = async () => {
       try {
         const { data } = await axios.get('/adDayData');
+        for(let i = 0; i < data.length; i++) {
+          const {
+            impression,
+            click,
+            spend,
+            orderNum,
+            gmv,
+            mallFavNum,
+            goodsFavNum,
+          } = data[i];
+          data[i].spend = Math.round(spend / 10) / 100;
+          data[i].gmv = Math.round(gmv / 10) / 100;
+          data[i].ctr = click > 0 ? Math.round(click / impression * 100 * 100) / 100 : 0;
+          data[i].cvr = click > 0 ? Math.round(orderNum / click * 100 * 100) / 100 : 0;
+          data[i].cmfr = click > 0 ? Math.round(mallFavNum / click * 100 * 100) / 100 : 0;
+          data[i].cgfr = click > 0 ? Math.round(goodsFavNum / click * 100 * 100) / 100 : 0;
+        }
         setAdDataList(data);
       }
       catch(err) {
@@ -216,9 +240,9 @@ function AdDataChart() {
     const x0 = x.invert(d3.clientPoint(e.target, e)[0]);
     const i = bisectDate(data, x0, 1);
     const d = data[i - 1];
-    setTooltipTransform(`translate(${x(new Date(d.date))},${y(d.click)})`);
+    setTooltipTransform(`translate(${x(new Date(d.date))},${y(d[yKey])})`);
     setTooltipXValue(d.date);
-    setTooltipYValue(d.click);
+    setTooltipYValue(d[yKey]);
   }
 
   return (
@@ -227,22 +251,78 @@ function AdDataChart() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        marginTop: 50,
       }}>
       <div
         style={{
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end',
+          justifyContent: 'space-around',
+          width: width,
         }}>
+        <RadioGroup
+          row
+          value={yKey}
+          onChange={handleYKeyChange}>
+          <FormControlLabel
+            value='impression'
+            control={<Radio />}
+            label='曝光量'
+          />
+          <FormControlLabel
+            value='click'
+            control={<Radio />}
+            label='点击量'
+          />
+          <FormControlLabel
+            value='spend'
+            control={<Radio />}
+            label='花费'
+          />
+          <FormControlLabel
+            value='orderNum'
+            control={<Radio />}
+            label='订单量'
+          />
+          <FormControlLabel
+            value='gmv'
+            control={<Radio />}
+            label='交易额'
+          />
+          <FormControlLabel
+            value='mallFavNum'
+            control={<Radio />}
+            label='店铺关注量'
+          />
+          <FormControlLabel
+            value='goodsFavNum'
+            control={<Radio />}
+            label='商品收藏量'
+          />
+          <FormControlLabel
+            value='ctr'
+            control={<Radio />}
+            label='点击率'
+          />
+          <FormControlLabel
+            value='cvr'
+            control={<Radio />}
+            label='点击转化率'
+          />
+          <FormControlLabel
+            value='cmfr'
+            control={<Radio />}
+            label='点击关注店铺率'
+          />
+          <FormControlLabel
+            value='cgfr'
+            control={<Radio />}
+            label='点击收藏商品率'
+          />
+        </RadioGroup>
         <RadioGroup
           row
           value={chartType}
           onChange={handleChartTypeChange}>
-          <FormControlLabel
-            value='total'
-            control={<Radio />}
-            label='累计'
-          />
           <FormControlLabel
             value='day'
             control={<Radio />}
@@ -253,109 +333,114 @@ function AdDataChart() {
             control={<Radio />}
             label='月'
           />
-        </RadioGroup>
-        <svg
-          style={{
-            zIndex: 1,
-          }}
-          width={width}
-          height={height}>
-          <line
-            style={{
-              stroke: '#000',
-            }}
-            x1={margin}
-            y1={h}
-            x2={w}
-            y2={h}
+          <FormControlLabel
+            value='total'
+            control={<Radio />}
+            label='累计'
           />
-          <line
+        </RadioGroup>
+      </div>
+      <svg
+        style={{
+          zIndex: 1,
+        }}
+        width={width}
+        height={height}>
+        <line
+          style={{
+            stroke: '#000',
+          }}
+          x1={margin}
+          y1={h}
+          x2={w}
+          y2={h}
+        />
+        <line
+          style={{
+            stroke: '#000',
+          }}
+          x1={margin}
+          y1={margin}
+          x2={margin}
+          y2={h}
+        />
+        <text
+          style={{
+            fontSize: 12,
+          }}
+          y={12}>
+          广告数据
+        </text>
+        <path
+          style={{
+            stroke: 'steelblue',
+            strokeWidth: '2px',
+            fill: 'none',
+          }}
+          d={line(data)}
+        />
+        <g>
+          {xTicks}
+        </g>
+        <g>
+          {yTicks}
+        </g>
+        <g
+          transform={tooltipTransform}
+          style={{
+            display: tooltipDisplay,
+          }}>
+          <circle
             style={{
+              fill: 'steelblue',
+            }}
+            r='5'
+          />
+          <rect
+            width='100'
+            height='50'
+            x='10'
+            y='-22'
+            rx='4'
+            ry='4'
+            style={{
+              fill: 'white',
               stroke: '#000',
             }}
-            x1={margin}
-            y1={margin}
-            x2={margin}
-            y2={h}
           />
           <text
-            style={{
-              fontSize: 12,
-            }}
-            y={12}>
-            广告数据
+            x='18'
+            y='-2'>
+            {tooltipYValue}
           </text>
-          <path
-            style={{
-              stroke: 'steelblue',
-              strokeWidth: '2px',
-              fill: 'none',
-            }}
-            d={line(data)}
-          />
-          <g>
-            {xTicks}
-          </g>
-          <g>
-            {yTicks}
-          </g>
-          <g
-            transform={tooltipTransform}
-            style={{
-              display: tooltipDisplay,
-            }}>
-            <circle
-              style={{
-                fill: 'steelblue',
-              }}
-              r='5'
-            />
-            <rect
-              width='100'
-              height='50'
-              x='10'
-              y='-22'
-              rx='4'
-              ry='4'
-              style={{
-                fill: 'white',
-                stroke: '#000',
-              }}
-            />
-            <text
-              x='18'
-              y='-2'>
-              {tooltipYValue}
-            </text>
-            <text
-              x='18'
-              y='18'>
-              {tooltipXValue}
-            </text>
-          </g>
-          <rect
-            style={{
-              fill: 'none',
-              pointerEvents: 'all',
-            }}
-            width={width}
-            height={h}
-            onMouseOver={tooltipOnMouseOver}
-            onMouseOut={tooltipOnMouseOut}
-            onMouseMove={tooltipOnMouseMove}
-          />
-        </svg>
-        <Snackbar
-          anchorOrigin={{
-            horizontal: "center",
-            vertical: "top",
+          <text
+            x='18'
+            y='18'>
+            {tooltipXValue}
+          </text>
+        </g>
+        <rect
+          style={{
+            fill: 'none',
+            pointerEvents: 'all',
           }}
-          autoHideDuration={2000}
-          open={open}
-          onClose={handleCloseSnackbar}
-          message={message}
+          width={width}
+          height={h}
+          onMouseOver={tooltipOnMouseOver}
+          onMouseOut={tooltipOnMouseOut}
+          onMouseMove={tooltipOnMouseMove}
         />
-      </div>
+      </svg>
+      <Snackbar
+        anchorOrigin={{
+          horizontal: "center",
+          vertical: "top",
+        }}
+        autoHideDuration={2000}
+        open={open}
+        onClose={handleCloseSnackbar}
+        message={message}
+      />
     </div>
   );
 }
