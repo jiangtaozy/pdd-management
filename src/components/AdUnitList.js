@@ -11,6 +11,7 @@ import axios from 'axios';
 import tableIcons from './utils/TableIcons';
 import MaterialTable from 'material-table';
 import { Link } from 'react-router-dom';
+import SaveAdUnitData from './SaveAdUnitData';
 
 function AdUnitList() {
 
@@ -295,6 +296,7 @@ function AdUnitList() {
         data={adUnitList}
         title="推广单元列表"
       />
+      <SaveAdUnitData />
       <Snackbar
         anchorOrigin={{
           horizontal: "center",

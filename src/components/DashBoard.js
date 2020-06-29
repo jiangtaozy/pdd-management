@@ -7,6 +7,7 @@
 
 import React from 'react';
 import ItemCountChart from './ItemCountChart';
+import AdDataChart from './AdDataChart';
 
 function DashBoard() {
 
@@ -14,6 +15,7 @@ function DashBoard() {
   return (
     <div>
       <ItemCountChart />
+      <AdDataChart />
     </div>
   );
 }

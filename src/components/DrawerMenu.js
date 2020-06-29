@@ -140,7 +140,13 @@ function DrawerMenu(props) {
                 style={{
                   flexGrow: 1,
                 }}>
-                小木电商系统
+                <Link to="/"
+                  style={{
+                    textDecoration: 'none',
+                    color: 'inherit',
+                  }}>
+                    小木电商系统
+                </Link>
               </Typography>
               <IconButton
                 color="inherit"
