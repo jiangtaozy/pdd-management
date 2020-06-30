@@ -4,8 +4,8 @@
  * Order
  */
 
-import React, { useCallback, useState, useEffect } from 'react';
-import { useDropzone } from 'react-dropzone';
+import React, { useState, useEffect } from 'react';
+//import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
 import MaterialTable from 'material-table';
@@ -13,19 +13,29 @@ import tableIcons from './utils/TableIcons';
 import Button from '@material-ui/core/Button';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Link from '@material-ui/core/Link';
+import TextField from '@material-ui/core/TextField';
 
 function Order() {
 
-  const [snackbarState, setSnackbarState] = useState({
+  const [ snackbarState, setSnackbarState ] = useState({
     open: false,
     message: '',
   });
-  const [orderList, setOrderList] = useState([]);
+  const [ orderList, setOrderList ] = useState([]);
+  const [ orderData, setOrderData ] = useState('');
+  const { open, message } = snackbarState;
 
   useEffect(() => {
     const fetchOrderList = async () => {
       try {
         const { data } = await axios.get('/orderList');
+        for(let i = 0; i < data.length; i++) {
+          data[i].merchantReceivedAmount = (data[i].productTotalPrice - data[i].storeDiscount) / 100;
+          data[i].productTotalPrice = data[i].productTotalPrice / 100;
+          data[i].postage = data[i].postage / 100;
+          data[i].platformDiscount = data[i].platformDiscount / 100;
+          data[i].storeDiscount = data[i].storeDiscount / 100;
+        }
         setOrderList(data);
       }
       catch(err) {
@@ -37,8 +47,6 @@ function Order() {
     }
     fetchOrderList();
   }, []);
-
-  const { open, message } = snackbarState;
 
   const handleOpenSnackbar = ({ message }) => {
     setSnackbarState({
@@ -53,6 +61,51 @@ function Order() {
     });
   }
 
+  const fetchOrderList = async () => {
+    try {
+      const { data } = await axios.get('/orderList');
+      for(let i = 0; i < data.length; i++) {
+        data[i].merchantReceivedAmount = (data[i].productTotalPrice - data[i].storeDiscount) / 100;
+        data[i].productTotalPrice = data[i].productTotalPrice / 100;
+        data[i].postage = data[i].postage / 100;
+        data[i].platformDiscount = data[i].platformDiscount / 100;
+        data[i].storeDiscount = data[i].storeDiscount / 100;
+      }
+      setOrderList(data);
+    }
+    catch(err) {
+      console.error('order-fetch-order-list-error: ', err);
+      handleOpenSnackbar({
+        message: `出错了：${err.message}`,
+      });
+    }
+  }
+
+  async function handleOrderDataButtonClick() {
+    if(!orderData) {
+      return handleOpenSnackbar({
+        message: '请输入数据',
+      });
+    }
+    try {
+      await axios.post('/savePddOrderData', {
+        orderData,
+      });
+      handleOpenSnackbar({
+        message: '操作成功',
+      });
+      setOrderData('');
+      fetchOrderList();
+    }
+    catch(err) {
+      console.error('OrderSavePddOrderDataError: ', err);
+      handleOpenSnackbar({
+        message: `出错了：${err.message}`,
+      });
+    }
+  }
+
+  /*
   const onDrop = useCallback(async acceptedFiles => {
     try {
       const formData = new FormData();
@@ -87,18 +140,32 @@ function Order() {
     }
 
   }, []);
+  */
 
+  /*
   const {
     getRootProps,
     getInputProps,
     isDragActive,
   } = useDropzone({onDrop});
+  */
 
   return (
     <div>
       <MaterialTable
         icons={tableIcons}
         columns={[
+          {
+            title: "店铺编号",
+            field: "mallId",
+            cellStyle: {
+              fontSize: 12,
+            },
+            lookup: {
+              '654629561': 'k酱十七',
+              '777561295': '牧记衣坊',
+            },
+          },
           {
             title: "订单编号",
             field: "orderId",
@@ -140,7 +207,7 @@ function Order() {
           },
           {
             title: "订单状态",
-            field: "orderStatus",
+            field: "orderStatusStr",
             lookup: {
               '待发货': '待发货',
               '未发货，退款成功': '未发货，退款成功',
@@ -156,8 +223,9 @@ function Order() {
             title: "售后状态",
             field: "afterSaleStatus",
             lookup: {
-              '无售后或售后取消': '无售后或售后取消',
-              '退款成功': '退款成功',
+              '0': '无售后',
+              '5': '退款成功',
+              '12': '售后取消，退款失败',
             },
             cellStyle: {
               fontSize: 12,
@@ -183,7 +251,10 @@ function Order() {
             title: "实收金额(元)",
             render: rowData => {
               return (
-                <div>
+                <div
+                  style={{
+                    width: 100,
+                  }}>
                   <div style={{
                     fontSize: 12,
                   }}>
@@ -314,6 +385,7 @@ function Order() {
           filtering: true,
         }}
       />
+      {/*
       <div {...getRootProps()}>
         <input {...getInputProps()} />
         {
@@ -329,6 +401,24 @@ function Order() {
             </Button>
         }
       </div>
+      */}
+      <TextField
+        label="输入拼多多订单数据(/recentOrderList)"
+        fullWidth
+        value={orderData}
+        onChange={(event) => {
+          setOrderData(event.target.value);
+        }}
+      />
+      <Button
+        variant="outlined"
+        color="primary"
+        style={{
+          marginTop: 10,
+        }}
+        onClick={handleOrderDataButtonClick}>
+        确定
+      </Button>
       <Snackbar
         anchorOrigin={{
           horizontal: "center",
