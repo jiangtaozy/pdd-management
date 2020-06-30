@@ -17,6 +17,10 @@ function ItemCountChart() {
 
   const [itemCountList, setItemCountList] = useState([]);
   const [chartType, setChartType] = useState('total');
+  const [tooltipDisplay, setTooltipDisplay] = useState('none');
+  const [tooltipTransform, setTooltipTransform] = useState('');
+  const [tooltipXValue, setTooltipXValue] = useState('');
+  const [tooltipYValue, setTooltipYValue] = useState('');
   let startDate;
   let endDate;
   for(let i = 0; i < itemCountList.length; i++) {
@@ -81,7 +85,7 @@ function ItemCountChart() {
   const { message, open } = snackbarState;
   const height = 500;
   const width = 1200;
-  const margin = 20;
+  const margin = 60;
   const w = width - 2 * margin;
   const h = height - 2 * margin;
   const x = d3.scaleTime()
@@ -98,7 +102,7 @@ function ItemCountChart() {
   const yFormat = d3.format('.2')
   const xTicks = x.ticks(6).map(d => {
     return (
-      <g transform={`translate(${x(d)}, ${h + margin})`}
+      <g transform={`translate(${x(d)}, ${h + 20})`}
         key={d}>
         <text
           style={{
@@ -194,6 +198,26 @@ function ItemCountChart() {
     fetchItemCountList();
   }, []);
 
+  const tooltipOnMouseOver = () => {
+    setTooltipDisplay(null);
+  }
+
+  const tooltipOnMouseOut = () => {
+    setTooltipDisplay('none');
+  }
+
+  const bisectDate = d3.bisector(d => new Date(d.date)).right;
+
+  const tooltipOnMouseMove = (e) => {
+    const x0 = x.invert(d3.clientPoint(e.target, e)[0]);
+    const i = bisectDate(data, x0, 1);
+    const d = data[i - 1];
+    const date = new Date(d.date);
+    setTooltipTransform(`translate(${x(date)},${y(d.count)})`);
+    setTooltipXValue(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
+    setTooltipYValue(d.count);
+  }
+
   return (
     <div
       style={{
@@ -229,8 +253,7 @@ function ItemCountChart() {
         </RadioGroup>
         <svg
           style={{
-            fill: '#000',
-            fillOpacity: 0.3,
+            zIndex: 1,
           }}
           width={width}
           height={height}>
@@ -274,6 +297,51 @@ function ItemCountChart() {
           <g>
             {yTicks}
           </g>
+          <g
+            transform={tooltipTransform}
+            style={{
+              display: tooltipDisplay,
+            }}>
+            <circle
+              style={{
+                fill: 'steelblue',
+              }}
+              r='5'
+            />
+            <rect
+              width='100'
+              height='50'
+              x='10'
+              y='-22'
+              rx='4'
+              ry='4'
+              style={{
+                fill: 'white',
+                stroke: '#000',
+              }}
+            />
+            <text
+              x='18'
+              y='-2'>
+              {tooltipYValue}
+            </text>
+            <text
+              x='18'
+              y='18'>
+              {tooltipXValue}
+            </text>
+          </g>
+          <rect
+            style={{
+              fill: 'none',
+              pointerEvents: 'all',
+            }}
+            width={width}
+            height={h}
+            onMouseOver={tooltipOnMouseOver}
+            onMouseOut={tooltipOnMouseOut}
+            onMouseMove={tooltipOnMouseMove}
+          />
         </svg>
         <Snackbar
           anchorOrigin={{
