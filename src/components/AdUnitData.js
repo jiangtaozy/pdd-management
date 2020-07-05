@@ -444,6 +444,7 @@ function AdUnitData () {
       />
       <TextField
         label="输入推广单元数据(90天/queryDailyReport)"
+        multiline
         fullWidth
         value={unitData}
         onChange={(event) => {

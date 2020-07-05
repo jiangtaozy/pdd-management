@@ -256,6 +256,7 @@ function Selection() {
       />
       <TextField
         label="输入商品数据"
+        multiline
         fullWidth
         value={searchData}
         onChange={(event) => {

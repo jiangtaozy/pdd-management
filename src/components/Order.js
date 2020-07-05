@@ -5,7 +5,6 @@
  */
 
 import React, { useState, useEffect } from 'react';
-//import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
 import MaterialTable from 'material-table';
@@ -105,51 +104,6 @@ function Order() {
     }
   }
 
-  /*
-  const onDrop = useCallback(async acceptedFiles => {
-    try {
-      const formData = new FormData();
-      formData.append("file", acceptedFiles[0])
-      await axios.post('/uploadPddOrderFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      handleOpenSnackbar({
-        message: '操作成功',
-      });
-      const fetchOrderList = async () => {
-        try {
-          const { data } = await axios.get('/orderList');
-          setOrderList(data);
-        }
-        catch(err) {
-          console.error('order-fetch-order-list-error: ', err);
-          handleOpenSnackbar({
-            message: `出错了：${err.message}`,
-          });
-        }
-      }
-      fetchOrderList();
-    }
-    catch(err) {
-      handleOpenSnackbar({
-        message: `出错了：${err.message}`,
-      });
-      console.error("OrderOnDropError: ", err);
-    }
-
-  }, []);
-  */
-
-  /*
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-  } = useDropzone({onDrop});
-  */
-
   return (
     <div>
       <MaterialTable
@@ -210,10 +164,10 @@ function Order() {
             field: "orderStatusStr",
             lookup: {
               '待发货': '待发货',
-              '未发货，退款成功': '未发货，退款成功',
               '已发货，待签收': '已发货，待签收',
-              '已发货，退款成功': '已发货，退款成功',
               '已签收': '已签收',
+              '未发货，退款成功': '未发货，退款成功',
+              '已发货，退款成功': '已发货，退款成功',
             },
             cellStyle: {
               fontSize: 12,
@@ -385,25 +339,9 @@ function Order() {
           filtering: true,
         }}
       />
-      {/*
-      <div {...getRootProps()}>
-        <input {...getInputProps()} />
-        {
-          isDragActive ?
-            <p>拼多多订单文件拖拽到这里</p> :
-            <Button
-              variant="outlined"
-              size="large"
-              style={{
-                marginTop: 10,
-              }}>
-              选择拼多多订单文件
-            </Button>
-        }
-      </div>
-      */}
       <TextField
         label="输入拼多多订单数据(/recentOrderList)"
+        multiline
         fullWidth
         value={orderData}
         onChange={(event) => {

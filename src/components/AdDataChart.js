@@ -239,7 +239,7 @@ function AdDataChart() {
   const tooltipOnMouseMove = (e) => {
     const x0 = x.invert(d3.clientPoint(e.target, e)[0]);
     const i = bisectDate(data, x0, 1);
-    const d = data[i - 1];
+    const d = data[i - 1] || {};
     setTooltipTransform(`translate(${x(new Date(d.date))},${y(d[yKey])})`);
     setTooltipXValue(d.date);
     setTooltipYValue(d[yKey]);

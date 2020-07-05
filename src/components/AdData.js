@@ -175,6 +175,7 @@ function AdData () {
       />
       <TextField
         label="输入推广计划数据(/planMap)"
+        multiline
         fullWidth
         value={adPlanData}
         onChange={(event) => {

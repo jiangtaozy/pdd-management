@@ -264,6 +264,7 @@ function PddItem() {
       />
       <TextField
         label="输入拼多多商品数据(/goodsList)"
+        multiline
         fullWidth
         value={pddGoodsData}
         onChange={(event) => {
