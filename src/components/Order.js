@@ -10,7 +10,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MaterialTable from 'material-table';
 import tableIcons from './utils/TableIcons';
 import Button from '@material-ui/core/Button';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 
@@ -279,42 +278,16 @@ function Order() {
             },
           },
           {
-            title: "收货信息",
+            title: "下单",
             render: rowData => {
               const {
-                receiver,
-                phone,
-                province,
-                city,
-                district,
-                street,
                 detailUrl,
               } = rowData;
               return (
-                <div style={{
-                  fontSize: 12,
-                  width: 200,
-                }}>
-                  <div>
-                    收件人: {`${receiver} ${phone}`}
-                  </div>
-                  <div>
-                    联系地址: {`${province}${city}${district} ${street}`}
-                  </div>
-                  <CopyToClipboard
-                    text={`${receiver} ${phone} ${province}${city}${district} ${street}`}
-                    onCopy={() => handleOpenSnackbar({
-                      message: '复制成功',
-                    })}>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      style={{
-                        marginTop: 10,
-                      }}>
-                      复制
-                    </Button>
-                  </CopyToClipboard>
+                <div
+                  style={{
+                    fontSize: 12,
+                  }}>
                   <Link
                     href={detailUrl}
                     target="_blank">

@@ -53,9 +53,42 @@ function Order1688() {
   const onDrop = useCallback(async acceptedFiles => {
     try {
       const formData = new FormData();
-      console.log("acceptedFiles: ", acceptedFiles);
       formData.append("file", acceptedFiles[0])
       await axios.post('/upload1688OrderFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      handleOpenSnackbar({
+        message: '操作成功',
+      });
+      const fetchOrderList = async () => {
+        try {
+          const { data } = await axios.get('/order1688List');
+          setOrderList(data);
+        }
+        catch(err) {
+          console.error('order-1688-fetch-order-list-error: ', err);
+          handleOpenSnackbar({
+            message: `出错了：${err.message}`,
+          });
+        }
+      }
+      fetchOrderList();
+    }
+    catch(err) {
+      handleOpenSnackbar({
+        message: `出错了：${err.message}`,
+      });
+      console.error("OrderOnDropError: ", err);
+    }
+  }, []);
+
+  const onDropHznz = useCallback(async acceptedFiles => {
+    try {
+      const formData = new FormData();
+      formData.append("file", acceptedFiles[0])
+      await axios.post('/uploadHznzcnOrderFile', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -90,6 +123,12 @@ function Order1688() {
     getInputProps,
     isDragActive,
   } = useDropzone({onDrop});
+
+  const {
+    getRootProps: getRootPropsHznz,
+    getInputProps: getInputPropsHznz,
+    isDragActive: isDragActiveHznz,
+  } = useDropzone({onDrop: onDropHznz});
 
   return (
     <div>
@@ -286,6 +325,21 @@ function Order1688() {
                 marginTop: 10,
               }}>
               选择 1688 订单文件
+            </Button>
+        }
+      </div>
+      <div {...getRootPropsHznz()}>
+        <input {...getInputPropsHznz()} />
+        {
+          isDragActiveHznz ?
+            <p>女装网订单文件拖拽到这里</p> :
+            <Button
+              variant="outlined"
+              size="large"
+              style={{
+                marginTop: 10,
+              }}>
+              选择女装网订单文件
             </Button>
         }
       </div>
