@@ -4,7 +4,7 @@
  * Order
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
 import MaterialTable from 'material-table';
@@ -12,6 +12,7 @@ import tableIcons from './utils/TableIcons';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
+import { useDropzone } from 'react-dropzone';
 
 function Order() {
 
@@ -102,6 +103,35 @@ function Order() {
       });
     }
   }
+
+  const onDrop = useCallback(async acceptedFiles => {
+    try {
+      const formData = new FormData();
+      formData.append("file", acceptedFiles[0])
+      await axios.post('/uploadPddOrderFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      handleOpenSnackbar({
+        message: '操作成功',
+      });
+      fetchOrderList();
+    }
+    catch(err) {
+      handleOpenSnackbar({
+        message: `出错了：${err.message}`,
+      });
+      console.error("OrderOnDropError: ", err);
+    }
+
+  }, []);
+
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+  } = useDropzone({onDrop});
 
   return (
     <div>
@@ -330,6 +360,21 @@ function Order() {
         onClick={handleOrderDataButtonClick}>
         确定
       </Button>
+      <div {...getRootProps()}>
+        <input {...getInputProps()} />
+        {
+          isDragActive ?
+            <p>拼多多订单文件拖拽到这里</p> :
+            <Button
+              variant="outlined"
+              size="large"
+              style={{
+                marginTop: 10,
+              }}>
+              选择拼多多订单文件(保存快递单号，快递公司)
+            </Button>
+        }
+      </div>
       <Snackbar
         anchorOrigin={{
           horizontal: "center",
