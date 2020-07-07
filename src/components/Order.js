@@ -116,6 +116,25 @@ function Order() {
       handleOpenSnackbar({
         message: '操作成功',
       });
+      const fetchOrderList = async () => {
+        try {
+          const { data } = await axios.get('/orderList');
+          for(let i = 0; i < data.length; i++) {
+            data[i].merchantReceivedAmount = (data[i].productTotalPrice - data[i].storeDiscount) / 100;
+            data[i].productTotalPrice = data[i].productTotalPrice / 100;
+            data[i].postage = data[i].postage / 100;
+            data[i].platformDiscount = data[i].platformDiscount / 100;
+            data[i].storeDiscount = data[i].storeDiscount / 100;
+          }
+          setOrderList(data);
+        }
+        catch(err) {
+          console.error('order-fetch-order-list-error: ', err);
+          handleOpenSnackbar({
+            message: `出错了：${err.message}`,
+          });
+        }
+      }
       fetchOrderList();
     }
     catch(err) {
