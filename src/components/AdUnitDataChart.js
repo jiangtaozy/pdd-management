@@ -5,9 +5,7 @@
  * 推广单元数据图表
  */
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Snackbar from '@material-ui/core/Snackbar';
+import React, { useState } from 'react';
 import * as d3 from 'd3';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -151,11 +149,6 @@ function AdUnitDataChart (props) {
       data.push(totalData);
     }
   }
-  const [ snackbarState, setSnackbarState ] = useState({
-    message: '',
-    open: false,
-  });
-  const { message, open } = snackbarState;
   const height = 500;
   const width = 1200;
   const margin = 60;
@@ -235,19 +228,6 @@ function AdUnitDataChart (props) {
       </g>
     : null
   ))
-
-  const handleOpenSnackbar = ({message}) => {
-    setSnackbarState({
-      message,
-      open: true,
-    });
-  }
-
-  const handleCloseSnackbar = () => {
-    setSnackbarState({
-      open: false,
-    });
-  }
 
   const handleChartTypeChange = (event) => {
     setChartType(event.target.value)
@@ -462,16 +442,6 @@ function AdUnitDataChart (props) {
           onMouseMove={tooltipOnMouseMove}
         />
       </svg>
-      <Snackbar
-        anchorOrigin={{
-          horizontal: "center",
-          vertical: "top",
-        }}
-        autoHideDuration={2000}
-        open={open}
-        onClose={handleCloseSnackbar}
-        message={message}
-      />
     </div>
   );
 }
