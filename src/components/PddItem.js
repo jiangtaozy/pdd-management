@@ -66,6 +66,22 @@ function PddItem() {
     const fetchPddGoods = async () => {
       try {
         const { data } = await axios.get('/pddGoods');
+        for(let i = 0; i < data.length; i++) {
+          let {
+            shippingPrice,
+            suitPrice,
+            siteType,
+            skuGroupPriceMax,
+          } = data[i];
+          if(siteType === 2) {
+            shippingPrice = 4.4;
+          }
+          const costPrice = Math.round((shippingPrice + suitPrice) * 100) / 100;
+          const profit = Math.round((skuGroupPriceMax / 100 - costPrice) * 100) / 100;
+          data[i].costPrice = costPrice;
+          data[i].profit = profit;
+          data[i].conversionThreshold = Math.round(0.1 / profit * 100 * 100) / 100;
+        }
         setPddGoodsList(data);
       }
       catch(err) {
@@ -81,6 +97,17 @@ function PddItem() {
   const fetchPddGoods = async () => {
     try {
       const { data } = await axios.get('/pddGoods');
+      for(let i = 0; i < data.length; i++) {
+        let {
+          shippingPrice,
+          suitPrice,
+          siteType,
+        } = data[i];
+        if(siteType === 2) {
+          shippingPrice = 4.4;
+        }
+        data[i].costPrice = Math.round((shippingPrice + suitPrice) * 100) / 100;
+      }
       setPddGoodsList(data);
     }
     catch(err) {
@@ -200,6 +227,37 @@ function PddItem() {
             },
           },
           {
+            title: '成本价',
+            field: 'costPrice',
+            cellStyle: {
+              fontSize: 12,
+            },
+          },
+          {
+            title: '利润',
+            field: 'profit',
+            cellStyle: {
+              fontSize: 12,
+            },
+          },
+          {
+            title: '转化阈值',
+            render: rowData => {
+              const {
+                conversionThreshold,
+              } = rowData;
+              return (
+                <div
+                  style={{
+                    fontSize: 12,
+                  }}>
+                  {conversionThreshold}%
+                </div>
+              );
+            },
+          },
+          /*
+          {
             title: '收藏数',
             field: 'favCnt',
             cellStyle: {
@@ -227,6 +285,7 @@ function PddItem() {
               fontSize: 12,
             },
           },
+          */
           {
             title: '创建时间',
             field: 'createdAt',
@@ -235,6 +294,7 @@ function PddItem() {
             },
             type: 'date',
           },
+          /*
           {
             title: '展示权重',
             field: 'displayPriority',
@@ -250,6 +310,7 @@ function PddItem() {
             },
             type: 'boolean',
           },
+          */
           {
             title: '是否在售',
             field: 'isOnsale',

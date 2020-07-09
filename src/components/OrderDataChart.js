@@ -273,8 +273,9 @@ function AdDataChart() {
     const x0 = x.invert(d3.clientPoint(e.target, e)[0]);
     const i = bisectDate(data, x0, 1);
     const d = data[i - 1] || {};
-    setTooltipTransform(`translate(${x(new Date(d.date))},${y(d[yKey])})`);
-    setTooltipXValue(`${d.date.getFullYear()}-${d.date.getMonth() + 1}-${d.date.getDate()}`);
+    const date = new Date(d.date);
+    setTooltipTransform(`translate(${x(date)},${y(d[yKey])})`);
+    setTooltipXValue(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
     setTooltipYValue(d[yKey]);
   }
 
