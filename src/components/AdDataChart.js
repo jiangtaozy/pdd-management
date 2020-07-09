@@ -46,43 +46,76 @@ function AdDataChart() {
     data = [];
     for(let i = 0; i < monthDifference; i++) {
       const month = new Date(startMonth.getFullYear(), startMonth.getMonth() + i, 1);
-      let monthTotal = 0;
+      let spend = 0;
+      let gmv = 0;
+      let impression = 0;
+      let click = 0;
+      let orderNum = 0;
+      let mallFavNum = 0;
+      let goodsFavNum = 0;
       for(let j = 0; j < adDataList.length; j++) {
         const adDataItem = adDataList[j];
         const date = new Date(adDataItem.date);
         if(date.getFullYear() === month.getFullYear() &&
           date.getMonth() === month.getMonth()) {
-          monthTotal += adDataItem[yKey];
+          spend += adDataItem.spend;
+          gmv += adDataItem.gmv;
+          impression += adDataItem.impression;
+          click += adDataItem.click;
+          orderNum += adDataItem.orderNum;
+          mallFavNum += adDataItem.mallFavNum;
+          goodsFavNum += adDataItem.goodsFavNum;
         }
       }
       const monthData = {
+        impression,
+        click,
+        orderNum,
+        mallFavNum,
+        goodsFavNum,
+        spend: Math.round(spend * 100) / 100,
+        gmv: Math.round(gmv * 100) / 100,
+        ctr: impression && Math.round(click / impression * 100 * 100) / 100,
+        cvr: click && Math.round(orderNum / click * 100 * 100) / 100,
+        cmfr: click && Math.round(mallFavNum / click * 100 * 100) / 100,
+        cgfr: click && Math.round(goodsFavNum / click * 100 * 100) / 100,
         date: `${month.getFullYear()}-${month.getMonth() + 1}-${month.getDate()}`,
       }
-      if(yKey === 'ctr' || yKey === 'cvr' || yKey === 'cmfr' || yKey === 'cgfr') {
-        const monthDays = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
-        monthTotal /= monthDays;
-      }
-      monthTotal = Math.round(monthTotal * 100) / 100;
-      monthData[yKey] = monthTotal;
       data.push(monthData);
     }
     startDate = startMonth;
     endDate = endMonth;
   } else if(chartType === 'total') {
     data = [];
-    let total = 0;
+    let spend = 0;
+    let gmv = 0;
+    let impression = 0;
+    let click = 0;
+    let orderNum = 0;
+    let mallFavNum = 0;
+    let goodsFavNum = 0;
     for(let i = 0; i < adDataList.length; i++) {
-      total += adDataList[i][yKey];
+      spend += adDataList[i].spend;
+      gmv += adDataList[i].gmv;
+      impression += adDataList[i].impression;
+      click += adDataList[i].click;
+      orderNum += adDataList[i].orderNum;
+      mallFavNum += adDataList[i].mallFavNum;
+      goodsFavNum += adDataList[i].goodsFavNum;
       const totalData = {
+        impression,
+        click,
+        orderNum,
+        mallFavNum,
+        goodsFavNum,
+        spend: Math.round(spend * 100) / 100,
+        gmv: Math.round(gmv * 100) / 100,
+        ctr: impression && Math.round(click / impression * 100 * 100) / 100,
+        cvr: click && Math.round(orderNum / click * 100 * 100) / 100,
+        cmfr: click && Math.round(mallFavNum / click * 100 * 100) / 100,
+        cgfr: click && Math.round(goodsFavNum / click * 100 * 100) / 100,
         date: adDataList[i].date,
       }
-      if(yKey === 'ctr' || yKey === 'cvr' || yKey === 'cmfr' || yKey === 'cgfr') {
-        const date = new Date(adDataList[i].date);
-        const totalDays = Math.round((date - startDate) / (1000 * 60 * 60 * 24)) + 1;
-        total /= totalDays;
-      }
-      total = Math.round(total * 10000) / 10000;
-      totalData[yKey] = total;
       data.push(totalData);
     }
   }
