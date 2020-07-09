@@ -13,6 +13,7 @@ import MaterialTable from 'material-table';
 import { useParams } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import AdUnitDataChart from './AdUnitDataChart';
 
 function AdUnitData () {
 
@@ -120,6 +121,9 @@ function AdUnitData () {
 
   return (
     <div>
+      <AdUnitDataChart
+        data={unitDataList}
+      />
       <MaterialTable
         icons={tableIcons}
         data={unitDataList}
