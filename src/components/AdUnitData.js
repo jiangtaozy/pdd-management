@@ -123,6 +123,7 @@ function AdUnitData () {
     <div>
       <AdUnitDataChart
         data={unitDataList}
+        adUnit={adUnit}
       />
       <MaterialTable
         icons={tableIcons}

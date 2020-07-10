@@ -14,12 +14,26 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 function AdUnitDataChart (props) {
 
   const [chartType, setChartType] = useState('total');
-  const [yKey, setYKey] = useState('spend');
+  const [yKey, setYKey] = useState('cvr');
   const [tooltipDisplay, setTooltipDisplay] = useState('none');
   const [tooltipTransform, setTooltipTransform] = useState('');
   const [tooltipXValue, setTooltipXValue] = useState('');
   const [tooltipYValue, setTooltipYValue] = useState('');
   const adDataList = [];
+  let {
+    shippingPrice,
+    siteType,
+    skuGroupPriceMax,
+    suitPrice,
+    thumbUrl,
+    adName,
+    goodsName,
+  } = props.adUnit;
+  if(siteType === 2) {
+    shippingPrice = 4.4;
+  }
+  const profit = skuGroupPriceMax / 100 - suitPrice - shippingPrice || 0;
+  const conversionThreshold = profit && Math.round(0.1 / profit * 100 *100) / 100;
   for(let i = 0; i < props.data.length; i++) {
     let {
       impression,
@@ -212,7 +226,7 @@ function AdUnitDataChart (props) {
           y2='0'
           transform="translate(-5, 0)"
           style={{
-            stroke: '#000',
+            stroke: '#A6ACAF',
           }}
         />
         <line
@@ -222,7 +236,7 @@ function AdUnitDataChart (props) {
           y2='0'
           transform="translate(-5, 0)"
           style={{
-            stroke: '#000',
+            stroke: '#A6ACAF',
           }}
         />
       </g>
@@ -262,8 +276,56 @@ function AdUnitDataChart (props) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginTop: 50,
       }}>
+      <div
+        style={{
+          display: 'flex',
+          width: 1200,
+        }}>
+        <img
+          src={thumbUrl}
+          alt=""
+          width="60"
+          height="60"
+          style={{
+            marginTop: 10,
+          }}
+        />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            fontSize: 12,
+            justifyContent: 'center',
+            padding: 10,
+            marginTop: 10,
+          }}>
+          <div>
+            {adName}
+          </div>
+          <div>
+            {goodsName}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}>
+            <div>
+              价格：{skuGroupPriceMax / 100}
+            </div>
+            <div>
+              成本价：{suitPrice + shippingPrice}
+            </div>
+            <div>
+              利润：{profit}
+            </div>
+            <div>
+              转化阈值：{conversionThreshold}
+            </div>
+          </div>
+        </div>
+      </div>
       <div
         style={{
           display: 'flex',
@@ -441,6 +503,42 @@ function AdUnitDataChart (props) {
           onMouseOut={tooltipOnMouseOut}
           onMouseMove={tooltipOnMouseMove}
         />
+        {yKey === 'cvr' &&
+          <g
+            transform={`translate(${margin}, ${y(conversionThreshold) || 0})`}>
+            <text
+              x="-30"
+              y="5"
+              style={{
+                fill: '#000',
+                fillOpacity: 0.9,
+                fontSize: '12px',
+                textAnchor: 'middle',
+              }}>
+              {conversionThreshold}
+            </text>
+            <line
+              x1='0'
+              x2='5'
+              y1='0'
+              y2='0'
+              transform="translate(-5, 0)"
+              style={{
+                stroke: '#FF5722',
+              }}
+            />
+            <line
+              x1='0'
+              x2={w - margin}
+              y1='0'
+              y2='0'
+              transform="translate(-5, 0)"
+              style={{
+                stroke: '#FF5722',
+              }}
+            />
+          </g>
+        }
       </svg>
     </div>
   );
