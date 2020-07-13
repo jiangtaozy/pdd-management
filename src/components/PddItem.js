@@ -81,6 +81,10 @@ function PddItem() {
           data[i].costPrice = costPrice;
           data[i].profit = profit;
           data[i].conversionThreshold = Math.round(0.1 / profit * 100 * 100) / 100;
+          data[i].profitMargin = Math.round(profit / skuGroupPriceMax * 100 * 100 * 100) / 100;
+          data[i].promotionProfit = Math.round((skuGroupPriceMax / 100 * (1 - 0.33) - 10 - costPrice) * 100) / 100;
+          data[i].limitDiscount = Math.round((1 - (profit - 10 - 5) / (skuGroupPriceMax / 100)) * 10 * 100) / 100;
+          data[i].jinbaoCommission = Math.round(((profit - 10 - 5 - 10) / 1.1 / (skuGroupPriceMax / 100)) *100 * 100) / 100;
         }
         setPddGoodsList(data);
       }
@@ -102,11 +106,20 @@ function PddItem() {
           shippingPrice,
           suitPrice,
           siteType,
+          skuGroupPriceMax,
         } = data[i];
         if(siteType === 2) {
           shippingPrice = 4.4;
         }
-        data[i].costPrice = Math.round((shippingPrice + suitPrice) * 100) / 100;
+        const costPrice = Math.round((shippingPrice + suitPrice) * 100) / 100;
+        const profit = Math.round((skuGroupPriceMax / 100 - costPrice) * 100) / 100;
+        data[i].costPrice = costPrice;
+        data[i].profit = profit;
+        data[i].conversionThreshold = Math.round(0.1 / profit * 100 * 100) / 100;
+        data[i].profitMargin = Math.round(profit / skuGroupPriceMax * 100 * 100 * 100) / 100;
+        data[i].promotionProfit = Math.round((skuGroupPriceMax / 100 * (1 - 0.33) - 10 - costPrice) * 100) / 100;
+        data[i].limitDiscount = Math.round((1 - (profit - 10 - 5) / (skuGroupPriceMax / 100)) * 10 * 100) / 100;
+        data[i].jinbaoCommission = Math.round(((profit - 10 - 5 - 10) / 1.1 / (skuGroupPriceMax / 100)) *100 * 100) / 100;
       }
       setPddGoodsList(data);
     }
@@ -124,8 +137,26 @@ function PddItem() {
         icons={tableIcons}
         options={{
           filtering: true,
+          headerStyle: {
+            position: 'sticky',
+            top: 0,
+          },
+          maxBodyHeight: 650,
         }}
+        data={pddGoodsList}
+        title="拼多多商品列表"
         columns={[
+          {
+            title: '店铺',
+            field: 'siteType',
+            cellStyle: {
+              fontSize: 12,
+            },
+            lookup: {
+              1: 'k酱十七',
+              2: '牧记衣坊',
+            },
+          },
           {
             title: "商品信息",
             field: 'goodsName',
@@ -136,6 +167,7 @@ function PddItem() {
                 goodsInfoScr,
                 goodsName,
                 outGoodsSn,
+                isOnsale,
               } = rowData;
               return (
                 <div style={{
@@ -179,6 +211,14 @@ function PddItem() {
                         商品编码：{outGoodsSn}
                       </Link>
                     </div>
+                    {!isOnsale ?
+                      <div
+                        style={{
+                          color: 'red',
+                        }}>
+                        已下架
+                      </div> : null
+                    }
                   </div>
                 </div>
               );
@@ -189,6 +229,10 @@ function PddItem() {
             field: 'pddId',
             cellStyle: {
               fontSize: 12,
+              color: '#EC7063',
+            },
+            headerStyle: {
+              color: '#EC7063',
             },
           },
           {
@@ -196,6 +240,10 @@ function PddItem() {
             field: 'outGoodsSn',
             cellStyle: {
               fontSize: 12,
+              color: '#9B59B6',
+            },
+            headerStyle: {
+              color: '#9B59B6',
             },
           },
           {
@@ -203,10 +251,17 @@ function PddItem() {
             field: 'name',
             cellStyle: {
               fontSize: 12,
+              color: '#9B59B6',
+            },
+            headerStyle: {
+              color: '#9B59B6',
             },
           },
           {
             title: '当前价',
+            headerStyle: {
+              color: '#3333FF',
+            },
             render: rowData => {
               const {
                 skuGroupPriceMin,
@@ -220,6 +275,7 @@ function PddItem() {
                 <div
                   style={{
                     fontSize: 12,
+                    color: '#3333FF',
                   }}>
                   {currentPrice}
                 </div>
@@ -231,6 +287,10 @@ function PddItem() {
             field: 'costPrice',
             cellStyle: {
               fontSize: 12,
+              color: '#17A589',
+            },
+            headerStyle: {
+              color: '#17A589',
             },
           },
           {
@@ -238,10 +298,95 @@ function PddItem() {
             field: 'profit',
             cellStyle: {
               fontSize: 12,
+              color: '#F1C40F',
+            },
+            headerStyle: {
+              color: '#F1C40F',
+            },
+          },
+          {
+            title: '利润率',
+            field: 'profitMargin',
+            headerStyle: {
+              color: '#388E3C',
+            },
+            render: rowData => {
+              const {
+                profitMargin,
+              } = rowData;
+              return (
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: '#388E3C',
+                  }}>
+                  {profitMargin}%
+                </div>
+              );
+            },
+          },
+          {
+            title: '限时折扣',
+            field: 'limitDiscount',
+            cellStyle: {
+              fontSize: 12,
+              color: '#707B7C',
+            },
+            headerStyle: {
+              color: '#707B7C',
+            },
+            render: rowData => {
+              const {
+                limitDiscount,
+              } = rowData;
+              return (
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: '#707B7C',
+                  }}>
+                  {limitDiscount}折
+                </div>
+              );
+            },
+          },
+          {
+            title: '进宝比例',
+            field: 'jinbaoCommission',
+            cellStyle: {
+              fontSize: 12,
+              color: '#7D3C98',
+            },
+            headerStyle: {
+              color: '#7D3C98',
+            },
+            render: rowData => {
+              const {
+                jinbaoCommission,
+              } = rowData;
+              return (
+                <div>
+                  {jinbaoCommission}%
+                </div>
+              );
+            },
+          },
+          {
+            title: '进宝33 10',
+            field: 'promotionProfit',
+            cellStyle: {
+              fontSize: 12,
+              color: '#BA4A00',
+            },
+            headerStyle: {
+              color: '#BA4A00',
             },
           },
           {
             title: '转化阈值',
+            headerStyle: {
+              color: '#039BE5',
+            },
             render: rowData => {
               const {
                 conversionThreshold,
@@ -250,6 +395,7 @@ function PddItem() {
                 <div
                   style={{
                     fontSize: 12,
+                    color: '#039BE5',
                   }}>
                   {conversionThreshold}%
                 </div>
@@ -291,6 +437,10 @@ function PddItem() {
             field: 'createdAt',
             cellStyle: {
               fontSize: 12,
+              color: '#33FF00',
+            },
+            headerStyle: {
+              color: '#33FF00',
             },
             type: 'date',
           },
@@ -310,7 +460,6 @@ function PddItem() {
             },
             type: 'boolean',
           },
-          */
           {
             title: '是否在售',
             field: 'isOnsale',
@@ -319,9 +468,8 @@ function PddItem() {
             },
             type: 'boolean',
           },
+          */
         ]}
-        data={pddGoodsList}
-        title="拼多多商品列表"
       />
       <TextField
         label="输入拼多多商品数据(/goodsList)"
