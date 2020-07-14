@@ -63,6 +63,7 @@ function PddItem() {
   }
 
   useEffect(() => {
+    /*
     const fetchPddGoods = async () => {
       try {
         const { data } = await axios.get('/pddGoods');
@@ -82,7 +83,7 @@ function PddItem() {
           data[i].profit = profit;
           data[i].conversionThreshold = Math.round(0.1 / profit * 100 * 100) / 100;
           data[i].profitMargin = Math.round(profit / skuGroupPriceMax * 100 * 100 * 100) / 100;
-          data[i].promotionProfit = Math.round((skuGroupPriceMax / 100 * (1 - 0.33) - 10 - costPrice) * 100) / 100;
+          data[i].promotionProfit = Math.round(((skuGroupPriceMax / 100 - 10)* (1 - 0.33) - costPrice) * 100) / 100;
           data[i].limitDiscount = Math.round((1 - (profit - 10 - 5) / (skuGroupPriceMax / 100)) * 10 * 100) / 100;
           data[i].jinbaoCommission = Math.round(((profit - 10 - 5 - 10) / 1.1 / (skuGroupPriceMax / 100)) *100 * 100) / 100;
         }
@@ -95,6 +96,7 @@ function PddItem() {
         });
       }
     };
+    */
     fetchPddGoods();
   }, []);
 
@@ -109,17 +111,25 @@ function PddItem() {
           skuGroupPriceMax,
         } = data[i];
         if(siteType === 2) {
-          shippingPrice = 4.4;
+          shippingPrice = 5.4;
         }
-        const costPrice = Math.round((shippingPrice + suitPrice) * 100) / 100;
-        const profit = Math.round((skuGroupPriceMax / 100 - costPrice) * 100) / 100;
+        const price = skuGroupPriceMax / 100;
+        // 运费 + 售价 + 运费险(约 2 元) + 服务费(0.6%)
+        const costPrice = Math.round((shippingPrice + suitPrice + 2 + price * 0.006) * 100) / 100;
+        const profit = Math.round((price - costPrice) * 100) / 100;
         data[i].costPrice = costPrice;
         data[i].profit = profit;
         data[i].conversionThreshold = Math.round(0.1 / profit * 100 * 100) / 100;
-        data[i].profitMargin = Math.round(profit / skuGroupPriceMax * 100 * 100 * 100) / 100;
-        data[i].promotionProfit = Math.round((skuGroupPriceMax / 100 * (1 - 0.33) - 10 - costPrice) * 100) / 100;
-        data[i].limitDiscount = Math.round((1 - (profit - 10 - 5) / (skuGroupPriceMax / 100)) * 10 * 100) / 100;
-        data[i].jinbaoCommission = Math.round(((profit - 10 - 5 - 10) / 1.1 / (skuGroupPriceMax / 100)) *100 * 100) / 100;
+        data[i].profitMargin = Math.round(profit / price * 100 * 100) / 100;
+        data[i].promotionProfit = Math.round(((price - 10) * (1 - 0.33) - costPrice) * 100) / 100;
+        data[i].limitDiscount = Math.round((1 - (profit - 10) / price) * 10 * 100) / 100;
+        const getCommission = (coupon, netProfit) => Math.round(((profit - coupon - netProfit) / (price - coupon) / 1.1) *100 * 100) / 100;
+        data[i].jinbaoCommission100 = getCommission(10, 0);
+        data[i].jinbaoCommission105 = getCommission(10, 5);
+        data[i].jinbaoCommission1010 = getCommission(10, 10);
+        data[i].jinbaoCommission50 = getCommission(5, 0);
+        data[i].jinbaoCommission55 = getCommission(5, 5);
+        data[i].jinbaoCommission510 = getCommission(5, 10);
       }
       setPddGoodsList(data);
     }
@@ -168,6 +178,7 @@ function PddItem() {
                 goodsName,
                 outGoodsSn,
                 isOnsale,
+                name,
               } = rowData;
               return (
                 <div style={{
@@ -211,6 +222,12 @@ function PddItem() {
                         商品编码：{outGoodsSn}
                       </Link>
                     </div>
+                    <div
+                      style={{
+                        width: 200,
+                      }}>
+                      {name}
+                    </div>
                     {!isOnsale ?
                       <div
                         style={{
@@ -224,6 +241,7 @@ function PddItem() {
               );
             },
           },
+          /*
           {
             title: '商品id',
             field: 'pddId',
@@ -246,6 +264,8 @@ function PddItem() {
               color: '#9B59B6',
             },
           },
+          */
+          /*
           {
             title: '商品名称',
             field: 'name',
@@ -257,8 +277,9 @@ function PddItem() {
               color: '#9B59B6',
             },
           },
+          */
           {
-            title: '当前价',
+            title: '售价',
             headerStyle: {
               color: '#3333FF',
             },
@@ -283,7 +304,7 @@ function PddItem() {
             },
           },
           {
-            title: '成本价',
+            title: '成本',
             field: 'costPrice',
             cellStyle: {
               fontSize: 12,
@@ -326,7 +347,82 @@ function PddItem() {
             },
           },
           {
-            title: '限时折扣',
+            title: '进宝佣金',
+            cellStyle: {
+              fontSize: 12,
+              color: '#7D3C98',
+            },
+            headerStyle: {
+              color: '#7D3C98',
+            },
+            render: rowData => {
+              const {
+                jinbaoCommission100,
+                jinbaoCommission105,
+                jinbaoCommission1010,
+                jinbaoCommission50,
+                jinbaoCommission55,
+                jinbaoCommission510,
+              } = rowData;
+              return (
+                <div
+                  style={{
+                    width: 170,
+                  }}>
+                  <table>
+                    <tr>
+                      <th
+                        style={{
+                          fontSize: 10,
+                        }}>
+                        利润
+                        <br/>
+                        优惠
+                      </th>
+                      <th>10元</th>
+                      <th>5元</th>
+                      <th>0元</th>
+                    </tr>
+                    <tr>
+                      <td>10元</td>
+                      <td>{jinbaoCommission1010}%</td>
+                      <td>{jinbaoCommission105}%</td>
+                      <td
+                        style={{
+                          color: 'red',
+                        }}>
+                        {jinbaoCommission100}%
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>5元</td>
+                      <td>{jinbaoCommission510}%</td>
+                      <td>{jinbaoCommission55}%</td>
+                      <td
+                        style={{
+                          color: 'red',
+                        }}>
+                        {jinbaoCommission50}%
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              );
+            },
+          },
+          {
+            title: '进宝利润',
+            field: 'promotionProfit',
+            cellStyle: {
+              fontSize: 12,
+              color: '#BA4A00',
+            },
+            headerStyle: {
+              color: '#BA4A00',
+            },
+          },
+          {
+            title: '折扣阈值',
             field: 'limitDiscount',
             cellStyle: {
               fontSize: 12,
@@ -348,38 +444,6 @@ function PddItem() {
                   {limitDiscount}折
                 </div>
               );
-            },
-          },
-          {
-            title: '进宝比例',
-            field: 'jinbaoCommission',
-            cellStyle: {
-              fontSize: 12,
-              color: '#7D3C98',
-            },
-            headerStyle: {
-              color: '#7D3C98',
-            },
-            render: rowData => {
-              const {
-                jinbaoCommission,
-              } = rowData;
-              return (
-                <div>
-                  {jinbaoCommission}%
-                </div>
-              );
-            },
-          },
-          {
-            title: '进宝33 10',
-            field: 'promotionProfit',
-            cellStyle: {
-              fontSize: 12,
-              color: '#BA4A00',
-            },
-            headerStyle: {
-              color: '#BA4A00',
             },
           },
           {
