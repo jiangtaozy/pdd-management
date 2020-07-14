@@ -43,6 +43,7 @@ import Stall from './Stall';
 import AdUnitList from './AdUnitList';
 import DashBoard from './DashBoard';
 import Order1688 from './Order1688';
+import AdHead from './AdHead';
 
 const drawerWidth = 180;
 
@@ -204,6 +205,9 @@ function DrawerMenu(props) {
             <Route path="/stall">
               <Stall />
             </Route>
+            <Route path="/adHead">
+              <AdHead />
+            </Route>
             <Route path="/">
               <DashBoard />
             </Route>
@@ -339,6 +343,18 @@ function DrawerMenu(props) {
                   <FormatListBulletedIcon />
                 </ListItemIcon>
                 <ListItemText primary="供应商" />
+              </ListItem>
+            </Link>
+            <Link to="/adHead"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="推广团长" />
               </ListItem>
             </Link>
             {/*
