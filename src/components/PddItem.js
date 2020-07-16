@@ -241,7 +241,6 @@ function PddItem() {
               );
             },
           },
-          /*
           {
             title: '商品id',
             field: 'pddId',
@@ -264,8 +263,6 @@ function PddItem() {
               color: '#9B59B6',
             },
           },
-          */
-          /*
           {
             title: '商品名称',
             field: 'name',
@@ -277,7 +274,6 @@ function PddItem() {
               color: '#9B59B6',
             },
           },
-          */
           {
             title: '售价',
             headerStyle: {
@@ -370,41 +366,43 @@ function PddItem() {
                     width: 170,
                   }}>
                   <table>
-                    <tr>
-                      <th
-                        style={{
-                          fontSize: 10,
-                        }}>
-                        利润
-                        <br/>
-                        优惠
-                      </th>
-                      <th>10元</th>
-                      <th>5元</th>
-                      <th>0元</th>
-                    </tr>
-                    <tr>
-                      <td>10元</td>
-                      <td>{jinbaoCommission1010}%</td>
-                      <td>{jinbaoCommission105}%</td>
-                      <td
-                        style={{
-                          color: 'red',
-                        }}>
-                        {jinbaoCommission100}%
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>5元</td>
-                      <td>{jinbaoCommission510}%</td>
-                      <td>{jinbaoCommission55}%</td>
-                      <td
-                        style={{
-                          color: 'red',
-                        }}>
-                        {jinbaoCommission50}%
-                      </td>
-                    </tr>
+                    <tbody>
+                      <tr>
+                        <th
+                          style={{
+                            fontSize: 10,
+                          }}>
+                          利润
+                          <br/>
+                          优惠
+                        </th>
+                        <th>10元</th>
+                        <th>5元</th>
+                        <th>0元</th>
+                      </tr>
+                      <tr>
+                        <td>10元</td>
+                        <td>{jinbaoCommission1010}%</td>
+                        <td>{jinbaoCommission105}%</td>
+                        <td
+                          style={{
+                            color: 'red',
+                          }}>
+                          {jinbaoCommission100}%
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>5元</td>
+                        <td>{jinbaoCommission510}%</td>
+                        <td>{jinbaoCommission55}%</td>
+                        <td
+                          style={{
+                            color: 'red',
+                          }}>
+                          {jinbaoCommission50}%
+                        </td>
+                      </tr>
+                    </tbody>
                   </table>
                 </div>
               );

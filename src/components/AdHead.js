@@ -60,7 +60,7 @@ function AdHead() {
         icons={tableIcons}
         options={{
           actionsColumnIndex: -1,
-          filtering: true,
+          filtering: false,
         }}
         localization={{
           header: {
@@ -75,6 +75,10 @@ function AdHead() {
           {
             title: '团长id',
             field: 'headId',
+          },
+          {
+            title: '团长名称',
+            field: 'headName',
           },
           {
             title: '多多客佣金',
