@@ -44,6 +44,7 @@ import AdUnitList from './AdUnitList';
 import DashBoard from './DashBoard';
 import Order1688 from './Order1688';
 import AdHead from './AdHead';
+import PddActivity from './PddActivity';
 
 const drawerWidth = 180;
 
@@ -208,6 +209,9 @@ function DrawerMenu(props) {
             <Route path="/adHead">
               <AdHead />
             </Route>
+            <Route path="/pddActivity">
+              <PddActivity />
+            </Route>
             <Route path="/">
               <DashBoard />
             </Route>
@@ -330,6 +334,18 @@ function DrawerMenu(props) {
                   <FormatListBulletedIcon />
                 </ListItemIcon>
                 <ListItemText primary="推广单元" />
+              </ListItem>
+            </Link>
+            <Link to="/pddActivity"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="优惠活动" />
               </ListItem>
             </Link>
             <Divider />
