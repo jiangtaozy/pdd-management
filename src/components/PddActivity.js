@@ -12,7 +12,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import axios from 'axios';
 import tableIcons from './utils/TableIcons';
 import MaterialTable from 'material-table';
-import { Link } from 'react-router-dom';
 
 function PddActivity() {
 
@@ -205,14 +204,14 @@ function PddActivity() {
                 <div>
                   <div>
                     原价：{
-                      minOnSaleGroupPrice == maxOnSaleGroupPrice ?
+                      minOnSaleGroupPrice === maxOnSaleGroupPrice ?
                         `${minOnSaleGroupPrice / 100}元` :
                         `${minOnSaleGroupPrice / 100}-${maxOnSaleGroupPrice / 100}元`
                     }
                   </div>
                   <div>
                     现价：{
-                      minPreSalePrice ==  maxPreSalePrice ?
+                      minPreSalePrice ===  maxPreSalePrice ?
                         `${minPreSalePrice / 100}元` :
                         `${minPreSalePrice / 100}-${maxPreSalePrice / 100}元`
                     }
