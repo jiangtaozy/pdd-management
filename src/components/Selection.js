@@ -176,6 +176,7 @@ function Selection() {
           },
           {
             title: "销售额",
+            field: "gmv30dRt",
             render: rowData => {
               const {
                 gmv30dRt,

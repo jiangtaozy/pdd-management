@@ -23,18 +23,6 @@ function Stall() {
   const { message, open } = snackbarState;
 
   useEffect(() => {
-    const fetchStallList = async () => {
-      try {
-        const { data } = await axios.get('/stallList');
-        setStallList(data);
-      }
-      catch(err) {
-        console.error('StallFetchStallListError: ', err);
-        handleOpenSnackbar({
-          message: `出错了：${err.message}`,
-        })
-      }
-    };
     fetchStallList();
   }, []);
 
@@ -167,6 +155,7 @@ function Stall() {
               handleOpenSnackbar({
                 message: '操作成功',
               })
+              fetchStallList();
               resolve();
             }
             catch(err) {
@@ -180,7 +169,11 @@ function Stall() {
             return new Promise(async (resolve, reject) => {
               try {
                 await axios.post('/stall', newData);
+                handleOpenSnackbar({
+                  message: '操作成功',
+                })
                 fetchStallList();
+                resolve();
               }
               catch(err) {
                 console.error('StallUpdateError: ', err);
@@ -188,7 +181,6 @@ function Stall() {
                   message: `出错了：${err.message}`,
                 })
               }
-              resolve();
             });
           }
         }}

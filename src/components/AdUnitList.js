@@ -141,17 +141,6 @@ function AdUnitList() {
         }
         columns={[
           {
-            title: '商家Id',
-            field: 'mallId',
-            cellStyle: {
-              fontSize: 12,
-            },
-            lookup: {
-             654629561: 'k酱十七',
-             777561295: '牧记衣坊',
-            },
-          },
-          {
             title: '单元信息',
             field: 'adName',
             cellStyle: {
@@ -171,17 +160,14 @@ function AdUnitList() {
                 <div style={{
                   width: 150,
                 }}>
-                  <div>
-                    计划名：{planName}
-                  </div>
                   <Link to={`/adUnit/${adId}`}>
-                    单元名：{ adName }
+                    { adName }
                   </Link>
                   <div>
-                    商品Id：{goodsId}
+                    商品名：{goodsName}
                   </div>
                   <div>
-                    商品名：{goodsName}
+                    计划名：{planName}
                   </div>
                   <div>
                     计划Id：{planId}
@@ -189,16 +175,12 @@ function AdUnitList() {
                   <div>
                     单元Id：{adId}
                   </div>
+                  <div>
+                    商品Id：{goodsId}
+                  </div>
                 </div>
               );
             }
-          },
-          {
-            title: '商品Id',
-            field: 'goodsId',
-            cellStyle: {
-              fontSize: 12,
-            },
           },
           {
             title: '类型',
@@ -367,6 +349,32 @@ function AdUnitList() {
             cellStyle: {
               fontSize: 12,
             },
+          },
+          {
+            title: '商家Id',
+            field: 'mallId',
+            cellStyle: {
+              fontSize: 12,
+            },
+            lookup: {
+             654629561: 'k酱十七',
+             777561295: '牧记衣坊',
+            },
+          },
+          {
+            title: '商品Id',
+            field: 'goodsId',
+            cellStyle: {
+              fontSize: 12,
+            },
+          },
+          {
+            title: '单元Id',
+            field: 'adId',
+            cellStyle: {
+              fontSize: 12,
+            },
+            defaultSort: 'desc',
           },
         ]}
       />
