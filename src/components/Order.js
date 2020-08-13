@@ -167,6 +167,7 @@ function Order() {
               '654629561': 'k酱十七',
               '777561295': '牧记衣坊',
             },
+            editable: "never",
           },
           {
             title: "订单编号",
@@ -174,6 +175,7 @@ function Order() {
             cellStyle: {
               fontSize: 12,
             },
+            editable: "never",
           },
           {
             title: "商品信息",
@@ -220,6 +222,7 @@ function Order() {
             cellStyle: {
               fontSize: 12,
             },
+            editable: "never",
           },
           {
             title: "售后状态",
@@ -232,6 +235,7 @@ function Order() {
             cellStyle: {
               fontSize: 12,
             },
+            editable: "never",
           },
           {
             title: "数量",
@@ -240,6 +244,7 @@ function Order() {
               fontSize: 12,
             },
             filtering: false,
+            editable: "never",
           },
           {
             title: "商品总价(元)",
@@ -248,6 +253,7 @@ function Order() {
               fontSize: 12,
             },
             filtering: false,
+            editable: "never",
           },
           {
             title: "实收金额(元)",
@@ -286,6 +292,7 @@ function Order() {
             cellStyle: {
               fontSize: 12,
             },
+            editable: "never",
           },
           {
             title: "下单时间",
@@ -354,11 +361,61 @@ function Order() {
               );
             },
           },
+          {
+            title: "快递单号",
+            field: "trackingNumber",
+            cellStyle: {
+              fontSize: 12,
+            },
+            editable: "never",
+          },
+          {
+            title: "关联订单号",
+            field: "joinedOrderId",
+            cellStyle: {
+              fontSize: 12,
+            },
+            filtering: false,
+          },
+          {
+            title: "外部订单号",
+            field: "outerOrderId",
+            cellStyle: {
+              fontSize: 12,
+            },
+            filtering: false,
+          },
         ]}
         data={orderList}
         title="订单列表"
         options={{
           filtering: true,
+          actionsColumnIndex: -1,
+        }}
+        editable={{
+          onRowUpdate: (newData, oldData) =>
+            new Promise(async (resolve, reject) => {
+              try {
+                const { data } = await axios.post('/itemOrderUpdate', newData);
+                if(data === 'ok') {
+                  orderList[orderList.indexOf(oldData)] = newData;
+                  handleOpenSnackbar({
+                    message: '操作成功',
+                  })
+                } else {
+                  handleOpenSnackbar({
+                    message: `出错了：${data}`,
+                  })
+                }
+              }
+              catch(err) {
+                console.error('OrderUpdateSearchTitleError: ', err);
+                handleOpenSnackbar({
+                  message: `出错了：${err.message}`,
+                })
+              }
+              resolve();
+            }),
         }}
       />
       <TextField
