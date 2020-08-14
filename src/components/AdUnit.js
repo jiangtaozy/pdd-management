@@ -2,7 +2,7 @@
  * Maintained by jemo from 2020.5.27 to now
  * Created by jemo on 2020.5.27 11:02:09
  * Ad Unit
- * 推广单元
+ * 一推广计划的推广单元列表
  */
 
 import React, { useState, useEffect } from 'react';

@@ -2,7 +2,7 @@
  * Maintained by jemo from 2020.6.13 to now
  * Created by jemo on 2020.6.13 16:01:06
  * Ad Unit List
- * 推广单元列表
+ * 全部推广单元列表
  */
 
 import React, { useState, useEffect } from 'react';
@@ -12,6 +12,7 @@ import tableIcons from './utils/TableIcons';
 import MaterialTable from 'material-table';
 import { Link } from 'react-router-dom';
 import SaveAdUnitData from './SaveAdUnitData';
+import AdUnitKeywordSave from './AdUnitKeywordSave';
 
 function AdUnitList() {
 
@@ -379,6 +380,7 @@ function AdUnitList() {
         ]}
       />
       <SaveAdUnitData />
+      <AdUnitKeywordSave />
       <Snackbar
         anchorOrigin={{
           horizontal: "center",
