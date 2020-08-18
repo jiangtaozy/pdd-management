@@ -17,7 +17,7 @@ function AdDataChart() {
 
   const [dataList, setDataList] = useState([]);
   const [chartType, setChartType] = useState('total');
-  const [yKey, setYKey] = useState('netProfit');
+  const [yKey, setYKey] = useState('netProfitRate');
   const [tooltipDisplay, setTooltipDisplay] = useState('none');
   const [tooltipTransform, setTooltipTransform] = useState('');
   const [tooltipXValue, setTooltipXValue] = useState('');
@@ -47,12 +47,16 @@ function AdDataChart() {
     for(let i = 0; i < monthDifference; i++) {
       const month = new Date(startMonth.getFullYear(), startMonth.getMonth() + i, 1);
       let monthTotal = 0;
+      let netProfit = 0;
+      let spend = 0;
       for(let j = 0; j < dataList.length; j++) {
         const adDataItem = dataList[j];
         const date = new Date(adDataItem.date);
         if(date.getFullYear() === month.getFullYear() &&
           date.getMonth() === month.getMonth()) {
           monthTotal += adDataItem[yKey];
+          netProfit += adDataItem.netProfit;
+          spend += adDataItem.spend;
         }
       }
       const monthData = {
@@ -60,6 +64,7 @@ function AdDataChart() {
       }
       monthTotal = Math.round(monthTotal * 100) / 100;
       monthData[yKey] = monthTotal;
+      monthData.netProfitRate = Math.round(netProfit / spend * 100) / 100 || 0;
       data.push(monthData);
     }
     startDate = startMonth;
@@ -67,13 +72,18 @@ function AdDataChart() {
   } else if(chartType === 'total') {
     data = [];
     let total = 0;
+    let netProfit = 0;
+    let spend = 0;
     for(let i = 0; i < dataList.length; i++) {
       total += dataList[i][yKey];
+      netProfit += dataList[i].netProfit;
+      spend += dataList[i].spend;
       const totalData = {
         date: dataList[i].date,
       }
       total = Math.round(total * 10000) / 10000;
       totalData[yKey] = total;
+      totalData.netProfitRate = Math.round(netProfit / spend * 100) / 100 || 0;
       data.push(totalData);
     }
   }
@@ -245,6 +255,10 @@ function AdDataChart() {
             }
           }
           orderData.netProfit = Math.round((orderData.profit - orderData.spend) * 100) / 100;
+          orderData.netProfitRate = 0;
+          if(orderData.spend !== 0) {
+            orderData.netProfitRate = Math.round((orderData.netProfit / orderData.spend) * 100) / 100;
+          }
           orderDataList.push(orderData);
         }
         setDataList(orderDataList);
@@ -308,6 +322,11 @@ function AdDataChart() {
             label='成本'
           />
           <FormControlLabel
+            value='spend'
+            control={<Radio />}
+            label='广告花费'
+          />
+          <FormControlLabel
             value='profit'
             control={<Radio />}
             label='利润'
@@ -316,6 +335,11 @@ function AdDataChart() {
             value='netProfit'
             control={<Radio />}
             label='净利润'
+          />
+          <FormControlLabel
+            value='netProfitRate'
+            control={<Radio />}
+            label='净利润/广告费'
           />
         </RadioGroup>
         <RadioGroup

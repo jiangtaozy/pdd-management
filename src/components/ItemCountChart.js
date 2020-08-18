@@ -16,13 +16,13 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 function ItemCountChart() {
 
   const [itemCountList, setItemCountList] = useState([]);
-  const [chartType, setChartType] = useState('total');
+  const [chartType, setChartType] = useState('month');
   const [tooltipDisplay, setTooltipDisplay] = useState('none');
   const [tooltipTransform, setTooltipTransform] = useState('');
   const [tooltipXValue, setTooltipXValue] = useState('');
   const [tooltipYValue, setTooltipYValue] = useState('');
-  let startDate;
-  let endDate;
+  let startDate = new Date();
+  let endDate = new Date();
   for(let i = 0; i < itemCountList.length; i++) {
     const itemCount = itemCountList[i];
     const date = new Date(itemCount.date);

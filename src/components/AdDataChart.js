@@ -17,7 +17,7 @@ function AdDataChart() {
 
   const [adDataList, setAdDataList] = useState([]);
   const [chartType, setChartType] = useState('total');
-  const [yKey, setYKey] = useState('spend');
+  const [yKey, setYKey] = useState('ctr');
   const [tooltipDisplay, setTooltipDisplay] = useState('none');
   const [tooltipTransform, setTooltipTransform] = useState('');
   const [tooltipXValue, setTooltipXValue] = useState('');

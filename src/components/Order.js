@@ -238,6 +238,32 @@ function Order() {
             editable: "never",
           },
           {
+            title: "外部订单状态",
+            field: "outerOrderStatus",
+            lookup: {
+              0: '待付款',
+              1: '待发货',
+              2: '待收货',
+              3: '已收货',
+              4: '交易成功',
+              5: '已退换货',
+              6: '交易关闭',
+            },
+            cellStyle: {
+              fontSize: 12,
+            },
+            editable: "never",
+          },
+          {
+            title: "女装网订单商品状态",
+            field: "productStatus",
+            cellStyle: {
+              fontSize: 12,
+            },
+            filtering: false,
+            editable: "never",
+          },
+          {
             title: "数量",
             field: "numberOfProducts",
             cellStyle: {
@@ -281,18 +307,16 @@ function Order() {
                     <div>
                       店铺优惠券: {rowData.storeDiscount}
                     </div>
+                    <div>
+                      外部订单支付金额: {rowData.actualPayment}
+                    </div>
+                    <div>
+                      毛利润: {Math.round((rowData.merchantReceivedAmount - rowData.actualPayment) * 100) / 100}
+                    </div>
                   </div>
                 </div>
               );
             },
-          },
-          {
-            title: "收货人",
-            field: "receiver",
-            cellStyle: {
-              fontSize: 12,
-            },
-            editable: "never",
           },
           {
             title: "下单时间",
@@ -360,22 +384,6 @@ function Order() {
                 </div>
               );
             },
-          },
-          {
-            title: "快递单号",
-            field: "trackingNumber",
-            cellStyle: {
-              fontSize: 12,
-            },
-            editable: "never",
-          },
-          {
-            title: "关联订单号",
-            field: "joinedOrderId",
-            cellStyle: {
-              fontSize: 12,
-            },
-            filtering: false,
           },
           {
             title: "外部订单号",
