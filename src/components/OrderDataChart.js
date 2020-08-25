@@ -48,7 +48,9 @@ function AdDataChart() {
       const month = new Date(startMonth.getFullYear(), startMonth.getMonth() + i, 1);
       let monthTotal = 0;
       let netProfit = 0;
+      let profit = 0;
       let spend = 0;
+      let click = 0;
       for(let j = 0; j < dataList.length; j++) {
         const adDataItem = dataList[j];
         const date = new Date(adDataItem.date);
@@ -56,7 +58,9 @@ function AdDataChart() {
           date.getMonth() === month.getMonth()) {
           monthTotal += adDataItem[yKey];
           netProfit += adDataItem.netProfit;
+          profit += adDataItem.profit;
           spend += adDataItem.spend;
+          click += adDataItem.click;
         }
       }
       const monthData = {
@@ -64,7 +68,10 @@ function AdDataChart() {
       }
       monthTotal = Math.round(monthTotal * 100) / 100;
       monthData[yKey] = monthTotal;
-      monthData.netProfitRate = Math.round(netProfit / spend * 100) / 100 || 0;
+      monthData.netProfitRate = netProfit / spend || 0;
+      monthData.perClickProfit = profit / click || 0;
+      monthData.perClickSpend = spend / click || 0;
+      monthData.perClickProfitSpend = profit / spend || 0;
       data.push(monthData);
     }
     startDate = startMonth;
@@ -73,17 +80,24 @@ function AdDataChart() {
     data = [];
     let total = 0;
     let netProfit = 0;
+    let profit = 0;
     let spend = 0;
+    let click = 0;
     for(let i = 0; i < dataList.length; i++) {
       total += dataList[i][yKey];
       netProfit += dataList[i].netProfit;
+      profit += dataList[i].profit;
       spend += dataList[i].spend;
+      click += dataList[i].click;
       const totalData = {
         date: dataList[i].date,
       }
       total = Math.round(total * 10000) / 10000;
       totalData[yKey] = total;
-      totalData.netProfitRate = Math.round(netProfit / spend * 100) / 100 || 0;
+      totalData.netProfitRate = netProfit / spend || 0;
+      totalData.perClickProfit = profit / click || 0;
+      totalData.perClickSpend = spend / click || 0;
+      totalData.perClickProfitSpend = profit / spend || 0;
       data.push(totalData);
     }
   }
@@ -232,6 +246,8 @@ function AdDataChart() {
             actualPayment: 0,
             profit: 0,
             spend: 0,
+            click: 0,
+            orderNumber: 0,
           }
           for(let j = 0; j < data.length; j++) {
             const time = new Date(data[j].paymentTime);
@@ -244,6 +260,7 @@ function AdDataChart() {
               orderData.userPaidAmount = Math.round(orderData.userPaidAmount * 100) / 100;
               orderData.actualPayment = Math.round(orderData.actualPayment * 100) / 100;
               orderData.profit = Math.round(orderData.profit * 100) / 100;
+              orderData.orderNumber++;
             }
           }
           for(let k = 0; k < adData.length; k++) {
@@ -252,12 +269,23 @@ function AdDataChart() {
               time.getMonth() === day.getMonth() &&
               time.getDate() === day.getDate()) {
               orderData.spend += adData[k].spend;
+              orderData.click += adData[k].click;
             }
           }
           orderData.netProfit = Math.round((orderData.profit - orderData.spend) * 100) / 100;
           orderData.netProfitRate = 0;
           if(orderData.spend !== 0) {
             orderData.netProfitRate = Math.round((orderData.netProfit / orderData.spend) * 100) / 100;
+          }
+          orderData.perClickProfit = 0;
+          orderData.perClickSpend = 0;
+          if(orderData.click !== 0) {
+            orderData.perClickProfit = Math.round(orderData.profit / orderData.click * 100) / 100;
+            orderData.perClickSpend = Math.round(orderData.spend / orderData.click * 100) / 100;
+          }
+          orderData.perClickProfitSpend = 0;
+          if(orderData.perClickSpend !== 0) {
+            orderData.perClickProfitSpend = Math.round(orderData.profit / orderData.spend * 100) / 100
           }
           orderDataList.push(orderData);
         }
@@ -312,6 +340,11 @@ function AdDataChart() {
           value={yKey}
           onChange={handleYKeyChange}>
           <FormControlLabel
+            value='orderNumber'
+            control={<Radio />}
+            label='订单量'
+          />
+          <FormControlLabel
             value='userPaidAmount'
             control={<Radio />}
             label='交易额'
@@ -337,9 +370,29 @@ function AdDataChart() {
             label='净利润'
           />
           <FormControlLabel
+            value='click'
+            control={<Radio />}
+            label='点击量'
+          />
+          <FormControlLabel
+            value='perClickProfit'
+            control={<Radio />}
+            label='单次点击利润'
+          />
+          <FormControlLabel
+            value='perClickSpend'
+            control={<Radio />}
+            label='单次点击花费'
+          />
+          <FormControlLabel
+            value='perClickProfitSpend'
+            control={<Radio />}
+            label='利润花费比'
+          />
+          <FormControlLabel
             value='netProfitRate'
             control={<Radio />}
-            label='净利润/广告费'
+            label='净利润花费比'
           />
         </RadioGroup>
         <RadioGroup
