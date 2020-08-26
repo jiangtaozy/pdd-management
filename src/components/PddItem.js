@@ -63,40 +63,6 @@ function PddItem() {
   }
 
   useEffect(() => {
-    /*
-    const fetchPddGoods = async () => {
-      try {
-        const { data } = await axios.get('/pddGoods');
-        for(let i = 0; i < data.length; i++) {
-          let {
-            shippingPrice,
-            suitPrice,
-            siteType,
-            skuGroupPriceMax,
-          } = data[i];
-          if(siteType === 2) {
-            shippingPrice = 4.4;
-          }
-          const costPrice = Math.round((shippingPrice + suitPrice) * 100) / 100;
-          const profit = Math.round((skuGroupPriceMax / 100 - costPrice) * 100) / 100;
-          data[i].costPrice = costPrice;
-          data[i].profit = profit;
-          data[i].conversionThreshold = Math.round(0.1 / profit * 100 * 100) / 100;
-          data[i].profitMargin = Math.round(profit / skuGroupPriceMax * 100 * 100 * 100) / 100;
-          data[i].promotionProfit = Math.round(((skuGroupPriceMax / 100 - 10)* (1 - 0.33) - costPrice) * 100) / 100;
-          data[i].limitDiscount = Math.round((1 - (profit - 10 - 5) / (skuGroupPriceMax / 100)) * 10 * 100) / 100;
-          data[i].jinbaoCommission = Math.round(((profit - 10 - 5 - 10) / 1.1 / (skuGroupPriceMax / 100)) *100 * 100) / 100;
-        }
-        setPddGoodsList(data);
-      }
-      catch(err) {
-        console.error('pdd-item-fetch-pdd-goods-error: ', err);
-        handleOpenSnackbar({
-          message: `出错了：${err.message}`,
-        });
-      }
-    };
-    */
     fetchPddGoods();
   }, []);
 
@@ -130,6 +96,34 @@ function PddItem() {
         data[i].jinbaoCommission50 = getCommission(5, 0);
         data[i].jinbaoCommission55 = getCommission(5, 5);
         data[i].jinbaoCommission510 = getCommission(5, 10);
+        const adList = data[i].adList || [];
+        let click = 0;
+        let spend = 0;
+        for(let i = 0; i < adList.length; i++) {
+          const ad = adList[i];
+          click += ad.click;
+          spend += ad.spend;
+        }
+        data[i].click = click;
+        data[i].spend = spend / 1000;
+        const orderList = data[i].orderList || [];
+        let orderProfit = 0;
+        for(let i = 0; i < orderList.length; i++) {
+          const order = orderList[i];
+          const {
+            actualPayment,
+            platformDiscount,
+            userPaidAmount,
+          } = order;
+          orderProfit += (platformDiscount + userPaidAmount) / 100 - actualPayment;
+        }
+        data[i].orderProfit = Math.round(orderProfit * 100) / 100;
+        data[i].perClickProfit = Math.round((orderProfit / click || 0) * 100) / 100;
+        data[i].perClickSpend = Math.round((spend / 1000 / click || 0) * 100) / 100;
+        data[i].perClickProfitSpend = 0;
+        if(spend !== 0) {
+          data[i].perClickProfitSpend = Math.round((orderProfit / (spend / 1000) || 0) * 100) / 100;
+        }
       }
       setPddGoodsList(data);
     }
@@ -147,26 +141,10 @@ function PddItem() {
         icons={tableIcons}
         options={{
           filtering: true,
-          headerStyle: {
-            position: 'sticky',
-            top: 0,
-          },
-          maxBodyHeight: 650,
         }}
         data={pddGoodsList}
         title="拼多多商品列表"
         columns={[
-          {
-            title: '店铺',
-            field: 'siteType',
-            cellStyle: {
-              fontSize: 12,
-            },
-            lookup: {
-              1: '1688',
-              2: '女装网',
-            },
-          },
           {
             title: "商品信息",
             field: 'goodsName',
@@ -242,28 +220,6 @@ function PddItem() {
             },
           },
           {
-            title: '商品id',
-            field: 'pddId',
-            cellStyle: {
-              fontSize: 12,
-              color: '#EC7063',
-            },
-            headerStyle: {
-              color: '#EC7063',
-            },
-          },
-          {
-            title: '商品编码',
-            field: 'outGoodsSn',
-            cellStyle: {
-              fontSize: 12,
-              color: '#9B59B6',
-            },
-            headerStyle: {
-              color: '#9B59B6',
-            },
-          },
-          {
             title: '商品名称',
             field: 'name',
             cellStyle: {
@@ -272,6 +228,72 @@ function PddItem() {
             },
             headerStyle: {
               color: '#9B59B6',
+            },
+          },
+          {
+            title: '点击利润花费比',
+            field: 'perClickProfitSpend',
+            cellStyle: {
+              fontSize: 12,
+              color: '#ff0000',
+            },
+            headerStyle: {
+              color: '#ff0000',
+            },
+          },
+          {
+            title: '点击量',
+            field: 'click',
+            cellStyle: {
+              fontSize: 12,
+              color: '#3498db',
+            },
+            headerStyle: {
+              color: '#3498db',
+            },
+          },
+          {
+            title: '花费',
+            field: 'spend',
+            cellStyle: {
+              fontSize: 12,
+              color: '#9b59b6',
+            },
+            headerStyle: {
+              color: '#9b59b6',
+            },
+          },
+          {
+            title: '订单利润',
+            field: 'orderProfit',
+            cellStyle: {
+              fontSize: 12,
+              color: '#f1c40f',
+            },
+            headerStyle: {
+              color: '#f1c40f',
+            },
+          },
+          {
+            title: '单次点击利润',
+            field: 'perClickProfit',
+            cellStyle: {
+              fontSize: 12,
+              color: '#e74c3c',
+            },
+            headerStyle: {
+              color: '#e74c3c',
+            },
+          },
+          {
+            title: '单次点击花费',
+            field: 'perClickSpend',
+            cellStyle: {
+              fontSize: 12,
+              color: '#27ae60',
+            },
+            headerStyle: {
+              color: '#27ae60',
             },
           },
           {
@@ -342,6 +364,29 @@ function PddItem() {
               );
             },
           },
+          {
+            title: '商品id',
+            field: 'pddId',
+            cellStyle: {
+              fontSize: 12,
+              color: '#EC7063',
+            },
+            headerStyle: {
+              color: '#EC7063',
+            },
+          },
+          {
+            title: '商品编码',
+            field: 'outGoodsSn',
+            cellStyle: {
+              fontSize: 12,
+              color: '#9B59B6',
+            },
+            headerStyle: {
+              color: '#9B59B6',
+            },
+          },
+          /*
           {
             title: '进宝佣金',
             cellStyle: {
@@ -419,6 +464,8 @@ function PddItem() {
               color: '#BA4A00',
             },
           },
+          */
+          /*
           {
             title: '折扣阈值',
             field: 'limitDiscount',
@@ -444,6 +491,7 @@ function PddItem() {
               );
             },
           },
+          */
           {
             title: '转化阈值',
             headerStyle: {
@@ -462,6 +510,31 @@ function PddItem() {
                   {conversionThreshold}%
                 </div>
               );
+            },
+          },
+          {
+            title: '是否在售',
+            field: 'isOnsale',
+            type: 'boolean',
+            defaultFilter: "checked",
+            cellStyle: {
+              fontSize: 12,
+              color: '#9B59B6',
+            },
+            headerStyle: {
+              color: '#9B59B6',
+            },
+          },
+          {
+            title: '店铺',
+            field: 'siteType',
+            defaultFilter: ['2'],
+            cellStyle: {
+              fontSize: 12,
+            },
+            lookup: {
+              1: '1688',
+              2: '女装网',
             },
           },
           /*
@@ -494,6 +567,7 @@ function PddItem() {
             },
           },
           */
+          /*
           {
             title: '创建时间',
             field: 'createdAt',
@@ -506,6 +580,7 @@ function PddItem() {
             },
             type: 'date',
           },
+          */
           /*
           {
             title: '展示权重',
@@ -517,14 +592,6 @@ function PddItem() {
           {
             title: '是否新品',
             field: 'ifNewGoods',
-            cellStyle: {
-              fontSize: 12,
-            },
-            type: 'boolean',
-          },
-          {
-            title: '是否在售',
-            field: 'isOnsale',
             cellStyle: {
               fontSize: 12,
             },

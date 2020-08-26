@@ -57,10 +57,6 @@ function AdUnitKeywordSave (props) {
     }
   }
 
-  const {
-    adId,
-  } = props;
-
   return (
     <div>
       <TextField
