@@ -45,6 +45,7 @@ import DashBoard from './DashBoard';
 import Order1688 from './Order1688';
 import AdHead from './AdHead';
 import PddActivity from './PddActivity';
+import ItemDataChart from './item/ItemDataChart'
 
 const drawerWidth = 180;
 
@@ -181,6 +182,9 @@ function DrawerMenu(props) {
             </Route>
             <Route path="/product/select/:id">
               <Selection />
+            </Route>
+            <Route path="/product/data/:id">
+              <ItemDataChart />
             </Route>
             <Route path="/authorize">
               <Authorize />

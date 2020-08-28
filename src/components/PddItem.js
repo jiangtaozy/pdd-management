@@ -214,6 +214,17 @@ function PddItem() {
                         已下架
                       </div> : null
                     }
+                    <div style={{
+                      color: '#eb4d4b',
+                    }}>
+                      <Link
+                        to={`/product/data/${pddId}`}
+                        style={{
+                          color: '#eb4d4b',
+                        }}>
+                        商品数据
+                      </Link>
+                    </div>
                   </div>
                 </div>
               );

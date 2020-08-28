@@ -157,6 +157,7 @@ function Order() {
       <MaterialTable
         icons={tableIcons}
         columns={[
+          /*
           {
             title: "店铺编号",
             field: "mallId",
@@ -169,6 +170,7 @@ function Order() {
             },
             editable: "never",
           },
+          */
           {
             title: "订单编号",
             field: "orderId",
@@ -223,6 +225,7 @@ function Order() {
               fontSize: 12,
             },
             editable: "never",
+            defaultFilter: ["待发货"],
           },
           {
             title: "售后状态",
