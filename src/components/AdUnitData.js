@@ -14,6 +14,7 @@ import { useParams } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import AdUnitDataChart from './AdUnitDataChart';
+import AdUnitHourlyData from './ad-unit/AdUnitHourlyData';
 
 function AdUnitData () {
 
@@ -124,6 +125,9 @@ function AdUnitData () {
       <AdUnitDataChart
         data={unitDataList}
         adUnit={adUnit}
+      />
+      <AdUnitHourlyData
+        id={id}
       />
       <MaterialTable
         icons={tableIcons}
