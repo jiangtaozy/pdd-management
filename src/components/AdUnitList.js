@@ -13,6 +13,7 @@ import MaterialTable from 'material-table';
 import { Link } from 'react-router-dom';
 import SaveAdUnitData from './SaveAdUnitData';
 import AdUnitKeywordSave from './AdUnitKeywordSave';
+import SaveAdUnitHourlyData from './ad-unit/SaveAdUnitHourlyData';
 
 function AdUnitList() {
 
@@ -191,6 +192,7 @@ function AdUnitList() {
               1: '聚焦展位',
               2: '多多场景',
             },
+            defaultFilter: ['0'],
             cellStyle: {
               fontSize: 12,
             },
@@ -199,6 +201,7 @@ function AdUnitList() {
             title: '曝光量',
             field: 'impression',
             filtering: false,
+            defaultSort: 'desc',
             cellStyle: {
               fontSize: 12,
             },
@@ -361,6 +364,7 @@ function AdUnitList() {
              654629561: 'k酱十七',
              777561295: '牧记衣坊',
             },
+            defaultFilter: ['777561295'],
           },
           {
             title: '商品Id',
@@ -380,6 +384,7 @@ function AdUnitList() {
         ]}
       />
       <SaveAdUnitData />
+      <SaveAdUnitHourlyData />
       <AdUnitKeywordSave />
       <Snackbar
         anchorOrigin={{

@@ -463,11 +463,11 @@ function AdUnitData () {
       <Button
         variant="outlined"
         color="primary"
+        fullWidth={true}
         style={{
           marginTop: 10,
         }}
-        onClick={handleUnitDataButtonClick}
-      >
+        onClick={handleUnitDataButtonClick}>
         确定
       </Button>
       <Snackbar

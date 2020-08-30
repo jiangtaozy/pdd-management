@@ -1,19 +1,18 @@
 /*
  * Maintained by jemo from 2020.8.29 to now
- * Created by jemo on 2020.8.29 10:05:59
+ * Created by jemo on 2020.8.29 16:44:22
  * Ad Unit Hourly Data
  * 推广单元小时数据
  */
 
 import React, { useState, useEffect } from 'react';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import axios from 'axios';
+import HourlyChart from '../utils/HourlyChart';
 
 function AdUnitHourlyData(props) {
 
-  const [ hourlyData, setHourlyData ] = useState('');
+  const [ hourlyData, setHourlyData ] = useState([]);
   const [ snackbarState, setSnackbarState ] = useState({
     message: '',
     open: false,
@@ -33,51 +32,94 @@ function AdUnitHourlyData(props) {
     });
   }
 
-  async function handleHourlyDataButtonClick() {
-    if(!hourlyData) {
-      return handleOpenSnackbar({
-        message: '请输入数据',
-      });
+  useEffect(() => {
+    const fetchHourlyData = async () => {
+      try {
+        const { data } = await axios.get('/adUnitHourlyDataList', {
+          params: {
+            id: props.id,
+          },
+        })
+        for(let i = 0; i < data.length; i++) {
+          data[i].gmv = data[i].gmv / 1000;
+          data[i].spend = data[i].spend / 1000;
+        }
+        setHourlyData(data);
+      }
+      catch(err) {
+        console.error("ad-unit-hourly-data-fetch-error: ", err);
+        handleOpenSnackbar({
+          message: `出错了：${err.message}`,
+        });
+      }
     }
-    try {
-      const data = JSON.parse(hourlyData);
-      await axios.post('/adUnitHourlyDataSave', data);
-      handleOpenSnackbar({
-        message: '操作成功',
-      });
-      setHourlyData('');
-    }
-    catch(err) {
-      console.error('AdUnitHourlyDataSaveUploadError: ', err);
-      handleOpenSnackbar({
-        message: `出错了：${err.message}`,
-      });
-    }
-  }
+    fetchHourlyData();
+  }, [props.id]);
 
   return (
-    <div
-      style={{
-        marginBottom: 100,
-      }}>
-      <TextField
-        label="输入推广单元小时数据(按日期/queryHourlyReport)"
-        multiline
-        fullWidth
-        value={hourlyData}
-        onChange={(event) => {
-          setHourlyData(event.target.value);
-        }}
+    <div>
+      <HourlyChart
+        data={hourlyData}
+        defaultYKey={'cvr'}
+        ykeyList={[
+          {
+            value: 'impression',
+            label: '曝光量',
+          },
+          {
+            value: 'click',
+            label: '点击量',
+          },
+          {
+            value: 'ctr',
+            label: '点击率',
+            ratio: true,
+            x: 'click',
+            y: 'impression',
+          },
+          {
+            value: 'orderNum',
+            label: '订单量',
+          },
+          {
+            value: 'cvr',
+            label: '点击转化率',
+            ratio: true,
+            x: 'orderNum',
+            y: 'click',
+          },
+          {
+            value: 'gmv',
+            label: '交易额',
+          },
+          {
+            value: 'goodsFavNum',
+            label: '商品收藏量',
+          },
+          {
+            value: 'cgfv',
+            label: '点击收藏率',
+            ratio: true,
+            x: 'goodsFavNum',
+            y: 'click',
+          },
+          {
+            value: 'mallFavNum',
+            label: '店铺关注量',
+          },
+          {
+            value: 'cmfv',
+            label: '点击关注率',
+            ratio: true,
+            x: 'mallFavNum',
+            y: 'click',
+          },
+          {
+            value: 'spend',
+            label: '推广花费',
+          },
+        ]}
       />
-      <Button
-        variant="outlined"
-        color="primary"
-        style={{
-          marginTop: 10,
-        }}
-        onClick={handleHourlyDataButtonClick}>
-        确定
-      </Button>
       <Snackbar
         anchorOrigin={{
           horizontal: "center",
