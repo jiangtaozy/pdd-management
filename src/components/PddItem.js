@@ -12,7 +12,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import axios from 'axios';
 import tableIcons from './utils/TableIcons';
 import MaterialTable from 'material-table';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 
 function PddItem() {
 
@@ -157,6 +158,7 @@ function PddItem() {
                 outGoodsSn,
                 isOnsale,
                 name,
+                detailUrl,
               } = rowData;
               return (
                 <div style={{
@@ -196,15 +198,19 @@ function PddItem() {
                     <div style={{
                       color: '#666',
                     }}>
-                      <Link to={`/product/select/${outGoodsSn}`}>
+                      <RouterLink to={`/product/select/${outGoodsSn}`}>
                         商品编码：{outGoodsSn}
-                      </Link>
+                      </RouterLink>
                     </div>
                     <div
                       style={{
                         width: 200,
                       }}>
-                      {name}
+                      <Link
+                        href={detailUrl}
+                        target="_blank">
+                        {name}
+                      </Link>
                     </div>
                     {!isOnsale ?
                       <div
@@ -217,13 +223,13 @@ function PddItem() {
                     <div style={{
                       color: '#eb4d4b',
                     }}>
-                      <Link
+                      <RouterLink
                         to={`/product/data/${pddId}`}
                         style={{
                           color: '#eb4d4b',
                         }}>
                         商品数据
-                      </Link>
+                      </RouterLink>
                     </div>
                   </div>
                 </div>
