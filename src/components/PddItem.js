@@ -112,11 +112,15 @@ function PddItem() {
         for(let i = 0; i < orderList.length; i++) {
           const order = orderList[i];
           const {
+            orderStatus,
+            afterSaleStatus,
             actualPayment,
             platformDiscount,
             userPaidAmount,
           } = order;
-          orderProfit += (platformDiscount + userPaidAmount) / 100 - actualPayment;
+          if(orderStatus !== 2 && afterSaleStatus !== 5) {
+            orderProfit += (platformDiscount + userPaidAmount) / 100 - actualPayment;
+          }
         }
         data[i].orderProfit = Math.round(orderProfit * 100) / 100;
         data[i].perClickProfit = Math.round((orderProfit / click || 0) * 100) / 100;
