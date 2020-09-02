@@ -12,7 +12,8 @@ import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
 import MaterialTable from 'material-table';
 import tableIcons from './utils/TableIcons';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 
 function SearchItem() {
 
@@ -142,18 +143,32 @@ function SearchItem() {
             title: "id",
             field: "id",
             editable: "never",
+            render: rowData => {
+              const {
+                id,
+              } = rowData;
+              return (
+                <div>
+                  <RouterLink to={`/product/select/${id}`}>
+                    {id}
+                  </RouterLink>
+                </div>
+              );
+            },
           },
           {
             title: "标题",
             field: "name",
             render: rowData => {
               const {
-                id,
+                detailUrl,
                 name,
               } = rowData;
               return (
                 <div>
-                  <Link to={`/product/select/${id}`}>
+                  <Link
+                    href={detailUrl}
+                    target='_blank'>
                     {name}
                   </Link>
                 </div>
