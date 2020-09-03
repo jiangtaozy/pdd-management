@@ -68,10 +68,18 @@ function AdDataChart() {
       }
       monthTotal = Math.round(monthTotal * 100) / 100;
       monthData[yKey] = monthTotal;
-      monthData.netProfitRate = netProfit / spend || 0;
-      monthData.perClickProfit = profit / click || 0;
-      monthData.perClickSpend = spend / click || 0;
-      monthData.perClickProfitSpend = profit / spend || 0;
+      monthData.netProfitRate = 0;
+      monthData.perClickProfit = 0;
+      monthData.perClickSpend = 0;
+      monthData.perClickProfitSpend = 0;
+      if(spend !== 0) {
+        monthData.netProfitRate = netProfit / spend || 0;
+        monthData.perClickProfitSpend = profit / spend || 0;
+      }
+      if(click !== 0) {
+        monthData.perClickProfit = profit / click || 0;
+        monthData.perClickSpend = spend / click || 0;
+      }
       data.push(monthData);
     }
     startDate = startMonth;
@@ -94,10 +102,18 @@ function AdDataChart() {
       }
       total = Math.round(total * 10000) / 10000;
       totalData[yKey] = total;
-      totalData.netProfitRate = netProfit / spend || 0;
-      totalData.perClickProfit = profit / click || 0;
-      totalData.perClickSpend = spend / click || 0;
-      totalData.perClickProfitSpend = profit / spend || 0;
+      totalData.netProfitRate = 0;
+      totalData.perClickProfit = 0;
+      totalData.perClickSpend = 0;
+      totalData.perClickProfitSpend = 0;
+      if(spend !== 0) {
+        totalData.netProfitRate = netProfit / spend || 0;
+        totalData.perClickProfitSpend = profit / spend || 0;
+      }
+      if(click !== 0) {
+        totalData.perClickProfit = profit / click || 0;
+        totalData.perClickSpend = spend / click || 0;
+      }
       data.push(totalData);
     }
   }
