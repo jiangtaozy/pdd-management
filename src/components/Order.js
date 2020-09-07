@@ -234,7 +234,8 @@ function Order() {
             lookup: {
               '0': '无售后',
               '5': '退款成功',
-              '11': '买家已发货，待商家处理',
+              '10': '商家同意退货退款，待买家发货',
+              '11': '用户已发货，待商家处理',
               '12': '售后取消，退款失败',
             },
             cellStyle: {
@@ -265,8 +266,23 @@ function Order() {
             cellStyle: {
               fontSize: 12,
             },
-            filtering: false,
             editable: "never",
+            lookup: {
+              '等待配货': '等待配货',
+              '已发货': '已发货',
+              '已收货': '已收货',
+            },
+          },
+          {
+            title: "女装网订单售后状态",
+            field: "afterSaleStatusStr",
+            cellStyle: {
+              fontSize: 12,
+            },
+            editable: "never",
+            lookup: {
+              '已退款': '已退款',
+            },
           },
           {
             title: "数量",

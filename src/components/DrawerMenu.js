@@ -45,7 +45,8 @@ import DashBoard from './DashBoard';
 import Order1688 from './Order1688';
 import AdHead from './AdHead';
 import PddActivity from './PddActivity';
-import ItemDataChart from './item/ItemDataChart'
+import ItemDataChart from './item/ItemDataChart';
+import HangAfterSale from './order/HangAfterSale';
 
 const drawerWidth = 180;
 
@@ -195,6 +196,9 @@ function DrawerMenu(props) {
             <Route path="/order1688">
               <Order1688 />
             </Route>
+            <Route path="/hangAfterSale">
+              <HangAfterSale />
+            </Route>
             <Route path="/adData">
               <AdData />
             </Route>
@@ -313,6 +317,19 @@ function DrawerMenu(props) {
                   <FormatListBulletedIcon />
                 </ListItemIcon>
                 <ListItemText primary="1688 订单" />
+              </ListItem>
+            </Link>
+            <Divider />
+            <Link to="/hangAfterSale"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="女装网售后订单" />
               </ListItem>
             </Link>
             <Divider />
