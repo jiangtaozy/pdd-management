@@ -4,14 +4,10 @@
  * Hang Zhou Women After Sale Order
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
-import MaterialTable from 'material-table';
-import tableIcons from '../utils/TableIcons';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
-import TextField from '@material-ui/core/TextField';
 import { useDropzone } from 'react-dropzone';
 
 function HangAfterSale() {
@@ -54,7 +50,7 @@ function HangAfterSale() {
       });
       console.error("HangAfterSaleOnDropError: ", err);
     }
-  });
+  }, []);
 
   const {
     getRootProps,

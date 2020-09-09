@@ -109,8 +109,9 @@ function PddItem() {
         data[i].spend = spend / 1000;
         const orderList = data[i].orderList || [];
         let orderProfit = 0;
-        for(let i = 0; i < orderList.length; i++) {
-          const order = orderList[i];
+        let orderNum = 0;
+        for(let j = 0; j < orderList.length; j++) {
+          const order = orderList[j];
           const {
             orderStatus,
             afterSaleStatus,
@@ -118,14 +119,16 @@ function PddItem() {
             platformDiscount,
             userPaidAmount,
           } = order;
-          if(orderStatus !== 2 && afterSaleStatus !== 5) {
+          if(orderStatus !== 0 && orderStatus !== 2 && afterSaleStatus !== 5) {
             orderProfit += (platformDiscount + userPaidAmount) / 100 - actualPayment;
+            orderNum++;
           }
         }
         data[i].orderProfit = Math.round(orderProfit * 100) / 100;
         data[i].perClickProfit = Math.round((orderProfit / click || 0) * 100) / 100;
         data[i].perClickSpend = Math.round((spend / 1000 / click || 0) * 100) / 100;
         data[i].perClickProfitSpend = 0;
+        data[i].orderNum = orderNum;
         if(spend !== 0) {
           data[i].perClickProfitSpend = Math.round((orderProfit / (spend / 1000) || 0) * 100) / 100;
         }
@@ -287,6 +290,17 @@ function PddItem() {
           {
             title: '订单利润',
             field: 'orderProfit',
+            cellStyle: {
+              fontSize: 12,
+              color: '#f1c40f',
+            },
+            headerStyle: {
+              color: '#f1c40f',
+            },
+          },
+          {
+            title: '订单量',
+            field: 'orderNum',
             cellStyle: {
               fontSize: 12,
               color: '#f1c40f',
