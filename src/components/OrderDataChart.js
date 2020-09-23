@@ -51,6 +51,8 @@ function AdDataChart() {
       let profit = 0;
       let spend = 0;
       let click = 0;
+      let totalOrderNumber = 0;
+      let realOrderNumber = 0;
       for(let j = 0; j < dataList.length; j++) {
         const adDataItem = dataList[j];
         const date = new Date(adDataItem.date);
@@ -61,6 +63,8 @@ function AdDataChart() {
           profit += adDataItem.profit;
           spend += adDataItem.spend;
           click += adDataItem.click;
+          totalOrderNumber += adDataItem.totalOrderNumber;
+          realOrderNumber += adDataItem.orderNumber;
         }
       }
       const monthData = {
@@ -72,6 +76,7 @@ function AdDataChart() {
       monthData.perClickProfit = 0;
       monthData.perClickSpend = 0;
       monthData.perClickProfitSpend = 0;
+      monthData.afterSaleRate = 0;
       if(spend !== 0) {
         monthData.netProfitRate = netProfit / spend || 0;
         monthData.perClickProfitSpend = profit / spend || 0;
@@ -79,6 +84,9 @@ function AdDataChart() {
       if(click !== 0) {
         monthData.perClickProfit = profit / click || 0;
         monthData.perClickSpend = spend / click || 0;
+      }
+      if(totalOrderNumber !== 0) {
+        monthData.afterSaleRate = (totalOrderNumber - realOrderNumber) / totalOrderNumber;
       }
       data.push(monthData);
     }
@@ -91,12 +99,16 @@ function AdDataChart() {
     let profit = 0;
     let spend = 0;
     let click = 0;
+    let totalOrderNumber = 0;
+    let realOrderNumber = 0;
     for(let i = 0; i < dataList.length; i++) {
       total += dataList[i][yKey];
       netProfit += dataList[i].netProfit;
       profit += dataList[i].profit;
       spend += dataList[i].spend;
       click += dataList[i].click;
+      totalOrderNumber += dataList[i].totalOrderNumber;
+      realOrderNumber += dataList[i].orderNumber;
       const totalData = {
         date: dataList[i].date,
       }
@@ -106,6 +118,7 @@ function AdDataChart() {
       totalData.perClickProfit = 0;
       totalData.perClickSpend = 0;
       totalData.perClickProfitSpend = 0;
+      totalData.afterSaleRate = 0;
       if(spend !== 0) {
         totalData.netProfitRate = netProfit / spend || 0;
         totalData.perClickProfitSpend = profit / spend || 0;
@@ -113,6 +126,9 @@ function AdDataChart() {
       if(click !== 0) {
         totalData.perClickProfit = profit / click || 0;
         totalData.perClickSpend = spend / click || 0;
+      }
+      if(totalOrderNumber !== 0) {
+        totalData.afterSaleRate = (totalOrderNumber - realOrderNumber) / totalOrderNumber;
       }
       data.push(totalData);
     }
@@ -264,19 +280,24 @@ function AdDataChart() {
             spend: 0,
             click: 0,
             orderNumber: 0,
+            totalOrderNumber: 0,
           }
           for(let j = 0; j < data.length; j++) {
             const time = new Date(data[j].paymentTime);
             if(time.getFullYear() === day.getFullYear() &&
               time.getMonth() === day.getMonth() &&
               time.getDate() === day.getDate()) {
-              orderData.userPaidAmount += data[j].userPaidAmount;
-              orderData.actualPayment += data[j].actualPayment;
-              orderData.profit += data[j].profit;
-              orderData.userPaidAmount = Math.round(orderData.userPaidAmount * 100) / 100;
-              orderData.actualPayment = Math.round(orderData.actualPayment * 100) / 100;
-              orderData.profit = Math.round(orderData.profit * 100) / 100;
-              orderData.orderNumber++;
+              // 无售后订单
+              orderData.totalOrderNumber++;
+              if(!data[j].afterSaleStatus) {
+                orderData.userPaidAmount += data[j].userPaidAmount;
+                orderData.actualPayment += data[j].actualPayment;
+                orderData.profit += data[j].profit;
+                orderData.userPaidAmount = Math.round(orderData.userPaidAmount * 100) / 100;
+                orderData.actualPayment = Math.round(orderData.actualPayment * 100) / 100;
+                orderData.profit = Math.round(orderData.profit * 100) / 100;
+                orderData.orderNumber++;
+              }
             }
           }
           for(let k = 0; k < adData.length; k++) {
@@ -302,6 +323,10 @@ function AdDataChart() {
           orderData.perClickProfitSpend = 0;
           if(orderData.perClickSpend !== 0) {
             orderData.perClickProfitSpend = Math.round(orderData.profit / orderData.spend * 100) / 100
+          }
+          orderData.afterSaleRate = 0;
+          if(orderData.totalOrderNumber !== 0) {
+            orderData.afterSaleRate = Math.round((orderData.totalOrderNumber - orderData.orderNumber) / orderData.totalOrderNumber * 100) / 100;
           }
           orderDataList.push(orderData);
         }
@@ -356,9 +381,19 @@ function AdDataChart() {
           value={yKey}
           onChange={handleYKeyChange}>
           <FormControlLabel
+            value='totalOrderNumber'
+            control={<Radio />}
+            label='总订单量'
+          />
+          <FormControlLabel
             value='orderNumber'
             control={<Radio />}
-            label='订单量'
+            label='无售后订单量'
+          />
+          <FormControlLabel
+            value='afterSaleRate'
+            control={<Radio />}
+            label='退货率'
           />
           <FormControlLabel
             value='userPaidAmount'
