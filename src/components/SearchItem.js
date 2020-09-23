@@ -175,6 +175,20 @@ function SearchItem() {
               );
             },
           },
+          {
+            title: "价格",
+            field: "price",
+            render: rowData => {
+              const {
+                price,
+              } = rowData;
+              return (
+                <div>
+                  {price}
+                </div>
+              );
+            },
+          },
         ]}
         data={itemList}
         title="商品列表"
@@ -227,7 +241,7 @@ function SearchItem() {
             })
         }}
         options={{
-          actionsColumnIndex: 2,
+          actionsColumnIndex: -1,
         }}
       />
       <TextField

@@ -207,6 +207,34 @@ function Order() {
                   }}>
                     {rowData.productSku}
                   </div>
+                  <div style={{
+                    fontSize: 12,
+                  }}>
+                    数量：{rowData.numberOfProducts}
+                  </div>
+                  <div style={{
+                    fontSize: 12,
+                  }}>
+                    商品总价：{rowData.productTotalPrice}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12,
+                    }}>
+                    <Link
+                      href={rowData.detailUrl}
+                      target="_blank">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        style={{
+                          marginTop: 10,
+                          marginLeft: 5,
+                        }}>
+                        下单
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               );
             },
@@ -282,10 +310,12 @@ function Order() {
             },
             editable: "never",
             lookup: {
+              '': '',
               '已退款': '已退款',
               '暂未收到退货包裹（当天签收包裹预计会有3-6小时延时）': '暂未收到退货包裹（当天签收包裹预计会有3-6小时延时）',
             },
           },
+          /*
           {
             title: "数量",
             field: "numberOfProducts",
@@ -304,6 +334,7 @@ function Order() {
             filtering: false,
             editable: "never",
           },
+          */
           {
             title: "实收金额(元)",
             render: rowData => {
@@ -359,27 +390,28 @@ function Order() {
                   width: 200,
                 }}>
                   <div>
-                    支付时间: {paymentTime}
+                    支付时间: {getTimeString(paymentTime)}
                   </div>
                   <div>
-                    拼单成功时间: {joinSuccessTime}
+                    拼单成功时间: {getTimeString(joinSuccessTime)}
                   </div>
                   <div>
-                    订单确认时间: {orderConfirmationTime}
+                    订单确认时间: {getTimeString(orderConfirmationTime)}
                   </div>
                   <div>
-                    承诺发货时间: {commitmentDeliveryTime}
+                    承诺发货时间: {getTimeString(commitmentDeliveryTime)}
                   </div>
                   <div>
-                    发货时间: {deliveryTime}
+                    发货时间: {getTimeString(deliveryTime)}
                   </div>
                   <div>
-                    确认收货时间: {confirmDeliveryTime}
+                    确认收货时间: {getTimeString(confirmDeliveryTime)}
                   </div>
                 </div>
               );
             },
           },
+          /*
           {
             title: "下单",
             render: rowData => {
@@ -408,6 +440,7 @@ function Order() {
               );
             },
           },
+          */
           {
             title: "外部订单号",
             field: "outerOrderId",
@@ -422,6 +455,7 @@ function Order() {
         options={{
           filtering: true,
           actionsColumnIndex: -1,
+          searchFieldAlignment: 'left',
         }}
         editable={{
           onRowUpdate: (newData, oldData) =>
@@ -497,3 +531,8 @@ function Order() {
 }
 
 export default Order;
+
+function getTimeString(timeStr) {
+  const time = new Date(timeStr);
+  return `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()} ${time.getHours()}:${time.getMinutes()}`;
+}

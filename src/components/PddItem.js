@@ -91,25 +91,24 @@ function PddItem() {
         data[i].promotionProfit = Math.round(((price - 10) * (1 - 0.33) - costPrice) * 100) / 100;
         data[i].limitDiscount = Math.round((1 - profit / price) * 10 * 100) / 100;
         const getCommission = (coupon, netProfit) => Math.round(((profit - coupon - netProfit) / (price - coupon) / 1.1) *100 * 100) / 100;
-        data[i].jinbaoCommission100 = getCommission(10, 0);
-        data[i].jinbaoCommission105 = getCommission(10, 5);
-        data[i].jinbaoCommission1010 = getCommission(10, 10);
-        data[i].jinbaoCommission50 = getCommission(5, 0);
-        data[i].jinbaoCommission55 = getCommission(5, 5);
-        data[i].jinbaoCommission510 = getCommission(5, 10);
         const adList = data[i].adList || [];
+        let impression = 0;
         let click = 0;
         let spend = 0;
         for(let i = 0; i < adList.length; i++) {
           const ad = adList[i];
+          impression += ad.impression;
           click += ad.click;
           spend += ad.spend;
         }
+        data[i].impression = impression;
         data[i].click = click;
         data[i].spend = spend / 1000;
+        data[i].ctr = impression ? click / impression : 0;
         const orderList = data[i].orderList || [];
         let orderProfit = 0;
-        let orderNum = 0;
+        let totalOrderNum = 0;
+        let realOrderNum = 0;
         for(let j = 0; j < orderList.length; j++) {
           const order = orderList[j];
           const {
@@ -119,16 +118,21 @@ function PddItem() {
             platformDiscount,
             userPaidAmount,
           } = order;
-          if(orderStatus !== 0 && orderStatus !== 2 && afterSaleStatus !== 5) {
-            orderProfit += (platformDiscount + userPaidAmount) / 100 - actualPayment;
-            orderNum++;
+          if(orderStatus === 1) {
+            totalOrderNum++;
+            if(!afterSaleStatus) {
+              orderProfit += (platformDiscount + userPaidAmount) / 100 - actualPayment;
+              realOrderNum++;
+            }
           }
         }
         data[i].orderProfit = Math.round(orderProfit * 100) / 100;
         data[i].perClickProfit = Math.round((orderProfit / click || 0) * 100) / 100;
         data[i].perClickSpend = Math.round((spend / 1000 / click || 0) * 100) / 100;
         data[i].perClickProfitSpend = 0;
-        data[i].orderNum = orderNum;
+        data[i].totalOrderNum = totalOrderNum;
+        data[i].realOrderNum = realOrderNum;
+        data[i].afterSaleRate = totalOrderNum ? (totalOrderNum - realOrderNum) / totalOrderNum : 0;
         if(spend !== 0) {
           data[i].perClickProfitSpend = Math.round((orderProfit / (spend / 1000) || 0) * 100) / 100;
         }
@@ -149,6 +153,7 @@ function PddItem() {
         icons={tableIcons}
         options={{
           filtering: true,
+          searchFieldAlignment: 'left',
         }}
         data={pddGoodsList}
         title="拼多多商品列表"
@@ -255,6 +260,17 @@ function PddItem() {
             },
           },
           {
+            title: '单次点击利润',
+            field: 'perClickProfit',
+            cellStyle: {
+              fontSize: 12,
+              color: '#e74c3c',
+            },
+            headerStyle: {
+              color: '#e74c3c',
+            },
+          },
+          {
             title: '点击利润花费比',
             field: 'perClickProfitSpend',
             cellStyle: {
@@ -266,8 +282,30 @@ function PddItem() {
             },
           },
           {
+            title: '曝光量',
+            field: 'impression',
+            cellStyle: {
+              fontSize: 12,
+              color: '#3498db',
+            },
+            headerStyle: {
+              color: '#3498db',
+            },
+          },
+          {
             title: '点击量',
             field: 'click',
+            cellStyle: {
+              fontSize: 12,
+              color: '#3498db',
+            },
+            headerStyle: {
+              color: '#3498db',
+            },
+          },
+          {
+            title: '点击率',
+            field: 'ctr',
             cellStyle: {
               fontSize: 12,
               color: '#3498db',
@@ -299,8 +337,8 @@ function PddItem() {
             },
           },
           {
-            title: '订单量',
-            field: 'orderNum',
+            title: '总订单量',
+            field: 'totalOrderNum',
             cellStyle: {
               fontSize: 12,
               color: '#f1c40f',
@@ -310,14 +348,35 @@ function PddItem() {
             },
           },
           {
-            title: '单次点击利润',
-            field: 'perClickProfit',
+            title: '无售后订单量',
+            field: 'realOrderNum',
             cellStyle: {
               fontSize: 12,
-              color: '#e74c3c',
+              color: '#3333FF',
             },
             headerStyle: {
-              color: '#e74c3c',
+              color: '#3333FF',
+            },
+          },
+          {
+            title: '退货率',
+            field: 'afterSaleRate',
+            cellStyle: {
+              fontSize: 12,
+              color: '#eb2f06',
+            },
+            headerStyle: {
+              color: '#eb2f06',
+            },
+            render: rowData => {
+              const {
+                afterSaleRate,
+              } = rowData;
+              return (
+                <div>
+                  {Math.round(afterSaleRate * 100 * 100) / 100}%
+                </div>
+              );
             },
           },
           {
@@ -340,6 +399,8 @@ function PddItem() {
               const {
                 skuGroupPriceMin,
                 skuGroupPriceMax,
+                costPrice,
+                profit,
               } = rowData;
               var currentPrice = skuGroupPriceMin / 100;
               if(skuGroupPriceMin !== skuGroupPriceMax) {
@@ -348,14 +409,32 @@ function PddItem() {
               return (
                 <div
                   style={{
-                    fontSize: 12,
-                    color: '#3333FF',
+                    fontSize: 10,
+                    width: 70,
                   }}>
-                  {currentPrice}
+                  <div
+                    style={{
+                      color: '#3333FF',
+                    }}>
+                    售价：{currentPrice}
+                  </div>
+                  <div
+                    style={{
+                      color: '#17A589',
+                    }}>
+                    成本：{costPrice}
+                  </div>
+                  <div
+                    style={{
+                      color: '#388E3C',
+                    }}>
+                    利润：{profit}
+                  </div>
                 </div>
               );
             },
           },
+          /*
           {
             title: '成本',
             field: 'costPrice',
@@ -378,6 +457,8 @@ function PddItem() {
               color: '#F1C40F',
             },
           },
+          */
+          /*
           {
             title: '利润率',
             field: 'profitMargin',
@@ -399,6 +480,7 @@ function PddItem() {
               );
             },
           },
+          */
           {
             title: '商品id',
             field: 'pddId',
@@ -421,85 +503,6 @@ function PddItem() {
               color: '#9B59B6',
             },
           },
-          /*
-          {
-            title: '进宝佣金',
-            cellStyle: {
-              fontSize: 12,
-              color: '#7D3C98',
-            },
-            headerStyle: {
-              color: '#7D3C98',
-            },
-            render: rowData => {
-              const {
-                jinbaoCommission100,
-                jinbaoCommission105,
-                jinbaoCommission1010,
-                jinbaoCommission50,
-                jinbaoCommission55,
-                jinbaoCommission510,
-              } = rowData;
-              return (
-                <div
-                  style={{
-                    width: 170,
-                  }}>
-                  <table>
-                    <tbody>
-                      <tr>
-                        <th
-                          style={{
-                            fontSize: 10,
-                          }}>
-                          利润
-                          <br/>
-                          优惠
-                        </th>
-                        <th>10元</th>
-                        <th>5元</th>
-                        <th>0元</th>
-                      </tr>
-                      <tr>
-                        <td>10元</td>
-                        <td>{jinbaoCommission1010}%</td>
-                        <td>{jinbaoCommission105}%</td>
-                        <td
-                          style={{
-                            color: 'red',
-                          }}>
-                          {jinbaoCommission100}%
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>5元</td>
-                        <td>{jinbaoCommission510}%</td>
-                        <td>{jinbaoCommission55}%</td>
-                        <td
-                          style={{
-                            color: 'red',
-                          }}>
-                          {jinbaoCommission50}%
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              );
-            },
-          },
-          {
-            title: '进宝利润',
-            field: 'promotionProfit',
-            cellStyle: {
-              fontSize: 12,
-              color: '#BA4A00',
-            },
-            headerStyle: {
-              color: '#BA4A00',
-            },
-          },
-          */
           /*
           {
             title: '折扣阈值',
@@ -527,6 +530,7 @@ function PddItem() {
             },
           },
           */
+          /*
           {
             title: '转化阈值',
             headerStyle: {
@@ -547,6 +551,7 @@ function PddItem() {
               );
             },
           },
+          */
           {
             title: '是否在售',
             field: 'isOnsale',
