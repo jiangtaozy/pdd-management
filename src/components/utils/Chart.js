@@ -50,7 +50,23 @@ function Chart(props) {
   }
   let list = [];
   if(chartType === 'day') {
-    list = data;
+    for(let i = 0; i < data.length; i++) {
+      const dayData = {
+        date: data[i].date,
+      }
+      if(ykeyObj.ratio) {
+        const xValue = data[i][ykeyObj.x];
+        const yValue = data[i][ykeyObj.y];
+        if(!yValue) {
+          dayData[yKey] = 0;
+        } else {
+          dayData[yKey] = xValue / yValue;
+        }
+      } else {
+        dayData[yKey] = data[i][yKey];
+      }
+      list.push(dayData);
+    }
   } else if(chartType === 'month') {
     const startMonth = new Date(
       start.getFullYear(),
@@ -81,7 +97,9 @@ function Chart(props) {
           if(ykeyObj.ratio) {
             xTotal += data[k][ykeyObj.x];
             yTotal += data[k][ykeyObj.y];
-            total = xTotal / yTotal;
+            if(yTotal !== 0) {
+              total = xTotal / yTotal;
+            }
           } else {
             total += data[k][yKey];
           }
@@ -101,7 +119,9 @@ function Chart(props) {
       if(ykeyObj.ratio) {
         xTotal += data[i][ykeyObj.x];
         yTotal += data[i][ykeyObj.y];
-        total = xTotal / yTotal;
+        if(yTotal !== 0) {
+          total = xTotal / yTotal;
+        }
       } else {
         total += data[i][yKey];
       }

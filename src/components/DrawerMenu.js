@@ -47,6 +47,7 @@ import AdHead from './AdHead';
 import PddActivity from './PddActivity';
 import ItemDataChart from './item/ItemDataChart';
 import HangAfterSale from './order/HangAfterSale';
+import DyItem from './douyin/DyItem';
 
 const drawerWidth = 180;
 
@@ -220,6 +221,9 @@ function DrawerMenu(props) {
             <Route path="/pddActivity">
               <PddActivity />
             </Route>
+            <Route path="/dyItem">
+              <DyItem />
+            </Route>
             <Route path="/">
               <DashBoard />
             </Route>
@@ -392,6 +396,18 @@ function DrawerMenu(props) {
                   <FormatListBulletedIcon />
                 </ListItemIcon>
                 <ListItemText primary="推广团长" />
+              </ListItem>
+            </Link>
+            <Link to="/dyItem"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="抖音商品" />
               </ListItem>
             </Link>
             {/*

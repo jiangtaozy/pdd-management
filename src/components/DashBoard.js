@@ -8,14 +8,14 @@
 import React from 'react';
 import ItemCountChart from './ItemCountChart';
 import AdDataChart from './AdDataChart';
-import OrderDataChart from './OrderDataChart';
+import OrderStatistics from './order/OrderStatistics';
 
 function DashBoard() {
 
 
   return (
     <div>
-      <OrderDataChart />
+      <OrderStatistics />
       <AdDataChart />
       <ItemCountChart />
     </div>

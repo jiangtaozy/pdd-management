@@ -90,7 +90,6 @@ function PddItem() {
         data[i].profitMargin = Math.round(profit / price * 100 * 100) / 100;
         data[i].promotionProfit = Math.round(((price - 10) * (1 - 0.33) - costPrice) * 100) / 100;
         data[i].limitDiscount = Math.round((1 - profit / price) * 10 * 100) / 100;
-        const getCommission = (coupon, netProfit) => Math.round(((profit - coupon - netProfit) / (price - coupon) / 1.1) *100 * 100) / 100;
         const adList = data[i].adList || [];
         let impression = 0;
         let click = 0;

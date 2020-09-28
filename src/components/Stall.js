@@ -146,6 +146,7 @@ function Stall() {
               1: '1688',
               2: '女装网',
             },
+            defaultFilter: ["2"],
           },
         ]}
         editable={{
