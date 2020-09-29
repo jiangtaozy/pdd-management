@@ -8,11 +8,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Chart from '../utils/Chart';
+import NumberChart from '../utils/NumberChart';
 
 function ItemDataChart (props) {
 
   const [ data, setData ] = useState([]);
   const { id } = useParams();
+  const [ priceData, setPriceData ] = useState([]);
 
   useEffect(() => {
     const fetchItemData = async () => {
@@ -33,18 +35,83 @@ function ItemDataChart (props) {
             userPaidAmount,
             actualPayment,
           } = dateData;
-          dateData.ctr = (click / impression) || 0;
-          dateData.cvr = (realOrderNum / click) || 0;
           dateData.spend = (spend / 1000) || 0;
           dateData.profit = ((userPaidAmount + platformDiscount) / 100 - actualPayment) || 0;
-          dateData.perClickSpend = (spend / 1000 / click) || 0;
-          dateData.perClickProfit = (dateData.profit / click) || 0;
-          dateData.perClickProfitSpend = (dateData.profit / (spend / 1000)) || 0;
+          dateData.netProfit = dateData.profit - dateData.spend;
           if(!dateData.realOrderNum) {
             dateData.realOrderNum = 0;
           }
         }
         setData(data);
+        // price data
+        const newPriceData = [];
+        for(let i = 0; i < data.length; i++) {
+          const {
+            userPaidAmount,
+            impression,
+            click,
+            spend,
+            realOrderNum,
+            profit,
+            netProfit,
+          } = data[i];
+          if(userPaidAmount > 0) {
+            let inNewPriceData = false;
+            for(let j = 0; j < newPriceData.length; j++) {
+              if(Math.abs(newPriceData[j].price - userPaidAmount / realOrderNum / 100) < 0.01) {
+                newPriceData[j].impression += impression;
+                newPriceData[j].click += click;
+                newPriceData[j].spend += spend;
+                newPriceData[j].realOrderNum += realOrderNum;
+                newPriceData[j].profit += profit;
+                newPriceData[j].netProfit += netProfit;
+                inNewPriceData = true;
+                break;
+              }
+            }
+            if(!inNewPriceData) {
+              newPriceData.push({
+                price: userPaidAmount / realOrderNum / 100,
+                impression: impression,
+                click: click,
+                spend: spend,
+                realOrderNum: realOrderNum,
+                profit: profit,
+                netProfit: netProfit,
+              });
+            }
+          } else {
+            if(newPriceData.length === 0) {
+              newPriceData.push({
+                price: 0,
+                impression: impression,
+                click: click,
+                spend: spend,
+                realOrderNum: realOrderNum,
+                profit: profit,
+                netProfit: netProfit,
+              });
+            } else {
+              newPriceData[newPriceData.length - 1].impression += impression;
+              newPriceData[newPriceData.length - 1].click += click;
+              newPriceData[newPriceData.length - 1].spend += spend;
+              newPriceData[newPriceData.length - 1].realOrderNum += realOrderNum;
+              newPriceData[newPriceData.length - 1].profit += profit;
+              newPriceData[newPriceData.length - 1].netProfit += netProfit;
+            }
+          }
+        }
+        if(newPriceData.length > 1) {
+          newPriceData[1].impression += newPriceData[0].impression;
+          newPriceData[1].click += newPriceData[0].click;
+          newPriceData[1].spend += newPriceData[0].spend;
+          newPriceData[1].realOrderNum += newPriceData[0].realOrderNum;
+          newPriceData[1].profit += newPriceData[0].profit;
+          newPriceData[1].netProfit += newPriceData[0].netProfit;
+          newPriceData.shift();
+        }
+        newPriceData.sort((a, b) => a.price - b.price);
+        setPriceData(newPriceData);
       }
       catch(err) {
         console.error('item-data-chart-fetch-item-data-error: ', err);
@@ -55,6 +122,65 @@ function ItemDataChart (props) {
 
   return (
     <div>
+      <NumberChart
+        data={priceData}
+        defaultYKey={'netProfitSpend'}
+        xKey={'price'}
+        ykeyList={[
+          {
+            value: 'impression',
+            label: '曝光量',
+          },
+          {
+            value: 'click',
+            label: '点击量',
+          },
+          {
+            value: 'ctr',
+            label: '点击率',
+            ratio: true,
+            x: 'click',
+            y: 'impression',
+          },
+          {
+            value: 'spend',
+            label: '推广花费',
+          },
+          {
+            value: 'realOrderNum',
+            label: '订单量',
+          },
+          {
+            value: 'cvr',
+            label: '点击转化率',
+            ratio: true,
+            x: 'realOrderNum',
+            y: 'click',
+          },
+          {
+            value: 'profit',
+            label: '利润',
+          },
+          {
+            value: 'profitSpend',
+            label: '利润花费比',
+            ratio: true,
+            x: 'profit',
+            y: 'spend',
+          },
+          {
+            value: 'netProfit',
+            label: '净利润',
+          },
+          {
+            value: 'netProfitSpend',
+            label: '净利润花费比',
+            ratio: true,
+            x: 'netProfit',
+            y: 'spend',
+          },
+        ]}
+      />
       <Chart
         data={data}
         defaultYKey={'perClickProfitSpend'}
