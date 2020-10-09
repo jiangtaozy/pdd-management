@@ -27,16 +27,12 @@ function ItemDataChart (props) {
         for(let i = 0; i < data.length; i++) {
           const dateData = data[i];
           const {
-            impression,
-            click,
-            spend,
-            realOrderNum,
             platformDiscount,
             userPaidAmount,
             actualPayment,
           } = dateData;
-          dateData.spend = (spend / 1000) || 0;
           dateData.profit = ((userPaidAmount + platformDiscount) / 100 - actualPayment) || 0;
+          dateData.spend = (dateData.spend / 1000) || 0;
           dateData.netProfit = dateData.profit - dateData.spend;
           if(!dateData.realOrderNum) {
             dateData.realOrderNum = 0;

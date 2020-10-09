@@ -70,8 +70,9 @@ function OrderStatistics() {
               // 无售后订单
               orderData.totalOrderNumber++;
               if(data[j].afterSaleStatus === 0 ||
-                data[j].afterSaleStatus === 6 ||
-                data[j].afterSaleStatus === 12
+                data[j].afterSaleStatus === 6 || // 买家撤销
+                data[j].afterSaleStatus === 12 || // 售后取消，退款失败
+                data[j].afterSaleStatus === 16 // 换货成功
               ) {
                 orderData.userPaidAmount += data[j].userPaidAmount;
                 orderData.actualPayment += data[j].actualPayment;

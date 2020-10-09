@@ -32,6 +32,9 @@ function SearchItem() {
   const fetchItemList = async () => {
     try {
       const { data } = await axios.get('/searchTitleList');
+      for(let i = 0; i < data.length; i++) {
+        data[i].sellPrice = (data[i].price + 10) * 2;
+      }
       setItemList(data);
     }
     catch(err) {
@@ -43,19 +46,7 @@ function SearchItem() {
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await axios.get('/searchTitleList');
-        setItemList(data);
-      }
-      catch(err) {
-        console.error('SearchItemGetItemListError: ', err);
-        handleOpenSnackbar({
-          message: `出错了：${err.message}`,
-        })
-      }
-    }
-    fetchData();
+    fetchItemList();
   }, []);
 
   async function handleSearchTitleButtonClick() {
@@ -185,6 +176,20 @@ function SearchItem() {
               return (
                 <div>
                   {price}
+                </div>
+              );
+            },
+          },
+          {
+            title: "零售价格",
+            field: "sellPrice",
+            render: rowData => {
+              const {
+                sellPrice,
+              } = rowData;
+              return (
+                <div>
+                  {sellPrice}
                 </div>
               );
             },
