@@ -61,6 +61,7 @@ function OrderStatistics() {
             signedActualPayment: 0,
             signedProfit: 0,
             signedOrderNumber: 0,
+            afterSaleOrderNumber: 0,
           }
           for(let j = 0; j < data.length; j++) {
             const time = new Date(data[j].paymentTime);
@@ -89,6 +90,18 @@ function OrderStatistics() {
                 orderData.signedOrderNumber++;
               }
             }
+            // 申请售后订单量
+            const afterSaleApplyTime = new Date(data[j].afterSaleApplyTime);
+            if(afterSaleApplyTime.getFullYear() === day.getFullYear() &&
+              afterSaleApplyTime.getMonth() === day.getMonth() &&
+              afterSaleApplyTime.getDate() === day.getDate()) {
+              if(data[j].afterSaleStatus === 5 || // 退款成功
+                data[j].afterSaleStatus === 10 || // 待买家发货
+                data[j].afterSaleStatus === 11 // 用户已发货
+              ) {
+                orderData.afterSaleOrderNumber++;
+              }
+            }
           }
           for(let k = 0; k < adData.length; k++) {
             const time = new Date(adData[k].date);
@@ -102,6 +115,7 @@ function OrderStatistics() {
           }
           orderData.netProfit = Math.round((orderData.profit - orderData.spend) * 100) / 100;
           orderData.signedNetProfit = Math.round((orderData.signedProfit - orderData.spend) * 100) / 100;
+          orderData.totalMinusAfterSaleOrderNumber = orderData.totalOrderNumber - orderData.afterSaleOrderNumber;
           orderDataList.push(orderData);
         }
         setData(orderDataList);
@@ -188,6 +202,14 @@ function OrderStatistics() {
           {
             value: 'orderNumber',
             label: '无售后订单量',
+          },
+          {
+            value: 'afterSaleOrderNumber',
+            label: '申请售后订单量',
+          },
+          {
+            value: 'totalMinusAfterSaleOrderNumber',
+            label: '总订单减去申请售后订单量',
           },
           {
             value: 'noAfterSaleRate',

@@ -22,6 +22,7 @@ function Order() {
   });
   const [ orderList, setOrderList ] = useState([]);
   const [ orderData, setOrderData ] = useState('');
+  const [ afterSaleOrderData, setAfterSaleOrderData ] = useState('');
   const { open, message } = snackbarState;
 
   useEffect(() => {
@@ -98,6 +99,30 @@ function Order() {
     }
     catch(err) {
       console.error('OrderSavePddOrderDataError: ', err);
+      handleOpenSnackbar({
+        message: `出错了：${err.message}`,
+      });
+    }
+  }
+
+  async function handleAfterSaleOrderDataButtonClick() {
+    if(!afterSaleOrderData) {
+      return handleOpenSnackbar({
+        message: '请输入数据',
+      });
+    }
+    try {
+      await axios.post('/afterSaleOrderDataSave', {
+        afterSaleOrderData,
+      });
+      handleOpenSnackbar({
+        message: '操作成功',
+      });
+      setAfterSaleOrderData('');
+      fetchOrderList();
+    }
+    catch(err) {
+      console.error('OrderHandleAfterSaleOrderDataButtonClickError: ', err);
       handleOpenSnackbar({
         message: `出错了：${err.message}`,
       });
@@ -499,6 +524,24 @@ function Order() {
           marginTop: 10,
         }}
         onClick={handleOrderDataButtonClick}>
+        确定
+      </Button>
+      <TextField
+        label="输入拼多多售后订单数据(/list)"
+        multiline
+        fullWidth
+        value={afterSaleOrderData}
+        onChange={(event) => {
+          setAfterSaleOrderData(event.target.value);
+        }}
+      />
+      <Button
+        variant="outlined"
+        color="primary"
+        style={{
+          marginTop: 10,
+        }}
+        onClick={handleAfterSaleOrderDataButtonClick}>
         确定
       </Button>
       <div {...getRootProps()}>
