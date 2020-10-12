@@ -48,6 +48,7 @@ import PddActivity from './PddActivity';
 import ItemDataChart from './item/ItemDataChart';
 import HangAfterSale from './order/HangAfterSale';
 import DyItem from './douyin/DyItem';
+import Bill from './funding/Bill';
 
 const drawerWidth = 180;
 
@@ -223,6 +224,9 @@ function DrawerMenu(props) {
             </Route>
             <Route path="/dyItem">
               <DyItem />
+            </Route>
+            <Route path="/bill">
+              <Bill />
             </Route>
             <Route path="/">
               <DashBoard />
@@ -408,6 +412,18 @@ function DrawerMenu(props) {
                   <FormatListBulletedIcon />
                 </ListItemIcon>
                 <ListItemText primary="抖音商品" />
+              </ListItem>
+            </Link>
+            <Link to="/bill"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="货款明细" />
               </ListItem>
             </Link>
             {/*
