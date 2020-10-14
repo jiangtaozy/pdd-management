@@ -13,6 +13,7 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 import { useDropzone } from 'react-dropzone';
+import GetTimeString from './utils/Time';
 
 function Order() {
 
@@ -415,22 +416,22 @@ function Order() {
                   width: 200,
                 }}>
                   <div>
-                    支付时间: {getTimeString(paymentTime)}
+                    支付时间: {GetTimeString(paymentTime)}
                   </div>
                   <div>
-                    拼单成功时间: {getTimeString(joinSuccessTime)}
+                    拼单成功时间: {GetTimeString(joinSuccessTime)}
                   </div>
                   <div>
-                    订单确认时间: {getTimeString(orderConfirmationTime)}
+                    订单确认时间: {GetTimeString(orderConfirmationTime)}
                   </div>
                   <div>
-                    承诺发货时间: {getTimeString(commitmentDeliveryTime)}
+                    承诺发货时间: {GetTimeString(commitmentDeliveryTime)}
                   </div>
                   <div>
-                    发货时间: {getTimeString(deliveryTime)}
+                    发货时间: {GetTimeString(deliveryTime)}
                   </div>
                   <div>
-                    确认收货时间: {getTimeString(confirmDeliveryTime)}
+                    确认收货时间: {GetTimeString(confirmDeliveryTime)}
                   </div>
                 </div>
               );
@@ -574,8 +575,3 @@ function Order() {
 }
 
 export default Order;
-
-function getTimeString(timeStr) {
-  const time = new Date(timeStr);
-  return `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()} ${time.getHours()}:${time.getMinutes()}`;
-}
