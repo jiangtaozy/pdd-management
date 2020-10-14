@@ -17,7 +17,9 @@ function OrderStatistics() {
       try {
         const { data } = await axios.get('/orderStatistics');
         const { data: adData } = await axios.get('/adDayData');
+        const { data: billList } = await axios.get('/billList');
         let start = new Date();
+        // order
         for(let i = 0; i < data.length; i++) {
           const {
             userPaidAmount,
@@ -32,6 +34,7 @@ function OrderStatistics() {
             start = date;
           }
         }
+        // ad
         for(let i = 0; i < adData.length; i++) {
           const {
             spend,
@@ -62,7 +65,13 @@ function OrderStatistics() {
             signedProfit: 0,
             signedOrderNumber: 0,
             afterSaleOrderNumber: 0,
+            techServiceFee: 0, // 技术服务费
+            deduction: 0, // 扣款
+            merchantSmallPayment: 0, // 商家小额打款
+            jinbao: 0, // 多多进宝
+            returnFee: 0, // 退货包运费
           }
+          // order
           for(let j = 0; j < data.length; j++) {
             const time = new Date(data[j].paymentTime);
             if(time.getFullYear() === day.getFullYear() &&
@@ -103,6 +112,7 @@ function OrderStatistics() {
               }
             }
           }
+          // ad
           for(let k = 0; k < adData.length; k++) {
             const time = new Date(adData[k].date);
             if(time.getFullYear() === day.getFullYear() &&
@@ -113,8 +123,41 @@ function OrderStatistics() {
               orderData.impression += adData[k].impression;
             }
           }
-          orderData.netProfit = Math.round((orderData.profit - orderData.spend) * 100) / 100;
-          orderData.signedNetProfit = Math.round((orderData.signedProfit - orderData.spend) * 100) / 100;
+          // bill
+          for(let l = 0; l < billList.length; l++) {
+            const bill = billList[l];
+            const time = new Date(bill.createdAt);
+            if(time.getFullYear() === day.getFullYear() &&
+              time.getMonth() === day.getMonth() &&
+              time.getDate() === day.getDate()) {
+              if(bill.classId === 5) {
+                orderData.techServiceFee += (bill.amount / 100);
+              } else if(bill.classId === 7) {
+                orderData.deduction += (bill.amount / 100);
+              } else if(bill.classId === 8 && bill.amount < 0) {
+                orderData.merchantSmallPayment += (bill.amount / 100);
+              } else if(bill.classId === 9) {
+                orderData.jinbao += (bill.amount / 100);
+              } else if(bill.classId === 11) {
+                orderData.returnFee += (bill.amount / 100);
+              }
+            }
+          }
+          orderData.afterSaleReturnFee = orderData.afterSaleOrderNumber * 5.5;
+          const {
+            profit,
+            spend,
+            techServiceFee,
+            deduction,
+            merchantSmallPayment,
+            jinbao,
+            returnFee,
+            afterSaleReturnFee,
+            signedProfit,
+          } = orderData;
+          const totalSpend = - spend + techServiceFee + deduction + merchantSmallPayment + jinbao + returnFee - afterSaleReturnFee;
+          orderData.netProfit = Math.round((profit + totalSpend) * 100) / 100;
+          orderData.signedNetProfit = Math.round((signedProfit + totalSpend) * 100) / 100;
           orderData.totalMinusAfterSaleOrderNumber = orderData.totalOrderNumber - orderData.afterSaleOrderNumber;
           orderDataList.push(orderData);
         }
@@ -152,6 +195,30 @@ function OrderStatistics() {
           {
             value: 'spend',
             label: '推广花费',
+          },
+          {
+            value: 'techServiceFee',
+            label: '技术服务费',
+          },
+          {
+            value: 'returnFee',
+            label: '退货包运费',
+          },
+          {
+            value: 'afterSaleReturnFee',
+            label: '退货运费损失',
+          },
+          {
+            value: 'deduction',
+            label: '扣款',
+          },
+          {
+            value: 'merchantSmallPayment',
+            label: '商家小额打款',
+          },
+          {
+            value: 'jinbao',
+            label: '多多进宝佣金',
           },
           {
             value: 'perImpressionSpend',
