@@ -25,8 +25,8 @@ function Chart(props) {
   const [ tooltipXValue, setTooltipXValue ] = useState('');
   const [ tooltipYValue, setTooltipYValue ] = useState('');
 
-  let start;
-  let end;
+  let start = new Date();
+  let end = new Date();
   for(let i = 0; i < data.length; i++) {
     const date = new Date(data[i].date);
     if(i === 0) {
@@ -66,6 +66,46 @@ function Chart(props) {
         dayData[yKey] = data[i][yKey];
       }
       list.push(dayData);
+    }
+  } else if(chartType === 'week') {
+    const startWeek = new Date(
+      start.getFullYear(),
+      start.getMonth(),
+      start.getDate() - start.getDay() + (start.getDay() === 0 ? -6 : 1),
+    );
+    const endWeek = new Date(
+      end.getFullYear(),
+      end.getMonth(),
+      end.getDate() - end.getDay() + (start.getDay() === 0 ? -6 : 1),
+    );
+    start = startWeek;
+    end = endWeek;
+    const weekDifference = (end.getTime() - start.getTime()) / 1000 / 60 / 60 / 24 / 7;
+    for(let i = 0; i <= weekDifference; i++) {
+      const week = new Date(startWeek.getTime() + 7 * 24 * 60 * 60 * 1000 * i);
+      let total = 0;
+      let xTotal = 0;
+      let yTotal = 0;
+      for(let k = 0; k < data.length; k++) {
+        const date = new Date(data[k].date);
+        if((date.getTime() - week.getTime()) >= 0 &&
+          (date.getTime() - week.getTime()) < 7 * 24 * 60 * 60 * 1000) {
+          if(ykeyObj.ratio) {
+            xTotal += data[k][ykeyObj.x];
+            yTotal += data[k][ykeyObj.y];
+            if(yTotal !== 0) {
+              total = xTotal / yTotal;
+            }
+          } else {
+            total += data[k][yKey];
+          }
+        }
+      }
+      const weekData = {
+        date: week,
+      }
+      weekData[yKey] = total;
+      list.push(weekData);
     }
   } else if(chartType === 'month') {
     const startMonth = new Date(
@@ -272,6 +312,11 @@ function Chart(props) {
             value='day'
             control={<Radio />}
             label='天'
+          />
+          <FormControlLabel
+            value='week'
+            control={<Radio />}
+            label='周'
           />
           <FormControlLabel
             value='month'

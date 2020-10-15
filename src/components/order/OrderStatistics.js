@@ -156,6 +156,7 @@ function OrderStatistics() {
             signedProfit,
           } = orderData;
           const totalSpend = - spend + techServiceFee + deduction + merchantSmallPayment + jinbao + returnFee - afterSaleReturnFee;
+          orderData.totalSpend = -totalSpend;
           orderData.netProfit = Math.round((profit + totalSpend) * 100) / 100;
           orderData.signedNetProfit = Math.round((signedProfit + totalSpend) * 100) / 100;
           orderData.totalMinusAfterSaleOrderNumber = orderData.totalOrderNumber - orderData.afterSaleOrderNumber;
@@ -174,8 +175,8 @@ function OrderStatistics() {
     <div>
       <Chart
         data={data}
-        defaultYKey={'signedNetProfitSpendRate'}
-        defaultChartType={'total'}
+        defaultYKey={'netProfitSpendRate'}
+        defaultChartType={'week'}
         ykeyList={[
           {
             value: 'impression',
@@ -195,6 +196,10 @@ function OrderStatistics() {
           {
             value: 'spend',
             label: '推广花费',
+          },
+          {
+            value: 'totalSpend',
+            label: '总花费',
           },
           {
             value: 'techServiceFee',
@@ -224,7 +229,7 @@ function OrderStatistics() {
             value: 'perImpressionSpend',
             label: '单次曝光花费',
             ratio: true,
-            x: 'spend',
+            x: 'totalSpend',
             y: 'impression',
           },
           {
@@ -245,7 +250,7 @@ function OrderStatistics() {
             value: 'perClickSpend',
             label: '单次点击花费',
             ratio: true,
-            x: 'spend',
+            x: 'totalSpend',
             y: 'click',
           },
           {
@@ -306,14 +311,14 @@ function OrderStatistics() {
             label: '利润花费比',
             ratio: true,
             x: 'profit',
-            y: 'spend',
+            y: 'totalSpend',
           },
           {
             value: 'netProfitSpendRate',
             label: '净利润花费比',
             ratio: true,
             x: 'netProfit',
-            y: 'spend',
+            y: 'totalSpend',
           },
           {
             value: 'signedOrderNumber',
@@ -339,14 +344,14 @@ function OrderStatistics() {
             label: '已签收利润花费比',
             ratio: true,
             x: 'signedProfit',
-            y: 'spend',
+            y: 'totalSpend',
           },
           {
             value: 'signedNetProfitSpendRate',
             label: '已签收净利润花费比',
             ratio: true,
             x: 'signedNetProfit',
-            y: 'spend',
+            y: 'totalSpend',
           },
         ]}
       />
