@@ -78,11 +78,11 @@ function PddItem() {
           skuGroupPriceMax,
         } = data[i];
         if(siteType === 2) {
-          shippingPrice = 5.4;
+          shippingPrice = 5.5;
         }
         const price = skuGroupPriceMax / 100;
         // 运费 + 售价 + 运费险(约 2 元) + 服务费(0.6%)
-        const costPrice = Math.round((shippingPrice + suitPrice + 2 + price * 0.006) * 100) / 100;
+        const costPrice = Math.round((shippingPrice + suitPrice + 6 + price * 0.006) * 100) / 100;
         const profit = Math.round((price - costPrice) * 100) / 100;
         data[i].costPrice = costPrice;
         data[i].profit = profit;
@@ -90,6 +90,7 @@ function PddItem() {
         data[i].profitMargin = Math.round(profit / price * 100 * 100) / 100;
         data[i].promotionProfit = Math.round(((price - 10) * (1 - 0.33) - costPrice) * 100) / 100;
         data[i].limitDiscount = Math.round((1 - profit / price) * 10 * 100) / 100;
+        data[i].tenPercentProfitPrice = ((suitPrice + shippingPrice + 6) / (1 - 0.006 - 0.1)).toFixed(2)
         const adList = data[i].adList || [];
         let impression = 0;
         let click = 0;
@@ -103,7 +104,7 @@ function PddItem() {
         data[i].impression = impression;
         data[i].click = click;
         data[i].spend = spend / 1000;
-        data[i].ctr = impression ? click / impression : 0;
+        data[i].ctr = impression ? (click / impression).toFixed(4) : 0;
         const orderList = data[i].orderList || [];
         let orderProfit = 0;
         let totalOrderNum = 0;
@@ -400,6 +401,7 @@ function PddItem() {
                 skuGroupPriceMax,
                 costPrice,
                 profit,
+                tenPercentProfitPrice,
               } = rowData;
               var currentPrice = skuGroupPriceMin / 100;
               if(skuGroupPriceMin !== skuGroupPriceMax) {
@@ -428,6 +430,12 @@ function PddItem() {
                       color: '#388E3C',
                     }}>
                     利润：{profit}
+                  </div>
+                  <div
+                    style={{
+                      color: '#ee5253',
+                    }}>
+                    毛利润10%售价：{tenPercentProfitPrice}
                   </div>
                 </div>
               );
