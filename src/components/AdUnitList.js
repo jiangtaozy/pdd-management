@@ -180,6 +180,9 @@ function AdUnitList() {
                   <div>
                     商品Id：{goodsId}
                   </div>
+                  <Link to={`/keyword/${adId}`}>
+                    关键词
+                  </Link>
                 </div>
               );
             }

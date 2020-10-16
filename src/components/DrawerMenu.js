@@ -49,6 +49,7 @@ import ItemDataChart from './item/ItemDataChart';
 import HangAfterSale from './order/HangAfterSale';
 import DyItem from './douyin/DyItem';
 import Bill from './funding/Bill';
+import Keyword from './ad-unit/Keyword';
 
 const drawerWidth = 180;
 
@@ -212,6 +213,9 @@ function DrawerMenu(props) {
             </Route>
             <Route path="/adUnitList">
               <AdUnitList />
+            </Route>
+            <Route path="/keyword/:id">
+              <Keyword />
             </Route>
             <Route path="/stall">
               <Stall />

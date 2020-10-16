@@ -48,6 +48,9 @@ function AdUnitKeywordSave (props) {
         message: '操作成功',
       });
       setKeywordData('');
+      if(props.refreshData) {
+        props.refreshData();
+      }
     }
     catch(err) {
       console.error('ad-unit-keyword-save-post-error: ', err);
