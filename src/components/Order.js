@@ -12,7 +12,7 @@ import tableIcons from './utils/TableIcons';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
-import { useDropzone } from 'react-dropzone';
+//import { useDropzone } from 'react-dropzone';
 import GetTimeString from './utils/Time';
 
 function Order() {
@@ -27,25 +27,6 @@ function Order() {
   const { open, message } = snackbarState;
 
   useEffect(() => {
-    const fetchOrderList = async () => {
-      try {
-        const { data } = await axios.get('/orderList');
-        for(let i = 0; i < data.length; i++) {
-          data[i].merchantReceivedAmount = (data[i].productTotalPrice - data[i].storeDiscount) / 100;
-          data[i].productTotalPrice = data[i].productTotalPrice / 100;
-          data[i].postage = data[i].postage / 100;
-          data[i].platformDiscount = data[i].platformDiscount / 100;
-          data[i].storeDiscount = data[i].storeDiscount / 100;
-        }
-        setOrderList(data);
-      }
-      catch(err) {
-        console.error('order-fetch-order-list-error: ', err);
-        handleOpenSnackbar({
-          message: `出错了：${err.message}`,
-        });
-      }
-    }
     fetchOrderList();
   }, []);
 
@@ -130,6 +111,7 @@ function Order() {
     }
   }
 
+  /*
   const onDrop = useCallback(async acceptedFiles => {
     try {
       const formData = new FormData();
@@ -171,12 +153,15 @@ function Order() {
     }
 
   }, []);
+  */
 
+  /*
   const {
     getRootProps,
     getInputProps,
     isDragActive,
   } = useDropzone({onDrop});
+  */
 
   return (
     <div>
@@ -545,6 +530,7 @@ function Order() {
         onClick={handleAfterSaleOrderDataButtonClick}>
         确定
       </Button>
+      {/*
       <div {...getRootProps()}>
         <input {...getInputProps()} />
         {
@@ -560,6 +546,7 @@ function Order() {
             </Button>
         }
       </div>
+      */}
       <Snackbar
         anchorOrigin={{
           horizontal: "center",
