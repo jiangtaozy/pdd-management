@@ -101,12 +101,13 @@ function AdUnitList() {
             top: 0,
           },
           maxBodyHeight: 650,
+          searchFieldAlignment: 'left',
         }}
         data={adUnitList}
         title={
           <div>
             <div>
-              推广单元列表
+              全部推广单元列表 AdUnitList.js
             </div>
             <div
               style={{

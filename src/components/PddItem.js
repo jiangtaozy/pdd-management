@@ -249,6 +249,69 @@ function PddItem() {
             },
           },
           {
+            title: '售价',
+            headerStyle: {
+              color: '#3333FF',
+            },
+            render: rowData => {
+              const {
+                skuGroupPriceMin,
+                skuGroupPriceMax,
+                costPrice,
+                profit,
+                tenPercentProfitPrice,
+              } = rowData;
+              var currentPrice = skuGroupPriceMin / 100;
+              if(skuGroupPriceMin !== skuGroupPriceMax) {
+                currentPrice = `${currentPrice}-${skuGroupPriceMax / 100}`;
+              }
+              return (
+                <div
+                  style={{
+                    fontSize: 10,
+                    width: 120,
+                  }}>
+                  <div
+                    style={{
+                      color: '#3333FF',
+                    }}>
+                    售价：{currentPrice}
+                  </div>
+                  <div
+                    style={{
+                      color: '#17A589',
+                    }}>
+                    成本：{costPrice}
+                  </div>
+                  <div
+                    style={{
+                      color: '#388E3C',
+                    }}>
+                    利润：{profit}
+                  </div>
+                  <div
+                    style={{
+                      color: '#388E3C',
+                    }}>
+                    利润率：{(profit / currentPrice * 100).toFixed(1)}%
+                  </div>
+                  <div
+                    style={{
+                      color: '#ee5253',
+                    }}>
+                    毛利率增加1%售价：{Math.round(costPrice / (1 - 0.01 - profit / currentPrice))}
+                  </div>
+                  <div
+                    style={{
+                      color: '#ee5253',
+                    }}>
+                    毛利润10%售价：{tenPercentProfitPrice}
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
             title: '商品名称',
             field: 'name',
             cellStyle: {
@@ -388,57 +451,6 @@ function PddItem() {
             },
             headerStyle: {
               color: '#27ae60',
-            },
-          },
-          {
-            title: '售价',
-            headerStyle: {
-              color: '#3333FF',
-            },
-            render: rowData => {
-              const {
-                skuGroupPriceMin,
-                skuGroupPriceMax,
-                costPrice,
-                profit,
-                tenPercentProfitPrice,
-              } = rowData;
-              var currentPrice = skuGroupPriceMin / 100;
-              if(skuGroupPriceMin !== skuGroupPriceMax) {
-                currentPrice = `${currentPrice}-${skuGroupPriceMax / 100}`;
-              }
-              return (
-                <div
-                  style={{
-                    fontSize: 10,
-                    width: 70,
-                  }}>
-                  <div
-                    style={{
-                      color: '#3333FF',
-                    }}>
-                    售价：{currentPrice}
-                  </div>
-                  <div
-                    style={{
-                      color: '#17A589',
-                    }}>
-                    成本：{costPrice}
-                  </div>
-                  <div
-                    style={{
-                      color: '#388E3C',
-                    }}>
-                    利润：{profit}
-                  </div>
-                  <div
-                    style={{
-                      color: '#ee5253',
-                    }}>
-                    毛利润10%售价：{tenPercentProfitPrice}
-                  </div>
-                </div>
-              );
             },
           },
           /*
