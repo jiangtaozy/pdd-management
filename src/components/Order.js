@@ -14,6 +14,7 @@ import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 //import { useDropzone } from 'react-dropzone';
 import GetTimeString from './utils/Time';
+import UploadHangOrderFile from './order/UploadHangOrderFile';
 
 function Order() {
 
@@ -512,6 +513,9 @@ function Order() {
         onClick={handleOrderDataButtonClick}>
         确定
       </Button>
+      <UploadHangOrderFile
+        refresh={fetchOrderList}
+      />
       <TextField
         label="输入拼多多售后订单数据(/list)"
         multiline

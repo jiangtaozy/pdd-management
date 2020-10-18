@@ -11,6 +11,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import MaterialTable from 'material-table';
 import tableIcons from './utils/TableIcons';
+import UploadHangOrderFile from './order/UploadHangOrderFile';
 
 function Order1688() {
 
@@ -21,19 +22,20 @@ function Order1688() {
   });
   const { open, message } = snackbarState;
 
-  useEffect(() => {
-    const fetchOrderList = async () => {
-      try {
-        const { data } = await axios.get('/order1688List');
-        setOrderList(data);
-      }
-      catch(err) {
-        console.error('order-1688-fetch-order-list-error: ', err);
-        handleOpenSnackbar({
-          message: `出错了：${err.message}`,
-        });
-      }
+  const fetchOrderList = async () => {
+    try {
+      const { data } = await axios.get('/order1688List');
+      setOrderList(data);
     }
+    catch(err) {
+      console.error('order-1688-fetch-order-list-error: ', err);
+      handleOpenSnackbar({
+        message: `出错了：${err.message}`,
+      });
+    }
+  }
+
+  useEffect(() => {
     fetchOrderList();
   }, []);
 
@@ -62,52 +64,6 @@ function Order1688() {
       handleOpenSnackbar({
         message: '操作成功',
       });
-      const fetchOrderList = async () => {
-        try {
-          const { data } = await axios.get('/order1688List');
-          setOrderList(data);
-        }
-        catch(err) {
-          console.error('order-1688-fetch-order-list-error: ', err);
-          handleOpenSnackbar({
-            message: `出错了：${err.message}`,
-          });
-        }
-      }
-      fetchOrderList();
-    }
-    catch(err) {
-      handleOpenSnackbar({
-        message: `出错了：${err.message}`,
-      });
-      console.error("OrderOnDropError: ", err);
-    }
-  }, []);
-
-  const onDropHznz = useCallback(async acceptedFiles => {
-    try {
-      const formData = new FormData();
-      formData.append("file", acceptedFiles[0])
-      await axios.post('/uploadHznzcnOrderFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      handleOpenSnackbar({
-        message: '操作成功',
-      });
-      const fetchOrderList = async () => {
-        try {
-          const { data } = await axios.get('/order1688List');
-          setOrderList(data);
-        }
-        catch(err) {
-          console.error('order-1688-fetch-order-list-error: ', err);
-          handleOpenSnackbar({
-            message: `出错了：${err.message}`,
-          });
-        }
-      }
       fetchOrderList();
     }
     catch(err) {
@@ -123,12 +79,6 @@ function Order1688() {
     getInputProps,
     isDragActive,
   } = useDropzone({onDrop});
-
-  const {
-    getRootProps: getRootPropsHznz,
-    getInputProps: getInputPropsHznz,
-    isDragActive: isDragActiveHznz,
-  } = useDropzone({onDrop: onDropHznz});
 
   return (
     <div>
@@ -331,21 +281,9 @@ function Order1688() {
             </Button>
         }
       </div>
-      <div {...getRootPropsHznz()}>
-        <input {...getInputPropsHznz()} />
-        {
-          isDragActiveHznz ?
-            <p>女装网订单文件拖拽到这里</p> :
-            <Button
-              variant="outlined"
-              size="large"
-              style={{
-                marginTop: 10,
-              }}>
-              选择女装网订单文件
-            </Button>
-        }
-      </div>
+      <UploadHangOrderFile
+        refresh={fetchOrderList}
+      />
       <Snackbar
         anchorOrigin={{
           horizontal: "center",
