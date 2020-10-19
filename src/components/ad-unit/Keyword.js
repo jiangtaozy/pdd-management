@@ -14,6 +14,8 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Chart from '../utils/Chart';
 import AdUnitKeywordSave from '../AdUnitKeywordSave';
+import MaterialTable from 'material-table';
+import tableIcons from '../utils/TableIcons';
 
 function Keyword() {
 
@@ -92,11 +94,57 @@ function Keyword() {
         });
       }
     }
+    // sum
+    for(let i = 0; i < refactoredList.length; i++) {
+      const keyword = refactoredList[i];
+      const data = keyword.data;
+      let impression = 0;
+      let click = 0;
+      let spend = 0;
+      let goodsFavNum = 0;
+      let mallFavNum = 0;
+      let orderNum = 0;
+      let gmv = 0;
+      let bid = 0;
+      let qualityScore = 0;
+      for(let j = 0; j < data.length; j++) {
+        impression += data[j].impression;
+        click += data[j].click;
+        spend += data[j].spend;
+        goodsFavNum += data[j].goodsFavNum;
+        mallFavNum += data[j].mallFavNum;
+        orderNum += data[j].orderNum;
+        gmv += data[j].gmv;
+        bid += data[j].bid;
+        qualityScore += data[j].qualityScore;
+      }
+      if(data.length > 0) {
+        bid = Math.round(bid / data.length * 100) / 100;
+        qualityScore = Math.round(qualityScore / data.length * 100) / 100;
+      }
+      keyword.impression = impression;
+      keyword.click = click;
+      keyword.ctr = Math.round(click / impression * 10000) / 100;
+      keyword.spend = Math.round(spend * 100) / 100;
+      keyword.goodsFavNum = goodsFavNum;
+      keyword.gfvr = Math.round(goodsFavNum / click * 10000) / 100;
+      keyword.mallFavNum = mallFavNum;
+      keyword.mfvr = Math.round(mallFavNum / click * 10000) / 100;
+      keyword.orderNum = orderNum;
+      keyword.cvr = Math.round(orderNum / click * 10000) / 100;
+      keyword.gmv = gmv;
+      keyword.bid = bid;
+      keyword.qualityScore = qualityScore;
+    }
     return refactoredList;
   }
 
   const handleKeywordIdChange = (e) => {
     setKeywordId(e.target.value);
+  }
+
+  const onRowClick = (evt, selectedRow) => {
+    setKeywordId(selectedRow.keywordId.toString());
   }
 
   const getKeywordListData = (keywordList, keywordId) => {
@@ -112,21 +160,6 @@ function Keyword() {
 
   return (
     <div>
-      <RadioGroup
-        row
-        value={keywordId}
-        onChange={handleKeywordIdChange}>
-        {
-          keywordList.map((obj) =>
-            <FormControlLabel
-              key={obj.keywordId}
-              value={obj.keywordId.toString()}
-              control={<Radio />}
-              label={obj.keyword}
-            />
-          )
-        }
-      </RadioGroup>
       <Chart
         data={data}
         defaultYKey={'impression'}
@@ -193,6 +226,120 @@ function Keyword() {
           },
         ]}
       />
+      <MaterialTable
+        icons={tableIcons}
+        data={keywordList}
+        title="关键字列表"
+        options={{
+          searchFieldAlignment: 'left',
+          rowStyle: rowData => ({
+            backgroundColor: (keywordId === rowData.keywordId.toString()) ? '#EEE' : '#fff',
+          }),
+        }}
+        onRowClick={onRowClick}
+        columns={[
+          {
+            title: "关键字",
+            field: "keyword",
+          },
+          {
+            title: "花费",
+            field: "spend",
+            defaultSort: "desc",
+          },
+          {
+            title: "点击率",
+            field: "ctr",
+            render: rowData => {
+              return (
+                <div>
+                  {rowData.ctr}%
+                </div>
+              );
+            },
+          },
+          {
+            title: "点击转化率",
+            field: "cvr",
+            render: rowData => {
+              return (
+                <div>
+                  {rowData.cvr}%
+                </div>
+              );
+            },
+          },
+          {
+            title: "点击收藏率",
+            field: "gfvr",
+            render: rowData => {
+              return (
+                <div>
+                  {rowData.gfvr}%
+                </div>
+              );
+            },
+          },
+          {
+            title: "点击关注率",
+            field: "mfvr",
+            render: rowData => {
+              return (
+                <div>
+                  {rowData.mfvr}%
+                </div>
+              );
+            },
+          },
+          {
+            title: "曝光量",
+            field: "impression",
+          },
+          {
+            title: "点击量",
+            field: "click",
+          },
+          {
+            title: "出价",
+            field: "bid",
+          },
+          {
+            title: "订单量",
+            field: "orderNum",
+          },
+          {
+            title: "交易额",
+            field: "gmv",
+          },
+          {
+            title: "收藏量",
+            field: "goodsFavNum",
+          },
+          {
+            title: "关注量",
+            field: "mallFavNum",
+          },
+          {
+            title: "质量分",
+            field: "qualityScore",
+          },
+        ]}
+      />
+      <RadioGroup
+        row
+        value={keywordId}
+        onChange={handleKeywordIdChange}>
+        {
+          keywordList.map((obj) =>
+            <FormControlLabel
+              key={obj.keywordId}
+              value={obj.keywordId.toString()}
+              control={<Radio />}
+              label={obj.keyword}
+            />
+          )
+        }
+      </RadioGroup>
       <AdUnitKeywordSave
         refreshData={fetchKeywordList}
       />

@@ -5,7 +5,7 @@
  * 上传杭州女装网订单文件
  */
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -54,7 +54,7 @@ function UploadHangOrderFile(props) {
       });
       console.error("OrderOnDropError: ", err);
     }
-  }, []);
+  }, [props]);
 
   const {
     getRootProps: getRootPropsHznz,
