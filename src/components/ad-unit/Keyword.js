@@ -21,6 +21,7 @@ function Keyword() {
 
   const [ keywordList, setKeywordList ] = useState([]);
   const [ keywordId, setKeywordId ] = useState('');
+  const [ timeLimit, setTimeLimit ] = useState('yesterday');
   const [ snackbarState, setSnackbarState ] = useState({
     message: '',
     open: false,
@@ -94,53 +95,15 @@ function Keyword() {
         });
       }
     }
-    // sum
-    for(let i = 0; i < refactoredList.length; i++) {
-      const keyword = refactoredList[i];
-      const data = keyword.data;
-      let impression = 0;
-      let click = 0;
-      let spend = 0;
-      let goodsFavNum = 0;
-      let mallFavNum = 0;
-      let orderNum = 0;
-      let gmv = 0;
-      let bid = 0;
-      let qualityScore = 0;
-      for(let j = 0; j < data.length; j++) {
-        impression += data[j].impression;
-        click += data[j].click;
-        spend += data[j].spend;
-        goodsFavNum += data[j].goodsFavNum;
-        mallFavNum += data[j].mallFavNum;
-        orderNum += data[j].orderNum;
-        gmv += data[j].gmv;
-        bid += data[j].bid;
-        qualityScore += data[j].qualityScore;
-      }
-      if(data.length > 0) {
-        bid = Math.round(bid / data.length * 100) / 100;
-        qualityScore = Math.round(qualityScore / data.length * 100) / 100;
-      }
-      keyword.impression = impression;
-      keyword.click = click;
-      keyword.ctr = Math.round(click / impression * 10000) / 100;
-      keyword.spend = Math.round(spend * 100) / 100;
-      keyword.goodsFavNum = goodsFavNum;
-      keyword.gfvr = Math.round(goodsFavNum / click * 10000) / 100;
-      keyword.mallFavNum = mallFavNum;
-      keyword.mfvr = Math.round(mallFavNum / click * 10000) / 100;
-      keyword.orderNum = orderNum;
-      keyword.cvr = Math.round(orderNum / click * 10000) / 100;
-      keyword.gmv = gmv;
-      keyword.bid = bid;
-      keyword.qualityScore = qualityScore;
-    }
     return refactoredList;
   }
 
   const handleKeywordIdChange = (e) => {
     setKeywordId(e.target.value);
+  }
+
+  const handleTimeLimitChange = (e) => {
+    setTimeLimit(e.target.value);
   }
 
   const onRowClick = (evt, selectedRow) => {
@@ -156,7 +119,75 @@ function Keyword() {
     return [];
   }
 
+  const getTableData = (list) => {
+    const newList = [];
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    for(let i = 0; i < list.length; i++) {
+      const keyword = list[i];
+      const data = keyword.data;
+      let impression = 0;
+      let click = 0;
+      let spend = 0;
+      let goodsFavNum = 0;
+      let mallFavNum = 0;
+      let orderNum = 0;
+      let gmv = 0;
+      let bid = 0;
+      let qualityScore = 0;
+      let count = 0;
+      for(let j = 0; j < data.length; j++) {
+        const date = new Date(data[j].date);
+        const days = (today.getTime() - date.getTime()) / (24 * 60 * 60 * 1000);
+        const timeMap = {
+          yesterday: 2,
+          sevenDay: 8,
+          thirtyDay: 31,
+          ninetyDay: 91,
+          total: Number.MAX_VALUE,
+        };
+        let inTimeLimit = days < timeMap[timeLimit];
+        if(inTimeLimit) {
+          impression += data[j].impression;
+          click += data[j].click;
+          spend += data[j].spend;
+          goodsFavNum += data[j].goodsFavNum;
+          mallFavNum += data[j].mallFavNum;
+          orderNum += data[j].orderNum;
+          gmv += data[j].gmv;
+          bid += data[j].bid;
+          qualityScore += data[j].qualityScore;
+          count++;
+        }
+      }
+      if(data.length > 0) {
+        bid = Math.round(bid / count * 100) / 100;
+        qualityScore = Math.round(qualityScore / count * 100) / 100;
+      }
+      const tableData = {
+        keyword: keyword.keyword,
+        keywordId: keyword.keywordId,
+        impression,
+        click,
+        ctr: Math.round(click / impression * 10000) / 100 || 0,
+        spend: Math.round(spend * 100) / 100,
+        goodsFavNum,
+        gfvr: Math.round(goodsFavNum / click * 10000) / 100 || 0,
+        mallFavNum,
+        mfvr: Math.round(mallFavNum / click * 10000) / 100 || 0,
+        orderNum,
+        cvr: Math.round(orderNum / click * 10000) / 100 || 0,
+        gmv,
+        bid,
+        qualityScore,
+      }
+      newList.push(tableData);
+    }
+    return newList;
+  }
+
   const data = getKeywordListData(keywordList, keywordId);
+  const tableDataList = getTableData(keywordList);
 
   return (
     <div>
@@ -226,9 +257,44 @@ function Keyword() {
           },
         ]}
       />
+      <RadioGroup
+        row
+        value={timeLimit}
+        onChange={handleTimeLimitChange}>
+          <FormControlLabel
+            key="yesterday"
+            value="yesterday"
+            control={<Radio />}
+            label="昨天"
+          />
+          <FormControlLabel
+            key="sevenDay"
+            value="sevenDay"
+            control={<Radio />}
+            label="7天"
+          />
+          <FormControlLabel
+            key="thirtyDay"
+            value="thirtyDay"
+            control={<Radio />}
+            label="30天"
+          />
+          <FormControlLabel
+            key="ninetyDay"
+            value="ninetyDay"
+            control={<Radio />}
+            label="90天"
+          />
+          <FormControlLabel
+            key="total"
+            value="total"
+            control={<Radio />}
+            label="全部"
+          />
+      </RadioGroup>
       <MaterialTable
         icons={tableIcons}
-        data={keywordList}
+        data={tableDataList}
         title="关键字列表"
         options={{
           searchFieldAlignment: 'left',
