@@ -90,7 +90,7 @@ function PddItem() {
         data[i].profitMargin = Math.round(profit / price * 100 * 100) / 100;
         data[i].promotionProfit = Math.round(((price - 10) * (1 - 0.33) - costPrice) * 100) / 100;
         data[i].limitDiscount = Math.round((1 - profit / price) * 10 * 100) / 100;
-        data[i].tenPercentProfitPrice = ((suitPrice + shippingPrice + 6) / (1 - 0.006 - 0.1)).toFixed(2)
+        data[i].tenPercentProfitPrice = Math.round((suitPrice + shippingPrice + 6) / (1 - 0.006 - 0.1))
         const adList = data[i].adList || [];
         let impression = 0;
         let click = 0;
@@ -260,6 +260,8 @@ function PddItem() {
                 costPrice,
                 profit,
                 tenPercentProfitPrice,
+                suitPrice,
+                shippingPrice,
               } = rowData;
               var currentPrice = skuGroupPriceMin / 100;
               if(skuGroupPriceMin !== skuGroupPriceMax) {
@@ -285,13 +287,13 @@ function PddItem() {
                   </div>
                   <div
                     style={{
-                      color: '#388E3C',
+                      color: '#ffa502',
                     }}>
                     利润：{profit}
                   </div>
                   <div
                     style={{
-                      color: '#388E3C',
+                      color: '#2ed573',
                     }}>
                     利润率：{(profit / currentPrice * 100).toFixed(1)}%
                   </div>
@@ -299,13 +301,37 @@ function PddItem() {
                     style={{
                       color: '#ee5253',
                     }}>
-                    毛利率增加1%售价：{Math.round(costPrice / (1 - 0.01 - profit / currentPrice))}
+                    毛利率增加1%售价：{Math.round(costPrice / (1 - 0.01 - Math.round(profit / currentPrice * 100) / 100))}
                   </div>
                   <div
                     style={{
-                      color: '#ee5253',
+                      color: '#3742fa',
                     }}>
                     毛利润10%售价：{tenPercentProfitPrice}
+                  </div>
+                  <div
+                    style={{
+                      color: '#3742fa',
+                    }}>
+                    抖音售价：{Math.round((suitPrice + shippingPrice) / (1 - 0.1 - 0.4))}
+                  </div>
+                  <div
+                    style={{
+                      color: '#3742fa',
+                    }}>
+                    抖音成本：{suitPrice + shippingPrice}
+                  </div>
+                  <div
+                    style={{
+                      color: '#3742fa',
+                    }}>
+                    抖音佣金：{Math.round((suitPrice + shippingPrice) / (1 - 0.1 - 0.4) * 0.4)}
+                  </div>
+                  <div
+                    style={{
+                      color: '#3742fa',
+                    }}>
+                    抖音利润：{Math.round((suitPrice + shippingPrice) / (1 - 0.1 - 0.4) * 0.1)}
                   </div>
                 </div>
               );

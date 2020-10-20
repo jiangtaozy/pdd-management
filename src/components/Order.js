@@ -404,6 +404,7 @@ function Order() {
                   <div>
                     支付时间: {GetTimeString(paymentTime)}
                   </div>
+                  {/*
                   <div>
                     拼单成功时间: {GetTimeString(joinSuccessTime)}
                   </div>
@@ -419,6 +420,7 @@ function Order() {
                   <div>
                     确认收货时间: {GetTimeString(confirmDeliveryTime)}
                   </div>
+                  */}
                 </div>
               );
             },
