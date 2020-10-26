@@ -389,11 +389,11 @@ function Order() {
             render: rowData => {
               const {
                 paymentTime,
-                joinSuccessTime,
-                orderConfirmationTime,
-                commitmentDeliveryTime,
-                deliveryTime,
-                confirmDeliveryTime,
+                //joinSuccessTime,
+                //orderConfirmationTime,
+                //commitmentDeliveryTime,
+                //deliveryTime,
+                //confirmDeliveryTime,
               } = rowData;
               return (
                 <div style={{

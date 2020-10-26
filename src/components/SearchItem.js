@@ -209,6 +209,31 @@ function SearchItem() {
               );
             },
           },
+          {
+            title: "抖音设置利润",
+            render: rowData => {
+              const {
+                price,
+                sellPrice,
+              } = rowData;
+              return (
+                <div>
+                  <div>
+                    {sellPrice - price}
+                  </div>
+                  <div>
+                    佣金：{sellPrice * 0.4}
+                  </div>
+                  <div>
+                    利润：{sellPrice * 0.1}
+                  </div>
+                  <div>
+                    佣金比例：40%
+                  </div>
+                </div>
+              );
+            },
+          },
         ]}
         data={itemList}
         title="商品列表"
