@@ -697,6 +697,7 @@ function PddItem() {
       <Button
         variant="outlined"
         color="primary"
+        fullWidth={true}
         style={{
           marginTop: 10,
         }}

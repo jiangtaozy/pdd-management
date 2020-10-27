@@ -26,6 +26,7 @@ function Order() {
   const [ orderData, setOrderData ] = useState('');
   const [ afterSaleOrderData, setAfterSaleOrderData ] = useState('');
   const { open, message } = snackbarState;
+  const [selectedRow, setSelectedRow] = useState();
 
   useEffect(() => {
     fetchOrderList();
@@ -470,7 +471,11 @@ function Order() {
           filtering: true,
           actionsColumnIndex: -1,
           searchFieldAlignment: 'left',
+          rowStyle: rowData => ({
+            backgroundColor: (selectedRow && selectedRow.tableData.id === rowData.tableData.id) ? '#EEE' : '#fff',
+          }),
         }}
+        onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow))}
         editable={{
           onRowUpdate: (newData, oldData) =>
             new Promise(async (resolve, reject) => {
