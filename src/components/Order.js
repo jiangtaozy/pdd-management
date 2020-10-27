@@ -15,6 +15,7 @@ import TextField from '@material-ui/core/TextField';
 //import { useDropzone } from 'react-dropzone';
 import GetTimeString from './utils/Time';
 import UploadHangOrderFile from './order/UploadHangOrderFile';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 function Order() {
 
@@ -26,7 +27,341 @@ function Order() {
   const [ orderData, setOrderData ] = useState('');
   const [ afterSaleOrderData, setAfterSaleOrderData ] = useState('');
   const { open, message } = snackbarState;
-  const [selectedRow, setSelectedRow] = useState();
+  const [ selectedRow, setSelectedRow ] = useState();
+  const [ columns ] = useState([
+    /*
+    {
+      title: "店铺编号",
+      field: "mallId",
+      cellStyle: {
+        fontSize: 12,
+      },
+      lookup: {
+        '654629561': 'k酱十七',
+        '777561295': '牧记衣坊',
+      },
+      editable: "never",
+    },
+    */
+    {
+      title: "订单编号",
+      field: "orderId",
+      cellStyle: {
+        fontSize: 12,
+      },
+      editable: "never",
+      render: rowData => {
+        return (
+          <div>
+            <CopyToClipboard
+              text={rowData.orderId}
+              onCopy={() =>
+                handleOpenSnackbar({
+                  message: '已复制',
+                })
+              }>
+              <Button
+                variant="outlined"
+                size="small">
+                {rowData.orderId}
+              </Button>
+            </CopyToClipboard>
+          </div>
+        );
+      },
+    },
+    {
+      title: "商品信息",
+      render: rowData => {
+        return (
+          <div style={{
+            width: 200,
+          }}>
+            <div style={{
+              fontSize: 12,
+              color: '#888888',
+            }}>
+              ID: {rowData.productId}
+            </div>
+            <div style={{
+              fontSize: 12,
+              lineHeight: '20px',
+              height: 20,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}>
+              {rowData.productName}
+            </div>
+            <div style={{
+              fontSize: 12,
+            }}>
+              {rowData.productSku}
+            </div>
+            <div style={{
+              fontSize: 12,
+            }}>
+              数量：{rowData.numberOfProducts}
+            </div>
+            <div style={{
+              fontSize: 12,
+            }}>
+              商品总价：{rowData.productTotalPrice}
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+              }}>
+              <Link
+                href={rowData.detailUrl}
+                target="_blank">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  style={{
+                    marginTop: 10,
+                    marginLeft: 5,
+                  }}>
+                  下单
+                </Button>
+              </Link>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      title: "订单状态",
+      field: "orderStatusStr",
+      lookup: {
+        '待发货': '待发货',
+        '已发货，待签收': '已发货，待签收',
+        '已签收': '已签收',
+        '未发货，退款成功': '未发货，退款成功',
+        '已发货，退款成功': '已发货，退款成功',
+        '已取消': '已取消',
+      },
+      cellStyle: {
+        fontSize: 12,
+      },
+      editable: "never",
+      defaultFilter: ["待发货"],
+    },
+    {
+      title: "售后状态",
+      field: "afterSaleStatus",
+      lookup: {
+        '0': '无售后',
+        '5': '退款成功',
+        '10': '商家同意退货退款，待买家发货',
+        '11': '用户已发货，待商家处理',
+        '12': '售后取消，退款失败',
+      },
+      cellStyle: {
+        fontSize: 12,
+      },
+      editable: "never",
+    },
+    {
+      title: "外部订单状态",
+      field: "outerOrderStatus",
+      lookup: {
+        0: '待付款',
+        1: '待发货',
+        2: '待收货',
+        3: '已收货',
+        4: '交易成功',
+        5: '已退换货',
+        6: '交易关闭',
+      },
+      cellStyle: {
+        fontSize: 12,
+      },
+      editable: "never",
+    },
+    {
+      title: "女装网订单商品状态",
+      field: "productStatus",
+      cellStyle: {
+        fontSize: 12,
+      },
+      editable: "never",
+      lookup: {
+        '等待配货': '等待配货',
+        '配货完成': '配货完成',
+        '已发货': '已发货',
+        '已收货': '已收货',
+      },
+    },
+    {
+      title: "女装网订单售后状态",
+      field: "afterSaleStatusStr",
+      cellStyle: {
+        fontSize: 12,
+      },
+      editable: "never",
+      lookup: {
+        '': '',
+        '已退款': '已退款',
+        '暂未收到退货包裹（当天签收包裹预计会有3-6小时延时）': '暂未收到退货包裹（当天签收包裹预计会有3-6小时延时）',
+      },
+    },
+    /*
+    {
+      title: "数量",
+      field: "numberOfProducts",
+      cellStyle: {
+        fontSize: 12,
+      },
+      filtering: false,
+      editable: "never",
+    },
+    {
+      title: "商品总价(元)",
+      field: "productTotalPrice",
+      cellStyle: {
+        fontSize: 12,
+      },
+      filtering: false,
+      editable: "never",
+    },
+    */
+    {
+      title: "实收金额(元)",
+      render: rowData => {
+        return (
+          <div
+            style={{
+              width: 100,
+            }}>
+            <div style={{
+              fontSize: 12,
+            }}>
+              ￥{rowData.merchantReceivedAmount}
+            </div>
+            <div style={{
+              fontSize: 12,
+              color: '#888888',
+            }}>
+              <div>
+                含配送费: {rowData.postage}
+              </div>
+              <div>
+                含平台优惠券: {rowData.platformDiscount}
+              </div>
+              <div>
+                店铺优惠券: {rowData.storeDiscount}
+              </div>
+              <div>
+                外部订单支付金额: {rowData.actualPayment}
+              </div>
+              <div>
+                毛利润: {Math.round((rowData.merchantReceivedAmount - rowData.actualPayment) * 100) / 100}
+              </div>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      title: "下单时间",
+      render: rowData => {
+        const {
+          paymentTime,
+          //joinSuccessTime,
+          //orderConfirmationTime,
+          //commitmentDeliveryTime,
+          //deliveryTime,
+          //confirmDeliveryTime,
+        } = rowData;
+        return (
+          <div style={{
+            fontSize: 12,
+            color: '#888888',
+            width: 200,
+          }}>
+            <div>
+              支付时间: {GetTimeString(paymentTime)}
+            </div>
+            {/*
+            <div>
+              拼单成功时间: {GetTimeString(joinSuccessTime)}
+            </div>
+            <div>
+              订单确认时间: {GetTimeString(orderConfirmationTime)}
+            </div>
+            <div>
+              承诺发货时间: {GetTimeString(commitmentDeliveryTime)}
+            </div>
+            <div>
+              发货时间: {GetTimeString(deliveryTime)}
+            </div>
+            <div>
+              确认收货时间: {GetTimeString(confirmDeliveryTime)}
+            </div>
+            */}
+          </div>
+        );
+      },
+    },
+    /*
+    {
+      title: "下单",
+      render: rowData => {
+        const {
+          detailUrl,
+        } = rowData;
+        return (
+          <div
+            style={{
+              fontSize: 12,
+            }}>
+            <Link
+              href={detailUrl}
+              target="_blank">
+              <Button
+                variant="outlined"
+                size="small"
+                style={{
+                  marginTop: 10,
+                  marginLeft: 5,
+                }}>
+                下单
+              </Button>
+            </Link>
+          </div>
+        );
+      },
+    },
+    */
+    {
+      title: "外部订单号",
+      field: "outerOrderId",
+      cellStyle: {
+        fontSize: 12,
+      },
+      filtering: false,
+      render: rowData => {
+        return (
+          <div>
+            <CopyToClipboard
+              text={rowData.outerOrderId}
+              onCopy={() =>
+                handleOpenSnackbar({
+                  message: '已复制',
+                })
+              }>
+              <Button
+                variant="outlined"
+                size="small">
+                {rowData.outerOrderId}
+              </Button>
+            </CopyToClipboard>
+          </div>
+        );
+      },
+    },
+  ]);
 
   useEffect(() => {
     fetchOrderList();
@@ -169,302 +504,7 @@ function Order() {
     <div>
       <MaterialTable
         icons={tableIcons}
-        columns={[
-          /*
-          {
-            title: "店铺编号",
-            field: "mallId",
-            cellStyle: {
-              fontSize: 12,
-            },
-            lookup: {
-              '654629561': 'k酱十七',
-              '777561295': '牧记衣坊',
-            },
-            editable: "never",
-          },
-          */
-          {
-            title: "订单编号",
-            field: "orderId",
-            cellStyle: {
-              fontSize: 12,
-            },
-            editable: "never",
-          },
-          {
-            title: "商品信息",
-            render: rowData => {
-              return (
-                <div style={{
-                  width: 200,
-                }}>
-                  <div style={{
-                    fontSize: 12,
-                    color: '#888888',
-                  }}>
-                    ID: {rowData.productId}
-                  </div>
-                  <div style={{
-                    fontSize: 12,
-                    lineHeight: '20px',
-                    height: 20,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {rowData.productName}
-                  </div>
-                  <div style={{
-                    fontSize: 12,
-                  }}>
-                    {rowData.productSku}
-                  </div>
-                  <div style={{
-                    fontSize: 12,
-                  }}>
-                    数量：{rowData.numberOfProducts}
-                  </div>
-                  <div style={{
-                    fontSize: 12,
-                  }}>
-                    商品总价：{rowData.productTotalPrice}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 12,
-                    }}>
-                    <Link
-                      href={rowData.detailUrl}
-                      target="_blank">
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        style={{
-                          marginTop: 10,
-                          marginLeft: 5,
-                        }}>
-                        下单
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              );
-            },
-          },
-          {
-            title: "订单状态",
-            field: "orderStatusStr",
-            lookup: {
-              '待发货': '待发货',
-              '已发货，待签收': '已发货，待签收',
-              '已签收': '已签收',
-              '未发货，退款成功': '未发货，退款成功',
-              '已发货，退款成功': '已发货，退款成功',
-              '已取消': '已取消',
-            },
-            cellStyle: {
-              fontSize: 12,
-            },
-            editable: "never",
-            defaultFilter: ["待发货"],
-          },
-          {
-            title: "售后状态",
-            field: "afterSaleStatus",
-            lookup: {
-              '0': '无售后',
-              '5': '退款成功',
-              '10': '商家同意退货退款，待买家发货',
-              '11': '用户已发货，待商家处理',
-              '12': '售后取消，退款失败',
-            },
-            cellStyle: {
-              fontSize: 12,
-            },
-            editable: "never",
-          },
-          {
-            title: "外部订单状态",
-            field: "outerOrderStatus",
-            lookup: {
-              0: '待付款',
-              1: '待发货',
-              2: '待收货',
-              3: '已收货',
-              4: '交易成功',
-              5: '已退换货',
-              6: '交易关闭',
-            },
-            cellStyle: {
-              fontSize: 12,
-            },
-            editable: "never",
-          },
-          {
-            title: "女装网订单商品状态",
-            field: "productStatus",
-            cellStyle: {
-              fontSize: 12,
-            },
-            editable: "never",
-            lookup: {
-              '等待配货': '等待配货',
-              '配货完成': '配货完成',
-              '已发货': '已发货',
-              '已收货': '已收货',
-            },
-          },
-          {
-            title: "女装网订单售后状态",
-            field: "afterSaleStatusStr",
-            cellStyle: {
-              fontSize: 12,
-            },
-            editable: "never",
-            lookup: {
-              '': '',
-              '已退款': '已退款',
-              '暂未收到退货包裹（当天签收包裹预计会有3-6小时延时）': '暂未收到退货包裹（当天签收包裹预计会有3-6小时延时）',
-            },
-          },
-          /*
-          {
-            title: "数量",
-            field: "numberOfProducts",
-            cellStyle: {
-              fontSize: 12,
-            },
-            filtering: false,
-            editable: "never",
-          },
-          {
-            title: "商品总价(元)",
-            field: "productTotalPrice",
-            cellStyle: {
-              fontSize: 12,
-            },
-            filtering: false,
-            editable: "never",
-          },
-          */
-          {
-            title: "实收金额(元)",
-            render: rowData => {
-              return (
-                <div
-                  style={{
-                    width: 100,
-                  }}>
-                  <div style={{
-                    fontSize: 12,
-                  }}>
-                    ￥{rowData.merchantReceivedAmount}
-                  </div>
-                  <div style={{
-                    fontSize: 12,
-                    color: '#888888',
-                  }}>
-                    <div>
-                      含配送费: {rowData.postage}
-                    </div>
-                    <div>
-                      含平台优惠券: {rowData.platformDiscount}
-                    </div>
-                    <div>
-                      店铺优惠券: {rowData.storeDiscount}
-                    </div>
-                    <div>
-                      外部订单支付金额: {rowData.actualPayment}
-                    </div>
-                    <div>
-                      毛利润: {Math.round((rowData.merchantReceivedAmount - rowData.actualPayment) * 100) / 100}
-                    </div>
-                  </div>
-                </div>
-              );
-            },
-          },
-          {
-            title: "下单时间",
-            render: rowData => {
-              const {
-                paymentTime,
-                //joinSuccessTime,
-                //orderConfirmationTime,
-                //commitmentDeliveryTime,
-                //deliveryTime,
-                //confirmDeliveryTime,
-              } = rowData;
-              return (
-                <div style={{
-                  fontSize: 12,
-                  color: '#888888',
-                  width: 200,
-                }}>
-                  <div>
-                    支付时间: {GetTimeString(paymentTime)}
-                  </div>
-                  {/*
-                  <div>
-                    拼单成功时间: {GetTimeString(joinSuccessTime)}
-                  </div>
-                  <div>
-                    订单确认时间: {GetTimeString(orderConfirmationTime)}
-                  </div>
-                  <div>
-                    承诺发货时间: {GetTimeString(commitmentDeliveryTime)}
-                  </div>
-                  <div>
-                    发货时间: {GetTimeString(deliveryTime)}
-                  </div>
-                  <div>
-                    确认收货时间: {GetTimeString(confirmDeliveryTime)}
-                  </div>
-                  */}
-                </div>
-              );
-            },
-          },
-          /*
-          {
-            title: "下单",
-            render: rowData => {
-              const {
-                detailUrl,
-              } = rowData;
-              return (
-                <div
-                  style={{
-                    fontSize: 12,
-                  }}>
-                  <Link
-                    href={detailUrl}
-                    target="_blank">
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      style={{
-                        marginTop: 10,
-                        marginLeft: 5,
-                      }}>
-                      下单
-                    </Button>
-                  </Link>
-                </div>
-              );
-            },
-          },
-          */
-          {
-            title: "外部订单号",
-            field: "outerOrderId",
-            cellStyle: {
-              fontSize: 12,
-            },
-            filtering: false,
-          },
-        ]}
+        columns={columns}
         data={orderList}
         title="订单列表"
         options={{
