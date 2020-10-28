@@ -74,8 +74,9 @@ function AdUnitKeywordSave (props) {
       <Button
         variant="outlined"
         color="primary"
+        fullWidth={true}
         style={{
-          marginTop: 10,
+          marginTop: 20,
         }}
         onClick={handleKeywordDataButtonClick}>
         确定

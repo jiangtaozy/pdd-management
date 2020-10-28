@@ -9,13 +9,14 @@ import React from 'react';
 import ItemCountChart from './ItemCountChart';
 import AdDataChart from './AdDataChart';
 import OrderStatistics from './order/OrderStatistics';
+import SaveAdUnitData from './SaveAdUnitData';
 
 function DashBoard() {
-
 
   return (
     <div>
       <OrderStatistics />
+      <SaveAdUnitData />
       <AdDataChart />
       <ItemCountChart />
     </div>
