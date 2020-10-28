@@ -16,6 +16,7 @@ import TextField from '@material-ui/core/TextField';
 import GetTimeString from './utils/Time';
 import UploadHangOrderFile from './order/UploadHangOrderFile';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import HangAfterSale from './order/HangAfterSale';
 
 function Order() {
 
@@ -542,6 +543,9 @@ function Order() {
             }),
         }}
       />
+      {/*
+        拼多多订单数据
+      */}
       <TextField
         label="输入拼多多订单数据(/recentOrderList)"
         multiline
@@ -554,15 +558,22 @@ function Order() {
       <Button
         variant="outlined"
         color="primary"
+        fullWidth
         style={{
           marginTop: 10,
         }}
         onClick={handleOrderDataButtonClick}>
         确定
       </Button>
+      {/*
+        女装网订单文件
+      */}
       <UploadHangOrderFile
         refresh={fetchOrderList}
       />
+      {/*
+        拼多多售后订单数据
+      */}
       <TextField
         label="输入拼多多售后订单数据(/list)"
         multiline
@@ -575,12 +586,22 @@ function Order() {
       <Button
         variant="outlined"
         color="primary"
+        fullWidth
         style={{
           marginTop: 10,
         }}
         onClick={handleAfterSaleOrderDataButtonClick}>
         确定
       </Button>
+      {/*
+        女装网售后订单文件
+      */}
+      <div
+        style={{
+          marginTop: 10,
+        }}>
+        <HangAfterSale />
+      </div>
       {/*
       <div {...getRootProps()}>
         <input {...getInputProps()} />
