@@ -575,7 +575,7 @@ function Order() {
         拼多多售后订单数据
       */}
       <TextField
-        label="输入拼多多售后订单数据(/list)"
+        label="输入拼多多售后订单数据(/queryList)"
         multiline
         fullWidth
         value={afterSaleOrderData}
