@@ -82,7 +82,7 @@ function PddItem() {
         }
         const price = skuGroupPriceMax / 100;
         // 运费 + 售价 + 运费险(约 2 元) + 服务费(0.6%)
-        const costPrice = Math.round((shippingPrice + suitPrice + 6 + price * 0.006) * 100) / 100;
+        const costPrice = Math.round((shippingPrice + suitPrice + 6 + 4.5 + price * 0.106) * 100) / 100;
         const profit = Math.round((price - costPrice) * 100) / 100;
         data[i].costPrice = costPrice;
         data[i].profit = profit;
@@ -90,7 +90,7 @@ function PddItem() {
         data[i].profitMargin = Math.round(profit / price * 100 * 100) / 100;
         data[i].promotionProfit = Math.round(((price - 10) * (1 - 0.33) - costPrice) * 100) / 100;
         data[i].limitDiscount = Math.round((1 - profit / price) * 10 * 100) / 100;
-        data[i].tenPercentProfitPrice = Math.round((suitPrice + shippingPrice + 6) / (1 - 0.006 - 0.1))
+        data[i].tenPercentProfitPrice = Math.round((suitPrice + shippingPrice + 4.5 + 6) / (1 - 0.006 - 0.1 - 0.1))
         const adList = data[i].adList || [];
         let impression = 0;
         let click = 0;
@@ -250,6 +250,7 @@ function PddItem() {
           },
           {
             title: '售价',
+            field: 'skuGroupPriceMin',
             headerStyle: {
               color: '#3333FF',
             },
@@ -283,11 +284,11 @@ function PddItem() {
                     style={{
                       color: '#17A589',
                     }}>
-                    成本：{costPrice}
+                    成本：{costPrice}，售价：{suitPrice}
                   </div>
                   <div
                     style={{
-                      color: '#ffa502',
+                      color: '#d63031',
                     }}>
                     利润：{profit}
                   </div>
@@ -311,28 +312,60 @@ function PddItem() {
                   </div>
                   <div
                     style={{
-                      color: '#3742fa',
+                      color: '#9b59b6',
                     }}>
                     抖音售价：{Math.round((suitPrice + shippingPrice) / (1 - 0.1 - 0.4))}
                   </div>
                   <div
                     style={{
-                      color: '#3742fa',
+                      color: '#34495e',
                     }}>
                     抖音成本：{suitPrice + shippingPrice}
                   </div>
                   <div
                     style={{
-                      color: '#3742fa',
+                      color: '#e74c3c',
                     }}>
                     抖音佣金：{Math.round((suitPrice + shippingPrice) / (1 - 0.1 - 0.4) * 0.4)}
                   </div>
                   <div
                     style={{
-                      color: '#3742fa',
+                      color: '#e84393',
                     }}>
                     抖音利润：{Math.round((suitPrice + shippingPrice) / (1 - 0.1 - 0.4) * 0.1)}
                   </div>
+                </div>
+              );
+            },
+          },
+          {
+            title: '利润',
+            field: 'profit',
+            cellStyle: {
+              fontSize: 12,
+              color: '#9B59B6',
+            },
+            headerStyle: {
+              color: '#9B59B6',
+            },
+          },
+          {
+            title: '利润率',
+            field: 'profitMargin',
+            headerStyle: {
+              color: '#388E3C',
+            },
+            render: rowData => {
+              const {
+                profitMargin,
+              } = rowData;
+              return (
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: '#388E3C',
+                  }}>
+                  {profitMargin}%
                 </div>
               );
             },
@@ -348,6 +381,7 @@ function PddItem() {
               color: '#9B59B6',
             },
           },
+          /*
           {
             title: '单次点击利润',
             field: 'perClickProfit',
@@ -359,8 +393,9 @@ function PddItem() {
               color: '#e74c3c',
             },
           },
+          */
           {
-            title: '点击利润花费比',
+            title: '利润花费比',
             field: 'perClickProfitSpend',
             cellStyle: {
               fontSize: 12,
@@ -468,6 +503,7 @@ function PddItem() {
               );
             },
           },
+          /*
           {
             title: '单次点击花费',
             field: 'perClickSpend',
@@ -479,6 +515,7 @@ function PddItem() {
               color: '#27ae60',
             },
           },
+          */
           /*
           {
             title: '成本',
@@ -500,29 +537,6 @@ function PddItem() {
             },
             headerStyle: {
               color: '#F1C40F',
-            },
-          },
-          */
-          /*
-          {
-            title: '利润率',
-            field: 'profitMargin',
-            headerStyle: {
-              color: '#388E3C',
-            },
-            render: rowData => {
-              const {
-                profitMargin,
-              } = rowData;
-              return (
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: '#388E3C',
-                  }}>
-                  {profitMargin}%
-                </div>
-              );
             },
           },
           */

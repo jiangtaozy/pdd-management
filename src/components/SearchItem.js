@@ -34,7 +34,7 @@ function SearchItem() {
       const { data } = await axios.get('/searchTitleList');
       for(let i = 0; i < data.length; i++) {
         data[i].sellPrice = (data[i].price + 10) * 2;
-        data[i].tenPercentProfitPrice = Math.round((data[i].price + 5.5 + 6) / (1 - 0.006 - 0.1));
+        data[i].tenPercentProfitPrice = Math.round((data[i].price + 5.5 + 4.5 + 6) / (1 - 0.006 - 0.1 - 0.1));
       }
       setItemList(data);
     }
@@ -191,6 +191,19 @@ function SearchItem() {
               return (
                 <div>
                   {tenPercentProfitPrice}
+                </div>
+              );
+            },
+          },
+          {
+            title: "毛利率20%价格",
+            render: rowData => {
+              const {
+                price,
+              } = rowData;
+              return (
+                <div>
+                  {Math.round((price + 5.5 + 4.5 + 6) / (1 - 0.006 - 0.1 - 0.2))}
                 </div>
               );
             },

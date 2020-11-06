@@ -23,20 +23,21 @@ function Bill() {
     message: '',
   });
 
-  useEffect(() => {
-    const fetchBillList = async () => {
-      try {
-        const { data } = await axios.get('/billList');
-        console.log("data: ", data);
-        setBillList(data);
-      }
-      catch(err) {
-        console.error('bill-fetch-bill-list-error: ', err);
-        handleOpenSnackbar({
-          message: `出错了：${err.message}`,
-        });
-      }
+  const fetchBillList = async () => {
+    try {
+      const { data } = await axios.get('/billList');
+      console.log("data: ", data);
+      setBillList(data);
     }
+    catch(err) {
+      console.error('bill-fetch-bill-list-error: ', err);
+      handleOpenSnackbar({
+        message: `出错了：${err.message}`,
+      });
+    }
+  }
+
+  useEffect(() => {
     fetchBillList();
   }, []);
 
@@ -52,6 +53,7 @@ function Bill() {
         message: '操作成功',
       });
       setBillData('');
+      fetchBillList();
     }
     catch(err) {
       console.error('BillHandleBillDataButtonClickError: ', err);

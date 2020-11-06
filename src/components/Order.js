@@ -17,6 +17,7 @@ import GetTimeString from './utils/Time';
 import UploadHangOrderFile from './order/UploadHangOrderFile';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import HangAfterSale from './order/HangAfterSale';
+import OrderTimeStatistics from './order/OrderTimeStatistics';
 
 function Order() {
 
@@ -619,6 +620,9 @@ function Order() {
         }
       </div>
       */}
+      <OrderTimeStatistics
+        data={orderList}
+      />
       <Snackbar
         anchorOrigin={{
           horizontal: "center",
