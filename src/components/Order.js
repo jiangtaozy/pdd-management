@@ -275,6 +275,9 @@ function Order() {
           //commitmentDeliveryTime,
           //deliveryTime,
           //confirmDeliveryTime,
+          shippingName,
+          shippingAddress,
+          shippingPhone,
         } = rowData;
         return (
           <div style={{
@@ -302,6 +305,15 @@ function Order() {
               确认收货时间: {GetTimeString(confirmDeliveryTime)}
             </div>
             */}
+            <div>
+              收货人: {shippingName}
+            </div>
+            <div>
+              地址: {shippingAddress}
+            </div>
+            <div>
+              手机号: {shippingPhone}
+            </div>
           </div>
         );
       },

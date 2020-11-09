@@ -5,7 +5,7 @@
  * 订单时间统计
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import HourlyChart from '../utils/HourlyChart';
 
 function OrderTimeStatistics(props) {
