@@ -47,12 +47,16 @@ function AdUnitList() {
         let orderNum = 0;
         let mallFavNum = 0;
         let goodsFavNum = 0;
+        let spend = 0;
+        let gmv = 0;
         for(let i = 0; i < data.length; i++) {
           impression += data[i].impression;
           click += data[i].click;
           orderNum += data[i].orderNum;
           mallFavNum += data[i].mallFavNum;
           goodsFavNum += data[i].goodsFavNum;
+          spend += data[i].spend / 1000;
+          gmv += data[i].gmv / 1000;
         }
         const ctr = click / impression;
         const cvr = orderNum / click;
@@ -63,6 +67,8 @@ function AdUnitList() {
           cvr,
           cmfr,
           cgfr,
+          spend,
+          gmv,
         });
         for(let i = 0; i < data.length; i++) {
           data[i].ctrScore = data[i].ctr > ctr;
@@ -70,6 +76,7 @@ function AdUnitList() {
           data[i].cmfrScore = data[i].cmfr > cmfr;
           data[i].cgfrScore = data[i].cgfr > cgfr;
           data[i].score = data[i].ctrScore + data[i].cvrScore + data[i].cmfrScore + data[i].cgfrScore;
+          data[i].spendPercentage = data[i].gmv ? data[i].spend / data[i].gmv : 0;
         }
         setAdUnitList(data);
       }
@@ -88,6 +95,8 @@ function AdUnitList() {
     cvr,
     cmfr,
     cgfr,
+    spend,
+    gmv,
   } = totalData;
 
   return (
@@ -138,6 +147,30 @@ function AdUnitList() {
                   marginRight: 10,
                 }}>
                 收藏率：{ (cgfr * 100).toFixed(2) }%
+              </div>
+              <div
+                style={{
+                  marginRight: 10,
+                }}>
+                花费：{Math.round(spend * 100) / 100}元
+              </div>
+              <div
+                style={{
+                  marginRight: 10,
+                }}>
+                交易额：{Math.round(gmv * 100) / 100}元
+              </div>
+              <div
+                style={{
+                  marginRight: 10,
+                }}>
+                ROI 投产比：{Math.round(gmv / spend * 100) / 100}
+              </div>
+              <div
+                style={{
+                  marginRight: 10,
+                }}>
+                投产比倒数，花费除以交易额，花费占比：{Math.round(spend / gmv * 100) }%
               </div>
             </div>
           </div>
@@ -254,6 +287,22 @@ function AdUnitList() {
               return (
                 <div>
                   {gmv / 1000}
+                </div>
+              )
+            }
+          },
+          {
+            title: '花费占比',
+            field: 'spendPercentage',
+            filtering: false,
+            cellStyle: {
+              fontSize: 12,
+            },
+            render: rowData => {
+              const { spendPercentage } = rowData;
+              return (
+                <div>
+                  {Math.round(spendPercentage * 100)}%
                 </div>
               )
             }

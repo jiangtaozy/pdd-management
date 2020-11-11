@@ -312,6 +312,12 @@ function PddItem() {
                   </div>
                   <div
                     style={{
+                      color: '#EA2027',
+                    }}>
+                    阈值ROI：{Math.round(currentPrice * 0.9 / profit * 100) / 100}
+                  </div>
+                  <div
+                    style={{
                       color: '#9b59b6',
                     }}>
                     抖音售价：{Math.round((suitPrice + shippingPrice) / (1 - 0.1 - 0.4))}
