@@ -9,14 +9,18 @@ import React from 'react';
 import ItemCountChart from './ItemCountChart';
 import AdDataChart from './AdDataChart';
 import OrderStatistics from './order/OrderStatistics';
-import SaveAdUnitData from './SaveAdUnitData';
+//import SaveAdUnitData from './SaveAdUnitData';
+import SaveHarFile from './SaveHarFile';
 
 function DashBoard() {
 
   return (
     <div>
       <OrderStatistics />
+      <SaveHarFile />
+      {/*
       <SaveAdUnitData />
+      */}
       <AdDataChart />
       <ItemCountChart />
     </div>
