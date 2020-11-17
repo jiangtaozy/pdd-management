@@ -21,7 +21,7 @@ function Keyword() {
 
   const [ keywordList, setKeywordList ] = useState([]);
   const [ keywordId, setKeywordId ] = useState('');
-  const [ timeLimit, setTimeLimit ] = useState('yesterday');
+  const [ timeLimit, setTimeLimit ] = useState('ninetyDay');
   const [ snackbarState, setSnackbarState ] = useState({
     message: '',
     open: false,
@@ -309,6 +309,15 @@ function Keyword() {
             field: "keyword",
           },
           {
+            title: "曝光量",
+            field: "impression",
+            defaultSort: "desc",
+          },
+          {
+            title: "点击量",
+            field: "click",
+          },
+          {
             title: "花费",
             field: "spend",
             defaultSort: "desc",
@@ -356,14 +365,6 @@ function Keyword() {
                 </div>
               );
             },
-          },
-          {
-            title: "曝光量",
-            field: "impression",
-          },
-          {
-            title: "点击量",
-            field: "click",
           },
           {
             title: "出价",

@@ -25,6 +25,7 @@ function PddItem() {
   const [ pddGoodsList, setPddGoodsList ] = useState([]);
 
   const { message, open } = snackbarState;
+  const [ selectedRow, setSelectedRow ] = useState();
 
   async function handlePddGoodsDataButtonClick() {
     if(!pddGoodsData) {
@@ -82,7 +83,7 @@ function PddItem() {
         }
         const price = skuGroupPriceMax / 100;
         // 运费 + 售价 + 运费险(约 2 元) + 服务费(0.6%)
-        const costPrice = Math.round((shippingPrice + suitPrice + 6 + 4.5 + price * 0.106) * 100) / 100;
+        const costPrice = Math.round((shippingPrice + suitPrice + 6 + 4.5 + price * 0.006) * 100) / 100;
         const profit = Math.round((price - costPrice) * 100) / 100;
         data[i].costPrice = costPrice;
         data[i].profit = profit;
@@ -90,7 +91,7 @@ function PddItem() {
         data[i].profitMargin = Math.round(profit / price * 100 * 100) / 100;
         data[i].promotionProfit = Math.round(((price - 10) * (1 - 0.33) - costPrice) * 100) / 100;
         data[i].limitDiscount = Math.round((1 - profit / price) * 10 * 100) / 100;
-        data[i].tenPercentProfitPrice = Math.round((suitPrice + shippingPrice + 4.5 + 6) / (1 - 0.006 - 0.1 - 0.1))
+        data[i].fiftyProfitPrice = Math.round((suitPrice + shippingPrice + 4.5 + 6) / (1 - 0.006 - 0.5))
         const adList = data[i].adList || [];
         let impression = 0;
         let click = 0;
@@ -154,9 +155,13 @@ function PddItem() {
         options={{
           filtering: true,
           searchFieldAlignment: 'left',
+          rowStyle: rowData => ({
+            backgroundColor: (selectedRow && selectedRow.tableData.id === rowData.tableData.id) ? '#EEE' : '#fff',
+          }),
         }}
         data={pddGoodsList}
         title="拼多多商品列表"
+        onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow))}
         columns={[
           {
             title: "商品信息",
@@ -260,7 +265,7 @@ function PddItem() {
                 skuGroupPriceMax,
                 costPrice,
                 profit,
-                tenPercentProfitPrice,
+                fiftyProfitPrice,
                 suitPrice,
                 shippingPrice,
               } = rowData;
@@ -284,7 +289,19 @@ function PddItem() {
                     style={{
                       color: '#17A589',
                     }}>
-                    成本：{costPrice}，售价：{suitPrice}
+                    成本价：{suitPrice}
+                  </div>
+                  <div
+                    style={{
+                      color: '#17A589',
+                    }}>
+                    运费、礼品费、发货费、服务费、运费险：{Math.round((shippingPrice + 6 + 4.5 + currentPrice * 0.006) * 100) / 100}
+                  </div>
+                  <div
+                    style={{
+                      color: '#17A589',
+                    }}>
+                    总成本：{costPrice}
                   </div>
                   <div
                     style={{
@@ -300,15 +317,9 @@ function PddItem() {
                   </div>
                   <div
                     style={{
-                      color: '#ee5253',
-                    }}>
-                    毛利率增加1%售价：{Math.round(costPrice / (1 - 0.01 - Math.round(profit / currentPrice * 100) / 100))}
-                  </div>
-                  <div
-                    style={{
                       color: '#3742fa',
                     }}>
-                    毛利润10%售价：{tenPercentProfitPrice}
+                    毛利润50%售价(包括优惠)：{fiftyProfitPrice}：<span style={{fontSize: 24, color: '#eb2f06'}}>{Math.floor(fiftyProfitPrice / 10) * 10 + 9}</span>
                   </div>
                   <div
                     style={{
