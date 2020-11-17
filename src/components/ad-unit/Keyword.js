@@ -49,7 +49,12 @@ function Keyword() {
           adId: id,
         },
       });
-      const list = getRefactoredList(data || []);
+      const { data: orderList } = await axios.get('/orderListByAdId', {
+        params: {
+          adId: id,
+        },
+      });
+      const list = getRefactoredList(data || [], orderList);
       if(list.length > 0) {
         setKeywordId(list[0].keywordId.toString());
       }
@@ -67,7 +72,7 @@ function Keyword() {
     fetchKeywordList();
   }, [id]);
 
-  const getRefactoredList = (keywordList) => {
+  const getRefactoredList = (keywordList, orderList) => {
     const refactoredList = [];
     for(let i = 0; i < keywordList.length; i++) {
       keywordList[i].spend = keywordList[i].spend / 1000;
@@ -75,6 +80,7 @@ function Keyword() {
       keywordList[i].gmv = keywordList[i].gmv / 1000;
       keywordList[i].bid = keywordList[i].bid / 1000;
       keywordList[i].bidPremiumValue = keywordList[i].bidPremiumValue / 1000;
+      calcKeywordProfit(keywordList[i], orderList);
       const {
         keyword,
         keywordId,
@@ -96,6 +102,46 @@ function Keyword() {
       }
     }
     return refactoredList;
+  }
+
+  const calcKeywordProfit = (keyword, orderList) => {
+    const {
+      date,
+      orderNum,
+      spend,
+    } = keyword;
+    if(!orderNum) {
+      keyword.profit = 0;
+      keyword.realOrderNum = 0;
+      keyword.netProfit = -spend;
+      return;
+    }
+    const keywordDate = new Date(date);
+    let realOrderNum = 0;
+    let profit = 0;
+    for(let i = 0; i < orderList.length; i++) {
+      const {
+        userPaidAmount,
+        platformDiscount,
+        actualPayment,
+        orderStatus,
+        afterSaleStatus,
+        paymentTime,
+      } = orderList[i];
+      const orderDate = new Date(paymentTime);
+      if(keywordDate.getFullYear() === orderDate.getFullYear() &&
+        keywordDate.getMonth() === orderDate.getMonth() &&
+        keywordDate.getDate() === orderDate.getDate() &&
+        orderStatus === "1" &&
+        (afterSaleStatus === 0 || afterSaleStatus === 6 || afterSaleStatus === 12 || afterSaleStatus === 16) && 
+        realOrderNum <= orderNum) {
+        realOrderNum++;
+        profit += (userPaidAmount + platformDiscount) / 100 - actualPayment;
+      }
+    }
+    keyword.profit = Math.round(profit * 100) / 100;
+    keyword.realOrderNum = realOrderNum;
+    keyword.netProfit = Math.round((profit - spend) * 100) / 100;
   }
 
   const handleKeywordIdChange = (e) => {
@@ -135,6 +181,8 @@ function Keyword() {
       let gmv = 0;
       let bid = 0;
       let qualityScore = 0;
+      let profit = 0;
+      let realOrderNum = 0;
       let count = 0;
       for(let j = 0; j < data.length; j++) {
         const date = new Date(data[j].date);
@@ -157,6 +205,8 @@ function Keyword() {
           gmv += data[j].gmv;
           bid += data[j].bid;
           qualityScore += data[j].qualityScore;
+          profit += data[j].profit;
+          realOrderNum += data[j].realOrderNum;
           count++;
         }
       }
@@ -178,8 +228,13 @@ function Keyword() {
         orderNum,
         cvr: Math.round(orderNum / click * 10000) / 100 || 0,
         gmv,
+        roi: Math.round(gmv / spend * 100) / 100,
         bid,
         qualityScore,
+        profit,
+        realOrderNum,
+        netProfitSpendRatio: Math.round((profit - spend) / spend * 100) / 100,
+        netProfit: Math.round((profit - spend) * 100) / 100,
       }
       newList.push(tableData);
     }
@@ -214,6 +269,18 @@ function Keyword() {
           {
             value: 'spend',
             label: '推广花费(元)',
+          },
+          {
+            value: 'profit',
+            label: '实际利润',
+          },
+          {
+            value: 'netProfit',
+            label: '实际净利润',
+          },
+          {
+            value: 'realOrderNum',
+            label: '实际订单',
           },
           {
             value: 'cpm',
@@ -307,24 +374,43 @@ function Keyword() {
           {
             title: "关键字",
             field: "keyword",
+            cellStyle: {
+              color: '#ff4757'
+            },
+            headerStyle: {
+              color: '#ff4757'
+            },
           },
           {
             title: "曝光量",
             field: "impression",
             defaultSort: "desc",
+            cellStyle: {
+              color: '#747d8c'
+            },
+            headerStyle: {
+              color: '#747d8c'
+            },
           },
           {
             title: "点击量",
             field: "click",
-          },
-          {
-            title: "花费",
-            field: "spend",
-            defaultSort: "desc",
+            cellStyle: {
+              color: '#2f3542'
+            },
+            headerStyle: {
+              color: '#2f3542'
+            },
           },
           {
             title: "点击率",
             field: "ctr",
+            cellStyle: {
+              color: '#eb4d4b'
+            },
+            headerStyle: {
+              color: '#eb4d4b'
+            },
             render: rowData => {
               return (
                 <div>
@@ -333,6 +419,18 @@ function Keyword() {
               );
             },
           },
+          {
+            title: "花费",
+            field: "spend",
+            cellStyle: {
+              color: '#70a1ff'
+            },
+            headerStyle: {
+              color: '#70a1ff'
+            },
+            defaultSort: "desc",
+          },
+          /*
           {
             title: "点击转化率",
             field: "cvr",
@@ -370,25 +468,106 @@ function Keyword() {
             title: "出价",
             field: "bid",
           },
+          */
+          {
+            title: "利润花费比",
+            field: "netProfitSpendRatio",
+            cellStyle: {
+              color: '#eb4d4b'
+            },
+            headerStyle: {
+              color: '#eb4d4b'
+            },
+          },
+          {
+            title: "实际利润",
+            field: "profit",
+            cellStyle: {
+              color: '#2ed573'
+            },
+            headerStyle: {
+              color: '#2ed573'
+            },
+          },
+          {
+            title: "实际净利润",
+            field: "netProfit",
+            cellStyle: {
+              color: '#e15f41'
+            },
+            headerStyle: {
+              color: '#e15f41'
+            },
+          },
+          {
+            title: "实际订单量",
+            field: "realOrderNum",
+            cellStyle: {
+              color: '#22a6b3'
+            },
+            headerStyle: {
+              color: '#22a6b3'
+            },
+          },
           {
             title: "订单量",
             field: "orderNum",
+            cellStyle: {
+              color: '#686de0'
+            },
+            headerStyle: {
+              color: '#686de0'
+            },
           },
           {
             title: "交易额",
             field: "gmv",
+            cellStyle: {
+              color: '#5352ed'
+            },
+            headerStyle: {
+              color: '#5352ed'
+            },
+          },
+          {
+            title: "产出投入比",
+            field: "roi",
+            cellStyle: {
+              color: '#ff7979'
+            },
+            headerStyle: {
+              color: '#ff7979'
+            },
           },
           {
             title: "收藏量",
             field: "goodsFavNum",
+            cellStyle: {
+              color: '#30336b'
+            },
+            headerStyle: {
+              color: '#30336b'
+            },
           },
           {
             title: "关注量",
             field: "mallFavNum",
+            cellStyle: {
+              color: '#f9ca24'
+            },
+            headerStyle: {
+              color: '#f9ca24'
+            },
           },
           {
             title: "质量分",
             field: "qualityScore",
+            cellStyle: {
+              color: '#130f40'
+            },
+            headerStyle: {
+              color: '#130f40'
+            },
           },
         ]}
       />
