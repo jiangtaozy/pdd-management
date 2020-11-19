@@ -208,7 +208,7 @@ function PddItem() {
                       </div>
                     </div>
                     <div style={{
-                      width: 200,
+                      width: 100,
                     }}>
                       {goodsName}
                     </div>
@@ -221,7 +221,7 @@ function PddItem() {
                     </div>
                     <div
                       style={{
-                        width: 200,
+                        width: 100,
                       }}>
                       <Link
                         href={detailUrl}
@@ -355,6 +355,7 @@ function PddItem() {
               );
             },
           },
+          /*
           {
             title: '利润',
             field: 'profit',
@@ -387,6 +388,7 @@ function PddItem() {
               );
             },
           },
+          */
           {
             title: '商品名称',
             field: 'name',
@@ -432,7 +434,32 @@ function PddItem() {
             headerStyle: {
               color: '#3498db',
             },
+            render: rowData => {
+              const {
+                impression,
+                click,
+                ctr,
+                spend,
+              } = rowData;
+              return (
+                <div>
+                  <div>
+                    曝光量：{impression}
+                  </div>
+                  <div>
+                    点击量：{click}
+                  </div>
+                  <div>
+                    点击率：{ctr}
+                  </div>
+                  <div>
+                    花费：{spend}
+                  </div>
+                </div>
+              );
+            },
           },
+          /*
           {
             title: '点击量',
             field: 'click',
@@ -466,6 +493,7 @@ function PddItem() {
               color: '#9b59b6',
             },
           },
+          */
           {
             title: '订单利润',
             field: 'orderProfit',
@@ -476,7 +504,32 @@ function PddItem() {
             headerStyle: {
               color: '#f1c40f',
             },
+            render: rowData => {
+              const {
+                orderProfit,
+                totalOrderNum,
+                realOrderNum,
+                afterSaleRate,
+              } = rowData;
+              return (
+                <div>
+                  <div>
+                    订单利润：{orderProfit}
+                  </div>
+                  <div>
+                    总订单量：{totalOrderNum}
+                  </div>
+                  <div>
+                    无售后订单量：{realOrderNum}
+                  </div>
+                  <div>
+                    退货率：{Math.round(afterSaleRate * 100 * 100) / 100}%
+                  </div>
+                </div>
+              );
+            },
           },
+          /*
           {
             title: '总订单量',
             field: 'totalOrderNum',
@@ -520,6 +573,7 @@ function PddItem() {
               );
             },
           },
+          */
           /*
           {
             title: '单次点击花费',
@@ -641,6 +695,7 @@ function PddItem() {
               color: '#9B59B6',
             },
           },
+          /*
           {
             title: '店铺',
             field: 'siteType',
@@ -653,6 +708,7 @@ function PddItem() {
               2: '女装网',
             },
           },
+          */
           /*
           {
             title: '收藏数',

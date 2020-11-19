@@ -134,7 +134,7 @@ function Keyword() {
         keywordDate.getDate() === orderDate.getDate() &&
         orderStatus === "1" &&
         (afterSaleStatus === 0 || afterSaleStatus === 6 || afterSaleStatus === 12 || afterSaleStatus === 16) && 
-        realOrderNum <= orderNum) {
+        realOrderNum < orderNum) {
         realOrderNum++;
         profit += (userPaidAmount + platformDiscount) / 100 - actualPayment;
       }
@@ -470,13 +470,13 @@ function Keyword() {
           },
           */
           {
-            title: "利润花费比",
+            title: "净利润花费比",
             field: "netProfitSpendRatio",
             cellStyle: {
-              color: '#eb4d4b'
+              color: '#44bd32'
             },
             headerStyle: {
-              color: '#eb4d4b'
+              color: '#44bd32'
             },
           },
           {
@@ -493,10 +493,10 @@ function Keyword() {
             title: "实际净利润",
             field: "netProfit",
             cellStyle: {
-              color: '#e15f41'
+              color: '#4cd137'
             },
             headerStyle: {
-              color: '#e15f41'
+              color: '#4cd137'
             },
           },
           {
