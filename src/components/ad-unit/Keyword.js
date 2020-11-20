@@ -20,7 +20,7 @@ import tableIcons from '../utils/TableIcons';
 function Keyword() {
 
   const [ keywordList, setKeywordList ] = useState([]);
-  const [ keywordId, setKeywordId ] = useState('');
+  const [ keywordId, setKeywordId ] = useState('0');
   const [ timeLimit, setTimeLimit ] = useState('ninetyDay');
   const [ snackbarState, setSnackbarState ] = useState({
     message: '',
@@ -55,9 +55,7 @@ function Keyword() {
         },
       });
       const list = getRefactoredList(data || [], orderList);
-      if(list.length > 0) {
-        setKeywordId(list[0].keywordId.toString());
-      }
+      calcSumData(list);
       setKeywordList(list);
     }
     catch(err) {
@@ -144,6 +142,60 @@ function Keyword() {
     keyword.netProfit = Math.round((profit - spend) * 100) / 100;
   }
 
+  const calcSumData = (list) => {
+    const sumKeywordData = {
+      keyword: "全部",
+      keywordId: 0,
+      data: [],
+    }
+    const sumKeywordDataList = sumKeywordData.data;
+    for(let i = 0; i < list.length; i++) {
+      const keywordDataList = list[i].data;
+      for(let j = 0; j < keywordDataList.length; j++) {
+        const keywordData = keywordDataList[j];
+        const date = new Date(keywordData.date);
+        let hasInList = false;
+        for(let k = 0; k < sumKeywordDataList.length; k++) {
+          const sumKeywordData = sumKeywordDataList[k];
+          const sumDate = new Date(sumKeywordData.date);
+          if(date.getFullYear() === sumDate.getFullYear() &&
+            date.getMonth() === sumDate.getMonth() &&
+            date.getDate() === sumDate.getDate()) {
+            sumKeywordData.click += keywordData.click;
+            sumKeywordData.gmv += keywordData.gmv;
+            sumKeywordData.goodsFavNum += keywordData.goodsFavNum;
+            sumKeywordData.impression += keywordData.impression;
+            sumKeywordData.mallFavNum += keywordData.mallFavNum;
+            sumKeywordData.netProfit += keywordData.netProfit;
+            sumKeywordData.orderNum += keywordData.orderNum;
+            sumKeywordData.profit += keywordData.profit;
+            sumKeywordData.realOrderNum += keywordData.realOrderNum;
+            sumKeywordData.spend += keywordData.spend;
+            hasInList = true;
+            break;
+          }
+        }
+        if(!hasInList) {
+          sumKeywordDataList.push({
+            date: keywordData.date,
+            click: keywordData.click,
+            gmv: keywordData.gmv,
+            goodsFavNum: keywordData.goodsFavNum,
+            impression: keywordData.impression,
+            mallFavNum: keywordData.mallFavNum,
+            netProfit: keywordData.netProfit,
+            orderNum: keywordData.orderNum,
+            profit: keywordData.profit,
+            realOrderNum: keywordData.realOrderNum,
+            spend: keywordData.spend,
+          });
+        }
+      }
+    }
+    sumKeywordDataList.sort((a, b) => new Date(a.date) - new Date(b.date));
+    list.push(sumKeywordData);
+  }
+
   const handleKeywordIdChange = (e) => {
     setKeywordId(e.target.value);
   }
@@ -169,6 +221,7 @@ function Keyword() {
     const newList = [];
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    let totalCtr = 0;
     for(let i = 0; i < list.length; i++) {
       const keyword = list[i];
       const data = keyword.data;
@@ -210,9 +263,15 @@ function Keyword() {
           count++;
         }
       }
+      let yesterdayImpressionGreaterThanZero = false;
       if(data.length > 0) {
         bid = Math.round(bid / count * 100) / 100;
         qualityScore = Math.round(qualityScore / count * 100) / 100;
+        const lastDate = new Date(data[data.length - 1].date);
+        const today = new Date();
+        if(today - lastDate < 48 * 60 * 60 * 1000) {
+          yesterdayImpressionGreaterThanZero = true;
+        }
       }
       const tableData = {
         keyword: keyword.keyword,
@@ -227,16 +286,26 @@ function Keyword() {
         mfvr: Math.round(mallFavNum / click * 10000) / 100 || 0,
         orderNum,
         cvr: Math.round(orderNum / click * 10000) / 100 || 0,
-        gmv,
+        gmv: Math.round(gmv * 100) / 100,
         roi: Math.round(gmv / spend * 100) / 100,
         bid,
         qualityScore,
-        profit,
+        profit: Math.round(profit * 100) / 100,
         realOrderNum,
         netProfitSpendRatio: Math.round((profit - spend) / spend * 100) / 100,
         netProfit: Math.round((profit - spend) * 100) / 100,
+        impressionGreaterThanTen: impression >= 10,
+        impressionGreaterThanThousand: impression >= 1000,
+        yesterdayImpressionGreaterThanZero,
+        netProfitSpendRatioSmallerThanThreshold: (profit - spend) / spend < 0.1,
+      }
+      if(keyword.keywordId === 0) {
+        totalCtr = tableData.ctr;
       }
       newList.push(tableData);
+    }
+    for(let i = 0; i < newList.length; i++) {
+      newList[i].ctrSmallerThanTotal = newList[i].ctr < totalCtr;
     }
     return newList;
   }
@@ -364,6 +433,7 @@ function Keyword() {
         data={tableDataList}
         title="关键字列表"
         options={{
+          filtering: true,
           searchFieldAlignment: 'left',
           rowStyle: rowData => ({
             backgroundColor: (keywordId === rowData.keywordId.toString()) ? '#EEE' : '#fff',
@@ -558,6 +628,31 @@ function Keyword() {
             headerStyle: {
               color: '#f9ca24'
             },
+          },
+          {
+            title: '曝光大于10',
+            field: 'impressionGreaterThanTen',
+            type: 'boolean',
+          },
+          {
+            title: '曝光大于1000',
+            field: 'impressionGreaterThanThousand',
+            type: 'boolean',
+          },
+          {
+            title: '点击率小于平均',
+            field: 'ctrSmallerThanTotal',
+            type: 'boolean',
+          },
+          {
+            title: '昨天曝光量大于零',
+            field: 'yesterdayImpressionGreaterThanZero',
+            type: 'boolean',
+          },
+          {
+            title: '净利润花费比小于阈值0.1',
+            field: 'netProfitSpendRatioSmallerThanThreshold',
+            type: 'boolean',
           },
           {
             title: "质量分",
