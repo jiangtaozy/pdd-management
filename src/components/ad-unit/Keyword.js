@@ -54,7 +54,7 @@ function Keyword() {
           adId: id,
         },
       });
-      const list = getRefactoredList(data || [], orderList);
+      const list = getRefactoredList(data || [], orderList || []);
       calcSumData(list);
       setKeywordList(list);
     }
@@ -313,6 +313,239 @@ function Keyword() {
   const data = getKeywordListData(keywordList, keywordId);
   const tableDataList = getTableData(keywordList);
 
+  const [ columns ] = useState([
+    {
+      title: "关键字",
+      field: "keyword",
+      cellStyle: {
+        color: '#ff4757'
+      },
+      headerStyle: {
+        color: '#ff4757'
+      },
+    },
+    {
+      title: "曝光量",
+      field: "impression",
+      defaultSort: "desc",
+      cellStyle: {
+        color: '#747d8c'
+      },
+      headerStyle: {
+        color: '#747d8c'
+      },
+    },
+    {
+      title: "点击量",
+      field: "click",
+      cellStyle: {
+        color: '#2f3542'
+      },
+      headerStyle: {
+        color: '#2f3542'
+      },
+    },
+    {
+      title: "点击率",
+      field: "ctr",
+      cellStyle: {
+        color: '#eb4d4b'
+      },
+      headerStyle: {
+        color: '#eb4d4b'
+      },
+      render: rowData => {
+        return (
+          <div>
+          {rowData.ctr}%
+          </div>
+        );
+      },
+    },
+    {
+      title: "花费",
+      field: "spend",
+      cellStyle: {
+        color: '#70a1ff'
+      },
+      headerStyle: {
+        color: '#70a1ff'
+      },
+      defaultSort: "desc",
+    },
+    /*
+    {
+      title: "点击转化率",
+      field: "cvr",
+      render: rowData => {
+        return (
+          <div>
+            {rowData.cvr}%
+          </div>
+        );
+      },
+    },
+    {
+      title: "点击收藏率",
+      field: "gfvr",
+      render: rowData => {
+        return (
+          <div>
+            {rowData.gfvr}%
+          </div>
+        );
+      },
+    },
+    {
+      title: "点击关注率",
+      field: "mfvr",
+      render: rowData => {
+        return (
+          <div>
+            {rowData.mfvr}%
+          </div>
+        );
+      },
+    },
+    {
+      title: "出价",
+      field: "bid",
+    },
+    */
+    {
+      title: "净利润花费比",
+      field: "netProfitSpendRatio",
+      cellStyle: {
+        color: '#44bd32'
+      },
+      headerStyle: {
+        color: '#44bd32'
+      },
+    },
+    {
+      title: "实际利润",
+      field: "profit",
+      cellStyle: {
+        color: '#2ed573'
+      },
+      headerStyle: {
+        color: '#2ed573'
+      },
+    },
+    {
+      title: "实际净利润",
+      field: "netProfit",
+      cellStyle: {
+        color: '#4cd137'
+      },
+      headerStyle: {
+        color: '#4cd137'
+      },
+    },
+    {
+      title: "实际订单量",
+      field: "realOrderNum",
+      cellStyle: {
+        color: '#22a6b3'
+      },
+      headerStyle: {
+        color: '#22a6b3'
+      },
+    },
+    {
+      title: "订单量",
+      field: "orderNum",
+      cellStyle: {
+        color: '#686de0'
+      },
+      headerStyle: {
+        color: '#686de0'
+      },
+    },
+    /*
+    {
+      title: "交易额",
+      field: "gmv",
+      cellStyle: {
+        color: '#5352ed'
+      },
+      headerStyle: {
+        color: '#5352ed'
+      },
+    },
+    {
+      title: "产出投入比",
+      field: "roi",
+      cellStyle: {
+        color: '#ff7979'
+      },
+      headerStyle: {
+        color: '#ff7979'
+      },
+    },
+    {
+      title: "收藏量",
+      field: "goodsFavNum",
+      cellStyle: {
+        color: '#30336b'
+      },
+      headerStyle: {
+        color: '#30336b'
+      },
+    },
+    {
+      title: "关注量",
+      field: "mallFavNum",
+      cellStyle: {
+        color: '#f9ca24'
+      },
+      headerStyle: {
+        color: '#f9ca24'
+      },
+    },
+    */
+    {
+      title: '曝光大于10',
+      field: 'impressionGreaterThanTen',
+      type: 'boolean',
+      defaultFilter: 'checked',
+    },
+    {
+      title: '点击率小于平均',
+      field: 'ctrSmallerThanTotal',
+      type: 'boolean',
+      defaultFilter: 'checked',
+    },
+    {
+      title: '昨天曝光量大于零',
+      field: 'yesterdayImpressionGreaterThanZero',
+      type: 'boolean',
+      defaultFilter: 'checked',
+    },
+    {
+      title: '曝光大于1000',
+      field: 'impressionGreaterThanThousand',
+      type: 'boolean',
+    },
+    {
+      title: '净利润花费比小于阈值0.1',
+      field: 'netProfitSpendRatioSmallerThanThreshold',
+      type: 'boolean',
+    },
+    /*
+    {
+      title: "质量分",
+      field: "qualityScore",
+      cellStyle: {
+        color: '#130f40'
+      },
+      headerStyle: {
+        color: '#130f40'
+      },
+    },
+    */
+  ]);
+
   return (
     <div>
       <Chart
@@ -440,231 +673,7 @@ function Keyword() {
           }),
         }}
         onRowClick={onRowClick}
-        columns={[
-          {
-            title: "关键字",
-            field: "keyword",
-            cellStyle: {
-              color: '#ff4757'
-            },
-            headerStyle: {
-              color: '#ff4757'
-            },
-          },
-          {
-            title: "曝光量",
-            field: "impression",
-            defaultSort: "desc",
-            cellStyle: {
-              color: '#747d8c'
-            },
-            headerStyle: {
-              color: '#747d8c'
-            },
-          },
-          {
-            title: "点击量",
-            field: "click",
-            cellStyle: {
-              color: '#2f3542'
-            },
-            headerStyle: {
-              color: '#2f3542'
-            },
-          },
-          {
-            title: "点击率",
-            field: "ctr",
-            cellStyle: {
-              color: '#eb4d4b'
-            },
-            headerStyle: {
-              color: '#eb4d4b'
-            },
-            render: rowData => {
-              return (
-                <div>
-                  {rowData.ctr}%
-                </div>
-              );
-            },
-          },
-          {
-            title: "花费",
-            field: "spend",
-            cellStyle: {
-              color: '#70a1ff'
-            },
-            headerStyle: {
-              color: '#70a1ff'
-            },
-            defaultSort: "desc",
-          },
-          /*
-          {
-            title: "点击转化率",
-            field: "cvr",
-            render: rowData => {
-              return (
-                <div>
-                  {rowData.cvr}%
-                </div>
-              );
-            },
-          },
-          {
-            title: "点击收藏率",
-            field: "gfvr",
-            render: rowData => {
-              return (
-                <div>
-                  {rowData.gfvr}%
-                </div>
-              );
-            },
-          },
-          {
-            title: "点击关注率",
-            field: "mfvr",
-            render: rowData => {
-              return (
-                <div>
-                  {rowData.mfvr}%
-                </div>
-              );
-            },
-          },
-          {
-            title: "出价",
-            field: "bid",
-          },
-          */
-          {
-            title: "净利润花费比",
-            field: "netProfitSpendRatio",
-            cellStyle: {
-              color: '#44bd32'
-            },
-            headerStyle: {
-              color: '#44bd32'
-            },
-          },
-          {
-            title: "实际利润",
-            field: "profit",
-            cellStyle: {
-              color: '#2ed573'
-            },
-            headerStyle: {
-              color: '#2ed573'
-            },
-          },
-          {
-            title: "实际净利润",
-            field: "netProfit",
-            cellStyle: {
-              color: '#4cd137'
-            },
-            headerStyle: {
-              color: '#4cd137'
-            },
-          },
-          {
-            title: "实际订单量",
-            field: "realOrderNum",
-            cellStyle: {
-              color: '#22a6b3'
-            },
-            headerStyle: {
-              color: '#22a6b3'
-            },
-          },
-          {
-            title: "订单量",
-            field: "orderNum",
-            cellStyle: {
-              color: '#686de0'
-            },
-            headerStyle: {
-              color: '#686de0'
-            },
-          },
-          {
-            title: "交易额",
-            field: "gmv",
-            cellStyle: {
-              color: '#5352ed'
-            },
-            headerStyle: {
-              color: '#5352ed'
-            },
-          },
-          {
-            title: "产出投入比",
-            field: "roi",
-            cellStyle: {
-              color: '#ff7979'
-            },
-            headerStyle: {
-              color: '#ff7979'
-            },
-          },
-          {
-            title: "收藏量",
-            field: "goodsFavNum",
-            cellStyle: {
-              color: '#30336b'
-            },
-            headerStyle: {
-              color: '#30336b'
-            },
-          },
-          {
-            title: "关注量",
-            field: "mallFavNum",
-            cellStyle: {
-              color: '#f9ca24'
-            },
-            headerStyle: {
-              color: '#f9ca24'
-            },
-          },
-          {
-            title: '曝光大于10',
-            field: 'impressionGreaterThanTen',
-            type: 'boolean',
-          },
-          {
-            title: '曝光大于1000',
-            field: 'impressionGreaterThanThousand',
-            type: 'boolean',
-          },
-          {
-            title: '点击率小于平均',
-            field: 'ctrSmallerThanTotal',
-            type: 'boolean',
-          },
-          {
-            title: '昨天曝光量大于零',
-            field: 'yesterdayImpressionGreaterThanZero',
-            type: 'boolean',
-          },
-          {
-            title: '净利润花费比小于阈值0.1',
-            field: 'netProfitSpendRatioSmallerThanThreshold',
-            type: 'boolean',
-          },
-          {
-            title: "质量分",
-            field: "qualityScore",
-            cellStyle: {
-              color: '#130f40'
-            },
-            headerStyle: {
-              color: '#130f40'
-            },
-          },
-        ]}
+        columns={columns}
       />
       <RadioGroup
         row
