@@ -269,7 +269,7 @@ function Keyword() {
         qualityScore = Math.round(qualityScore / count * 100) / 100;
         const lastDate = new Date(data[data.length - 1].date);
         const today = new Date();
-        if(today - lastDate < 48 * 60 * 60 * 1000) {
+        if(today - lastDate < 24 * 60 * 60 * 1000) {
           yesterdayImpressionGreaterThanZero = true;
         }
       }
@@ -305,7 +305,7 @@ function Keyword() {
       newList.push(tableData);
     }
     for(let i = 0; i < newList.length; i++) {
-      newList[i].ctrSmallerThanTotal = newList[i].ctr < totalCtr;
+      newList[i].ctrSmallerThanTotal = newList[i].ctr <= totalCtr;
     }
     return newList;
   }
@@ -505,7 +505,7 @@ function Keyword() {
     },
     */
     {
-      title: '曝光大于10',
+      title: '总曝光大于10',
       field: 'impressionGreaterThanTen',
       type: 'boolean',
       defaultFilter: 'checked',
@@ -523,7 +523,7 @@ function Keyword() {
       defaultFilter: 'checked',
     },
     {
-      title: '曝光大于1000',
+      title: '总曝光大于1000',
       field: 'impressionGreaterThanThousand',
       type: 'boolean',
     },
