@@ -28,6 +28,7 @@ function Keyword() {
   });
   const { message, open } = snackbarState;
   const { id } = useParams();
+  const [ mallTotalCtr, setMallTotalCtr ] = useState(0);
 
   const handleOpenSnackbar = ({message}) => {
     setSnackbarState({
@@ -66,8 +67,27 @@ function Keyword() {
     }
   }
 
+  const fetchMallTotalData = async () => {
+    try {
+      const { data: list } = await axios.get('/mallTotalAdData');
+      for(let i = 0; i < list.length; i++) {
+        if(list[i].mallId === 777561295 &&
+          list[i].scenesType === 0) {
+          setMallTotalCtr(list[i].click / list[i].impression);
+        }
+      }
+    }
+    catch(err) {
+      console.error('keyword-fetch-mall-total-data-error: ', err);
+      handleOpenSnackbar({
+        message: `出错了：${err.message}`,
+      });
+    }
+  }
+
   useEffect(() => {
     fetchKeywordList();
+    fetchMallTotalData();
   }, [id]);
 
   const getRefactoredList = (keywordList, orderList) => {
@@ -297,7 +317,8 @@ function Keyword() {
         impressionGreaterThanTen: impression >= 10,
         impressionGreaterThanThousand: impression >= 1000,
         yesterdayImpressionGreaterThanZero,
-        netProfitSpendRatioSmallerThanThreshold: (profit - spend) / spend < 0.1,
+        netProfitSpendRatioSmallerThanThreshold: (profit - spend) / spend < 1,
+        ctrSmallerThanMallTotalCtr: click / impression < mallTotalCtr,
       }
       if(keyword.keywordId === 0) {
         totalCtr = tableData.ctr;
@@ -514,6 +535,11 @@ function Keyword() {
       title: '点击率小于平均',
       field: 'ctrSmallerThanTotal',
       type: 'boolean',
+    },
+    {
+      title: '点击率小于店铺平均',
+      field: 'ctrSmallerThanMallTotalCtr',
+      type: 'boolean',
       defaultFilter: 'checked',
     },
     {
@@ -528,7 +554,7 @@ function Keyword() {
       type: 'boolean',
     },
     {
-      title: '净利润花费比小于阈值0.1',
+      title: '净利润花费比小于阈值1',
       field: 'netProfitSpendRatioSmallerThanThreshold',
       type: 'boolean',
     },
@@ -548,6 +574,58 @@ function Keyword() {
 
   return (
     <div>
+      <div>
+        总点击率：{mallTotalCtr}
+      </div>
+      <RadioGroup
+        row
+        value={timeLimit}
+        onChange={handleTimeLimitChange}>
+          <FormControlLabel
+            key="yesterday"
+            value="yesterday"
+            control={<Radio />}
+            label="昨天"
+          />
+          <FormControlLabel
+            key="sevenDay"
+            value="sevenDay"
+            control={<Radio />}
+            label="7天"
+          />
+          <FormControlLabel
+            key="thirtyDay"
+            value="thirtyDay"
+            control={<Radio />}
+            label="30天"
+          />
+          <FormControlLabel
+            key="ninetyDay"
+            value="ninetyDay"
+            control={<Radio />}
+            label="90天"
+          />
+          <FormControlLabel
+            key="total"
+            value="total"
+            control={<Radio />}
+            label="全部"
+          />
+      </RadioGroup>
+      <MaterialTable
+        icons={tableIcons}
+        data={tableDataList}
+        title="关键字列表"
+        options={{
+          filtering: true,
+          searchFieldAlignment: 'left',
+          rowStyle: rowData => ({
+            backgroundColor: (keywordId === rowData.keywordId.toString()) ? '#EEE' : '#fff',
+          }),
+        }}
+        onRowClick={onRowClick}
+        columns={columns}
+      />
       <Chart
         data={data}
         defaultYKey={'impression'}
@@ -625,55 +703,6 @@ function Keyword() {
             label: '质量分',
           },
         ]}
-      />
-      <RadioGroup
-        row
-        value={timeLimit}
-        onChange={handleTimeLimitChange}>
-          <FormControlLabel
-            key="yesterday"
-            value="yesterday"
-            control={<Radio />}
-            label="昨天"
-          />
-          <FormControlLabel
-            key="sevenDay"
-            value="sevenDay"
-            control={<Radio />}
-            label="7天"
-          />
-          <FormControlLabel
-            key="thirtyDay"
-            value="thirtyDay"
-            control={<Radio />}
-            label="30天"
-          />
-          <FormControlLabel
-            key="ninetyDay"
-            value="ninetyDay"
-            control={<Radio />}
-            label="90天"
-          />
-          <FormControlLabel
-            key="total"
-            value="total"
-            control={<Radio />}
-            label="全部"
-          />
-      </RadioGroup>
-      <MaterialTable
-        icons={tableIcons}
-        data={tableDataList}
-        title="关键字列表"
-        options={{
-          filtering: true,
-          searchFieldAlignment: 'left',
-          rowStyle: rowData => ({
-            backgroundColor: (keywordId === rowData.keywordId.toString()) ? '#EEE' : '#fff',
-          }),
-        }}
-        onRowClick={onRowClick}
-        columns={columns}
       />
       <RadioGroup
         row

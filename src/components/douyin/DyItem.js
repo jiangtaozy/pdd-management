@@ -8,6 +8,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
+import Button from '@material-ui/core/Button';
 
 function DyItem() {
 
@@ -15,13 +16,23 @@ function DyItem() {
   const [ snackbarState, setSnackbarState ] = useState({
     message: '',
     open: false,
+    autoHideDuration: null,
   });
-  const { message, open } = snackbarState;
+  const { message, open, autoHideDuration } = snackbarState;
 
   const handleOpenSnackbar = ({ message }) => {
     setSnackbarState({
       message,
       open: true,
+      autoHideDuration: 2000,
+    });
+  }
+
+  const handleOpenErrorSnackbar = ({ message }) => {
+    setSnackbarState({
+      message,
+      open: true,
+      autoHideDuration: null,
     });
   }
 
@@ -36,26 +47,47 @@ function DyItem() {
       try {
         const { data } = await axios.get('/dyItemList');
         console.log("data: ", data);
+        handleOpenSnackbar({
+          message: '更新成功',
+        });
       }
       catch(err) {
         console.error('dy-item-fetch-list-error: ', err);
-        handleOpenSnackbar({
+        handleOpenErrorSnackbar({
           message: `出错了：${err.message}`,
         });
       }
     };
-    fetchList();
+    //fetchList();
   }, []);
+
+  const handleSyncDyData = async () => {
+    try {
+      const { data } = await axios.get('/syncDyItemData');
+      console.log("data: ", data);
+    }
+    catch(err) {
+      console.error('dy-item-sync-dy-data-error.response: ', err.response);
+      handleOpenErrorSnackbar({
+        message: `出错了：${err.response && err.response.data}`,
+      });
+    }
+  }
 
   return (
     <div>
-      抖音商品
+      <Button
+        variant='outlined'
+        color='primary'
+        onClick={handleSyncDyData}>
+        同步抖音商品数据
+      </Button>
       <Snackbar
         anchorOrigin={{
           horizontal: "center",
           vertical: "top",
         }}
-        autoHideDuration={2000}
+        autoHideDuration={autoHideDuration}
         open={open}
         onClose={handleCloseSnackbar}
         message={message}
