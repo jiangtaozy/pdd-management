@@ -247,6 +247,10 @@ function SearchItem() {
               );
             },
           },
+          {
+            title: "女装网id",
+            field: "womenProductId",
+          },
         ]}
         data={itemList}
         title="商品列表"
