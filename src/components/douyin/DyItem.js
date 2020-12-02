@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 import tableIcons from '../utils/TableIcons';
 import MaterialTable from 'material-table';
 import GetTimeString from '../utils/Time';
+import Link from '@material-ui/core/Link';
 
 function DyItem() {
 
@@ -88,6 +89,8 @@ function DyItem() {
           name,
           productIdStr,
           outProductId,
+          detailUrl,
+          womenName,
         } = rowData;
         return (
           <div
@@ -119,6 +122,13 @@ function DyItem() {
               </div>
               <div>
                 {outProductId}
+              </div>
+              <div>
+                <Link
+                  href={detailUrl}
+                  target='_blank'>
+                  {womenName}
+                </Link>
               </div>
             </div>
           </div>
@@ -159,6 +169,10 @@ function DyItem() {
           </div>
         );
       },
+    },
+    {
+      title: '女装网名称',
+      field: 'womenName',
     },
     {
       title: '商品id',
