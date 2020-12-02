@@ -9,16 +9,20 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
+import tableIcons from '../utils/TableIcons';
+import MaterialTable from 'material-table';
+import GetTimeString from '../utils/Time';
 
 function DyItem() {
 
-  //const [ list, setList ] = useState([]);
+  const [ list, setList ] = useState([]);
   const [ snackbarState, setSnackbarState ] = useState({
     message: '',
     open: false,
     autoHideDuration: null,
   });
   const { message, open, autoHideDuration } = snackbarState;
+  const [ selectedRow, setSelectedRow ] = useState();
 
   const handleOpenSnackbar = ({ message }) => {
     setSnackbarState({
@@ -46,25 +50,25 @@ function DyItem() {
     const fetchList = async () => {
       try {
         const { data } = await axios.get('/dyItemList');
-        console.log("data: ", data);
-        handleOpenSnackbar({
-          message: '更新成功',
-        });
+        setList(data);
       }
       catch(err) {
         console.error('dy-item-fetch-list-error: ', err);
         handleOpenErrorSnackbar({
-          message: `出错了：${err.message}`,
+          message: `出错了：${err.response && err.response.data}`,
         });
       }
     };
-    //fetchList();
+    fetchList();
   }, []);
 
   const handleSyncDyData = async () => {
     try {
       const { data } = await axios.get('/syncDyItemData');
       console.log("data: ", data);
+      handleOpenSnackbar({
+        message: '同步成功',
+      });
     }
     catch(err) {
       console.error('dy-item-sync-dy-data-error.response: ', err.response);
@@ -74,8 +78,117 @@ function DyItem() {
     }
   }
 
+  const [ columns ] = useState([
+    {
+      title: '商品信息',
+      field: 'name',
+      render: rowData => {
+        const {
+          img,
+          name,
+          productIdStr,
+          outProductId,
+        } = rowData;
+        return (
+          <div
+            style={{
+              display: 'flex',
+            }}>
+            <img alt=''
+              src={img}
+              style={{
+                width: 50,
+                height: 50,
+              }}
+            />
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                marginLeft: 10,
+                fontSize: 12,
+              }}>
+              <div
+                style={{
+                  color: '#666',
+                }}>
+                {productIdStr}
+              </div>
+              <div>
+                {name}
+              </div>
+              <div>
+                {outProductId}
+              </div>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      title: '售价',
+      field: 'discountPrice',
+      headerStyle: {
+        color: '#3333FF',
+      },
+      render: rowData => {
+        const {
+          discountPrice,
+        } = rowData;
+        return (
+          <div>
+            {discountPrice / 100}
+          </div>
+        );
+      },
+    },
+    {
+      title: '状态',
+      field: 'status',
+    },
+    {
+      title: '创建时间',
+      field: 'createTime',
+      render: rowData => {
+        const {
+          createTime,
+        } = rowData;
+        return (
+          <div>
+            {GetTimeString(createTime)}
+          </div>
+        );
+      },
+    },
+    {
+      title: '商品id',
+      field: 'productIdStr',
+    },
+    {
+      title: '外部id',
+      field: 'outProductId',
+    },
+  ]);
+
   return (
     <div>
+      <MaterialTable
+        title='抖音商品列表'
+        icons={tableIcons}
+        columns={columns}
+        data={list}
+        onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow))}
+        options={{
+          filtering: false,
+          searchFieldAlignment: 'left',
+          rowStyle: rowData => ({
+            backgroundColor: (
+              selectedRow &&
+              selectedRow.tableData.id === rowData.tableData.id
+            ) ? '#EEE' : '#fff',
+          }),
+        }}
+      />
       <Button
         variant='outlined'
         color='primary'
