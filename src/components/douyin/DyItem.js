@@ -179,7 +179,7 @@ function DyItem() {
       field: 'productIdStr',
     },
     {
-      title: '外部id',
+      title: '女装网id',
       field: 'outProductId',
     },
   ]);
