@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import MaterialTable from 'material-table';
 import tableIcons from '../utils/TableIcons';
-import GetTimeString from '../utils/Time';
+import { GetTimeString } from '../utils/Time';
 
 function Bill() {
 

@@ -13,7 +13,7 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 //import { useDropzone } from 'react-dropzone';
-import GetTimeString from './utils/Time';
+import { GetTimeString } from './utils/Time';
 import UploadHangOrderFile from './order/UploadHangOrderFile';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import HangAfterSale from './order/HangAfterSale';

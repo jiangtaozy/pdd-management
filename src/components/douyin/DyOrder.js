@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import axios from 'axios'
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
+import { TimeFormat } from '../utils/Time';
 
 function DyOrder() {
   const [ snackbarState, setSnackbarState ] = useState({
@@ -42,7 +43,18 @@ function DyOrder() {
 
   const handleSyncDyOrderData = async () => {
     try {
-      const { data } = await axios.get('/syncDyOrderData');
+      const now = new Date();
+      const yesterday = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() - 1,
+      );
+      const { data } = await axios.get('/syncDyOrderData', {
+        params: {
+          startTime: TimeFormat(yesterday, 'yyyy/MM/dd hh:mm:ss'),
+          endTime: TimeFormat(now, 'yyyy/MM/dd hh:mm:ss'),
+        },
+      });
       console.log("data: ", data);
       handleOpenSnackbar({
         message: '同步成功',
@@ -63,7 +75,7 @@ function DyOrder() {
         variant='outlined'
         color='primary'
         onClick={handleSyncDyOrderData}>
-        同步抖店订单数据
+        同步昨天抖店订单数据
       </Button>
       <Snackbar
         anchorOrigin={{

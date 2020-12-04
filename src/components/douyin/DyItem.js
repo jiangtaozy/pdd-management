@@ -11,7 +11,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import tableIcons from '../utils/TableIcons';
 import MaterialTable from 'material-table';
-import GetTimeString from '../utils/Time';
+import { GetTimeString } from '../utils/Time';
 import Link from '@material-ui/core/Link';
 
 function DyItem() {
