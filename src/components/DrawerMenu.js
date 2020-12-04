@@ -50,6 +50,7 @@ import HangAfterSale from './order/HangAfterSale';
 import DyItem from './douyin/DyItem';
 import Bill from './funding/Bill';
 import Keyword from './ad-unit/Keyword';
+import DyOrder from './douyin/DyOrder';
 
 const drawerWidth = 180;
 
@@ -231,6 +232,9 @@ function DrawerMenu(props) {
             </Route>
             <Route path="/bill">
               <Bill />
+            </Route>
+            <Route path="/dyOrder">
+              <DyOrder />
             </Route>
             <Route path="/">
               <DashBoard />
@@ -415,7 +419,19 @@ function DrawerMenu(props) {
                 <ListItemIcon>
                   <FormatListBulletedIcon />
                 </ListItemIcon>
-                <ListItemText primary="抖音商品" />
+                <ListItemText primary="抖店商品" />
+              </ListItem>
+            </Link>
+            <Link to="/dyOrder"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="抖店订单" />
               </ListItem>
             </Link>
             <Link to="/bill"
