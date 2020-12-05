@@ -47,19 +47,20 @@ function DyItem() {
     });
   }
 
+  const fetchList = async () => {
+    try {
+      const { data } = await axios.get('/dyItemList');
+      setList(data);
+    }
+    catch(err) {
+      console.error('dy-item-fetch-list-error: ', err);
+      handleOpenErrorSnackbar({
+        message: `出错了：${err.response && err.response.data}`,
+      });
+    }
+  };
+
   useEffect(() => {
-    const fetchList = async () => {
-      try {
-        const { data } = await axios.get('/dyItemList');
-        setList(data);
-      }
-      catch(err) {
-        console.error('dy-item-fetch-list-error: ', err);
-        handleOpenErrorSnackbar({
-          message: `出错了：${err.response && err.response.data}`,
-        });
-      }
-    };
     fetchList();
   }, []);
 
@@ -67,6 +68,7 @@ function DyItem() {
     try {
       const { data } = await axios.get('/syncDyItemData');
       console.log("data: ", data);
+      fetchList();
       handleOpenSnackbar({
         message: '同步成功',
       });
@@ -182,6 +184,27 @@ function DyItem() {
       title: '女装网id',
       field: 'outProductId',
     },
+    {
+      title: '商品状态',
+      field: 'status',
+      lookup: {
+        0: '上架',
+        1: '下架',
+      },
+      defaultFilter: ['0'],
+    },
+    {
+      title: '审核状态',
+      field: 'checkStatus',
+      lookup: {
+        1: '未提审',
+        2: '审核中',
+        3: '审核通过',
+        4: '审核驳回',
+        5: '封禁',
+      },
+      defaultFilter: ['3'],
+    },
   ]);
 
   return (
@@ -193,7 +216,7 @@ function DyItem() {
         data={list}
         onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow))}
         options={{
-          filtering: false,
+          filtering: true,
           searchFieldAlignment: 'left',
           rowStyle: rowData => ({
             backgroundColor: (
