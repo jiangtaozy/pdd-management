@@ -10,7 +10,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import { useDropzone } from 'react-dropzone';
 
-function HangAfterSale() {
+function HangAfterSale(props) {
 
   const [ snackbarState, setSnackbarState ] = useState({
     open: false,
@@ -43,6 +43,9 @@ function HangAfterSale() {
       handleOpenSnackbar({
         message: '操作成功',
       });
+      if(props.refresh) {
+        props.refresh();
+      }
     }
     catch(err) {
       handleOpenSnackbar({

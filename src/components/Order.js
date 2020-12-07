@@ -613,7 +613,9 @@ function Order() {
         style={{
           marginTop: 10,
         }}>
-        <HangAfterSale />
+        <HangAfterSale
+          refresh={fetchOrderList}
+        />
       </div>
       {/*
       <div {...getRootProps()}>

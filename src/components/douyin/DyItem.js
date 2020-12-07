@@ -99,19 +99,22 @@ function DyItem() {
             style={{
               display: 'flex',
             }}>
-            <img alt=''
-              src={img}
-              style={{
-                width: 50,
-                height: 50,
-              }}
-            />
+            <div>
+              <img alt=''
+                src={img}
+                style={{
+                  width: 50,
+                  height: 50,
+                }}
+              />
+            </div>
             <div
               style={{
                 display: 'flex',
                 flexDirection: 'column',
                 marginLeft: 10,
                 fontSize: 12,
+                width: 150,
               }}>
               <div
                 style={{
