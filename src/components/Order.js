@@ -349,6 +349,15 @@ function Order() {
     },
     */
     {
+      title: "商品id",
+      field: "productId",
+      cellStyle: {
+        fontSize: 12,
+      },
+      filtering: false,
+      editable: "never",
+    },
+    {
       title: "外部订单号",
       field: "outerOrderId",
       cellStyle: {
