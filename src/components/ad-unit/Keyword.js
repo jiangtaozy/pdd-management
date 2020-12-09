@@ -529,7 +529,7 @@ function Keyword() {
       title: '总曝光大于10',
       field: 'impressionGreaterThanTen',
       type: 'boolean',
-      defaultFilter: 'checked',
+      //defaultFilter: 'checked',
     },
     {
       title: '点击率小于平均',
@@ -540,13 +540,13 @@ function Keyword() {
       title: '点击率小于店铺平均',
       field: 'ctrSmallerThanMallTotalCtr',
       type: 'boolean',
-      defaultFilter: 'checked',
+      //defaultFilter: 'checked',
     },
     {
       title: '昨天曝光量大于零',
       field: 'yesterdayImpressionGreaterThanZero',
       type: 'boolean',
-      defaultFilter: 'checked',
+      //defaultFilter: 'checked',
     },
     {
       title: '总曝光大于1000',
