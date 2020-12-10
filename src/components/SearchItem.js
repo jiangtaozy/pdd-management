@@ -34,7 +34,6 @@ function SearchItem() {
       const { data } = await axios.get('/searchTitleList');
       for(let i = 0; i < data.length; i++) {
         data[i].sellPrice = (data[i].price + 10) * 2;
-        data[i].tenPercentProfitPrice = Math.round((data[i].price + 5.5 + 4.5 + 6) / (1 - 0.006 - 0.1 - 0.1));
       }
       setItemList(data);
     }
@@ -149,6 +148,25 @@ function SearchItem() {
             },
           },
           {
+            title: "主图",
+            field: "imgUrl",
+            render: rowData => {
+              const {
+                imgUrl,
+              } = rowData;
+              return (
+                <div>
+                  <img
+                    src={imgUrl}
+                    width='150'
+                    height='150'
+                    alt=''
+                  />
+                </div>
+              );
+            },
+          },
+          {
             title: "标题",
             field: "name",
             render: rowData => {
@@ -182,33 +200,6 @@ function SearchItem() {
             },
           },
           {
-            title: "毛利率10%价格",
-            field: "tenPercentProfitPrice",
-            render: rowData => {
-              const {
-                tenPercentProfitPrice,
-              } = rowData;
-              return (
-                <div>
-                  {tenPercentProfitPrice}
-                </div>
-              );
-            },
-          },
-          {
-            title: "毛利率20%价格",
-            render: rowData => {
-              const {
-                price,
-              } = rowData;
-              return (
-                <div>
-                  {Math.round((price + 5.5 + 4.5 + 6) / (1 - 0.006 - 0.1 - 0.2))}
-                </div>
-              );
-            },
-          },
-          {
             title: "毛利率50%零售价格",
             field: "sellPrice",
             render: rowData => {
@@ -232,7 +223,7 @@ function SearchItem() {
               return (
                 <div>
                   <div>
-                    {sellPrice - price}
+                    设置利润：{sellPrice - price}
                   </div>
                   <div>
                     佣金：{sellPrice * 0.4}
