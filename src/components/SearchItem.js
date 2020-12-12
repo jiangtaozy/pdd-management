@@ -158,8 +158,8 @@ function SearchItem() {
                 <div>
                   <img
                     src={imgUrl}
-                    width='150'
-                    height='150'
+                    width='100'
+                    height='100'
                     alt=''
                   />
                 </div>
@@ -241,6 +241,10 @@ function SearchItem() {
           {
             title: "女装网id",
             field: "womenProductId",
+          },
+          {
+            title: "拼多多标题",
+            field: "goodsName",
           },
         ]}
         data={itemList}
