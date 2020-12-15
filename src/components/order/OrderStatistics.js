@@ -175,8 +175,9 @@ function OrderStatistics() {
     <div>
       <Chart
         data={data}
-        defaultYKey={'netProfitSpendRate'}
-        defaultChartType={'week'}
+        defaultYKey='netProfitSpendRate'
+        defaultChartType='week'
+        radioPosition='bottom'
         ykeyList={[
           {
             value: 'impression',
@@ -352,6 +353,62 @@ function OrderStatistics() {
             ratio: true,
             x: 'signedNetProfit',
             y: 'totalSpend',
+          },
+          {
+            value: 'perOrderPaid',
+            label: '每单交易额',
+            ratio: true,
+            x: 'userPaidAmount',
+            y: 'orderNumber',
+          },
+          {
+            value: 'perOrderPayment',
+            label: '每单成本',
+            ratio: true,
+            x: 'actualPayment',
+            y: 'orderNumber',
+          },
+          {
+            value: 'perOrderProfit',
+            label: '每单利润',
+            ratio: true,
+            x: 'profit',
+            y: 'orderNumber',
+          },
+          {
+            value: 'perOrderSpend',
+            label: '每单推广花费',
+            ratio: true,
+            x: 'spend',
+            y: 'orderNumber',
+          },
+          {
+            value: 'perOrderTotalSpend',
+            label: '每单总花费',
+            ratio: true,
+            x: 'totalSpend',
+            y: 'orderNumber',
+          },
+          {
+            value: 'perOrderNetProfit',
+            label: '每单净利润',
+            ratio: true,
+            x: 'netProfit',
+            y: 'orderNumber',
+          },
+          {
+            value: 'perOrderProfitRate',
+            label: '每单利润率',
+            ratio: true,
+            x: 'profit',
+            y: 'userPaidAmount',
+          },
+          {
+            value: 'cvr',
+            label: '点击转化率',
+            ratio: true,
+            x: 'orderNumber',
+            y: 'click',
           },
         ]}
       />

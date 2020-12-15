@@ -17,6 +17,7 @@ function Chart(props) {
     defaultYKey,
     defaultChartType,
     ykeyList,
+    radioPosition,
   } = props;
   const [ chartType, setChartType ] = useState(defaultChartType);
   const [ yKey, setYKey ] = useState(defaultYKey);
@@ -175,7 +176,7 @@ function Chart(props) {
 
   const height = 500;
   const width = 1200;
-  const margin = 60;
+  const margin = 40;
   const w = width - margin * 2;
   const h = height - margin * 2;
   const x = d3.scaleTime()
@@ -218,7 +219,7 @@ function Chart(props) {
     <g transform={`translate(${margin}, ${y(d)})`}
       key={d}>
       <text
-        x='-30'
+        x={-margin / 2}
         y='5'
         style={{
           fill: '#000',
@@ -281,55 +282,60 @@ function Chart(props) {
     setTooltipYValue(d[yKey]);
   }
 
+  const radioGroup =
+    <div
+      style={{
+        display: 'flex',
+          justifyContent: 'space-around',
+          width,
+      }}>
+      <RadioGroup
+        row
+        value={yKey}
+        onChange={handleYKeyChange}>
+        {
+          ykeyList.map((ykey) =>
+            <FormControlLabel
+              key={ykey.value}
+              value={ykey.value}
+              control={<Radio />}
+              label={ykey.label}
+            />
+          )
+        }
+      </RadioGroup>
+      <RadioGroup
+        row
+        value={chartType}
+        onChange={handleChartTypeChange}>
+        <FormControlLabel
+          value='day'
+          control={<Radio />}
+          label='天'
+        />
+        <FormControlLabel
+          value='week'
+          control={<Radio />}
+          label='周'
+        />
+        <FormControlLabel
+          value='month'
+          control={<Radio />}
+          label='月'
+        />
+        <FormControlLabel
+          value='total'
+          control={<Radio />}
+          label='累计'
+        />
+      </RadioGroup>
+    </div>
+
   return(
     <div>
-      <div
-        style={{
-          display: 'flex',
-            justifyContent: 'space-around',
-            width,
-        }}>
-        <RadioGroup
-          row
-          value={yKey}
-          onChange={handleYKeyChange}>
-          {
-            ykeyList.map((ykey) =>
-              <FormControlLabel
-                key={ykey.value}
-                value={ykey.value}
-                control={<Radio />}
-                label={ykey.label}
-              />
-            )
-          }
-        </RadioGroup>
-        <RadioGroup
-          row
-          value={chartType}
-          onChange={handleChartTypeChange}>
-          <FormControlLabel
-            value='day'
-            control={<Radio />}
-            label='天'
-          />
-          <FormControlLabel
-            value='week'
-            control={<Radio />}
-            label='周'
-          />
-          <FormControlLabel
-            value='month'
-            control={<Radio />}
-            label='月'
-          />
-          <FormControlLabel
-            value='total'
-            control={<Radio />}
-            label='累计'
-          />
-        </RadioGroup>
-      </div>
+      {
+        radioPosition !== 'bottom' ? radioGroup : null
+      }
       <svg
         style={{
           zIndex: 1,
@@ -354,13 +360,6 @@ function Chart(props) {
           y1={margin}
           y2={h}
         />
-        <text
-          style={{
-            fontSize: 12,
-          }}
-          y={12}>
-          图表
-        </text>
         <path
           style={{
             stroke: 'steelblue',
@@ -421,6 +420,9 @@ function Chart(props) {
           onMouseMove={tooltipOnMouseMove}
         />
       </svg>
+      {
+        radioPosition === 'bottom' ? radioGroup : null
+      }
     </div>
   );
 }
