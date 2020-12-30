@@ -176,7 +176,7 @@ function Chart(props) {
 
   const height = 500;
   const width = 1200;
-  const margin = 40;
+  const margin = 50;
   const w = width - margin * 2;
   const h = height - margin * 2;
   const x = d3.scaleTime()

@@ -82,7 +82,7 @@ function PddItem() {
           shippingPrice = 5.5;
         }
         const price = skuGroupPriceMax / 100;
-        // 运费 + 售价 + 运费险(约 2 元) + 服务费(0.6%)
+        // 运费 + 售价 + 运费险(约 6 元) + 服务费(0.6%)
         const costPrice = Math.round((shippingPrice + suitPrice + 6 + 4.5 + price * 0.006) * 100) / 100;
         const profit = Math.round((price - costPrice) * 100) / 100;
         data[i].costPrice = costPrice;
@@ -313,13 +313,38 @@ function PddItem() {
               style={{
                 color: '#3742fa',
               }}>
-              毛利润50%售价(包括优惠)：{fiftyProfitPrice}：<span style={{fontSize: 24, color: '#eb2f06'}}>{Math.floor(fiftyProfitPrice / 10) * 10 + 9}</span>
+              毛利润50%售价(包括优惠)：{fiftyProfitPrice}：
+              <span
+                style={{
+                  fontSize: 24,
+                  color: '#eb2f06',
+                }}>
+                {Math.floor(fiftyProfitPrice / 10) * 10 + 9}
+              </span>
             </div>
             <div
               style={{
                 color: '#EA2027',
               }}>
               阈值ROI：{Math.round(currentPrice * 0.9 / profit * 100) / 100}
+            </div>
+            <div
+              style={{
+                color: '#EA2027',
+              }}>
+              阈值折扣：
+              <span
+                style={{
+                  fontSize: 24,
+                }}>
+                {((costPrice + 10 + 15 + 19) / currentPrice * 10).toFixed(1)}折
+              </span>
+            </div>
+            <div
+              style={{
+                color: '#EA2027',
+              }}>
+              折扣价：{costPrice + 10 + 15 + 19}元
             </div>
             <div
               style={{
