@@ -261,6 +261,10 @@ function ItemDataChart (props) {
             label: '利润',
           },
           {
+            value: 'netProfit',
+            label: '净利润',
+          },
+          {
             value: 'perClickProfit',
             label: '单次点击利润',
             ratio: true,
@@ -275,10 +279,24 @@ function ItemDataChart (props) {
             y: 'click',
           },
           {
+            value: 'perClickNetProfit',
+            label: '单次点击净利润',
+            ratio: true,
+            x: 'netProfit',
+            y: 'click',
+          },
+          {
             value: 'perClickProfitSpend',
-            label: '点击利润花费比',
+            label: '利润花费比',
             ratio: true,
             x: 'profit',
+            y: 'spend',
+          },
+          {
+            value: 'netProfitSpend',
+            label: '净利润花费比',
+            ratio: true,
+            x: 'netProfit',
             y: 'spend',
           },
         ]}
