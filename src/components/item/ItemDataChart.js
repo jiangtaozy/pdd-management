@@ -9,12 +9,19 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Chart from '../utils/Chart';
 import NumberChart from '../utils/NumberChart';
+import Snackbar from '@material-ui/core/Snackbar';
 
 function ItemDataChart (props) {
 
   const [ data, setData ] = useState([]);
   const { id } = useParams();
   const [ priceData, setPriceData ] = useState([]);
+  const [ snackbarState, setSnackbarState ] = useState({
+    message: '',
+    open: false,
+    autoHideDuration: null,
+  });
+  const { message, open, autoHideDuration } = snackbarState;
 
   useEffect(() => {
     const fetchItemData = async () => {
@@ -111,10 +118,35 @@ function ItemDataChart (props) {
       }
       catch(err) {
         console.error('item-data-chart-fetch-item-data-error: ', err);
+        handleOpenErrorSnackbar({
+          message: `出错了：${err.response && err.response.data}`,
+        });
       }
     }
     fetchItemData();
   }, [id]);
+
+  const handleOpenSnackbar = ({ message }) => {
+    setSnackbarState({
+      message,
+      open: true,
+      autoHideDuration: 2000,
+    });
+  }
+
+  const handleOpenErrorSnackbar = ({ message }) => {
+    setSnackbarState({
+      message,
+      open: true,
+      autoHideDuration: null,
+    });
+  }
+
+  const handleCloseSnackbar = () => {
+    setSnackbarState({
+      open: false,
+    });
+  }
 
   return (
     <div>
@@ -250,6 +282,16 @@ function ItemDataChart (props) {
             y: 'spend',
           },
         ]}
+      />
+      <Snackbar
+        anchorOrigin={{
+          horizontal: "center",
+          vertical: "top",
+        }}
+        autoHideDuration={autoHideDuration}
+        open={open}
+        onClose={handleCloseSnackbar}
+        message={message}
       />
     </div>
   );
