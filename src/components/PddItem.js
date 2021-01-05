@@ -79,7 +79,7 @@ function PddItem() {
           skuGroupPriceMax,
         } = data[i];
         if(siteType === 2) {
-          shippingPrice = 5.5;
+          shippingPrice = 24;
         }
         const price = skuGroupPriceMax / 100;
         // 运费 + 售价 + 运费险(约 6 元) + 服务费(0.6%)
