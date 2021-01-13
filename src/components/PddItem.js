@@ -79,11 +79,11 @@ function PddItem() {
           skuGroupPriceMax,
         } = data[i];
         if(siteType === 2) {
-          shippingPrice = 24;
+          shippingPrice = 5.5;
         }
         const price = skuGroupPriceMax / 100;
         // 运费 + 售价 + 运费险(约 6 元) + 服务费(0.6%)
-        const costPrice = Math.round((shippingPrice + suitPrice + 6 + 4.5 + price * 0.006) * 100) / 100;
+        const costPrice = Math.round((shippingPrice + suitPrice + 6 + price * 0.006) * 100) / 100;
         const profit = Math.round((price - costPrice) * 100) / 100;
         data[i].costPrice = costPrice;
         data[i].profit = profit;
@@ -289,7 +289,7 @@ function PddItem() {
               style={{
                 color: '#17A589',
               }}>
-              运费、礼品费、发货费、服务费、运费险：{Math.round((shippingPrice + 6 + 4.5 + currentPrice * 0.006) * 100) / 100}
+              运费、发货费、运费险、服务费：{Math.round((shippingPrice + 6 + currentPrice * 0.006) * 100) / 100}
             </div>
             <div
               style={{
@@ -309,6 +309,7 @@ function PddItem() {
               }}>
               利润率：{(profit / currentPrice * 100).toFixed(1)}%
             </div>
+            {/*
             <div
               style={{
                 color: '#3742fa',
@@ -322,12 +323,20 @@ function PddItem() {
                 {Math.floor(fiftyProfitPrice / 10) * 10 + 9}
               </span>
             </div>
+            */}
+            <div
+              style={{
+                color: '#eb2f06',
+              }}>
+              毛利润20%售价：<span style={{fontSize: 24}}>{Math.round(costPrice / (1 - 0.006 - 0.2))}</span>
+            </div>
             <div
               style={{
                 color: '#EA2027',
               }}>
-              阈值ROI：{Math.round(currentPrice * 0.9 / profit * 100) / 100}
+              阈值ROI：{Math.round(currentPrice / profit * 100) / 100}
             </div>
+            {/*
             <div
               style={{
                 color: '#EA2027',
@@ -370,6 +379,28 @@ function PddItem() {
               }}>
               抖音利润：{Math.round((suitPrice + shippingPrice) / (1 - 0.1 - 0.4) * 0.1)}
             </div>
+            */}
+          </div>
+        );
+      },
+    },
+    {
+      title: '利润率',
+      field: 'profitMargin',
+      cellStyle: {
+        fontSize: 12,
+        color: '#2ed573',
+      },
+      headerStyle: {
+        color: '#2ed573',
+      },
+      render: rowData => {
+        const {
+          profitMargin,
+        } = rowData;
+        return (
+          <div>
+            {profitMargin}%
           </div>
         );
       },
