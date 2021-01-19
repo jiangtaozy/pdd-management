@@ -91,7 +91,6 @@ function PddItem() {
         data[i].profitMargin = Math.round(profit / price * 100 * 100) / 100;
         data[i].promotionProfit = Math.round(((price - 10) * (1 - 0.33) - costPrice) * 100) / 100;
         data[i].limitDiscount = Math.round((1 - profit / price) * 10 * 100) / 100;
-        data[i].fiftyProfitPrice = Math.round((suitPrice + shippingPrice + 4.5 + 6) / (1 - 0.006 - 0.5))
         const adList = data[i].adList || [];
         let impression = 0;
         let click = 0;
@@ -242,6 +241,13 @@ function PddItem() {
                   商品数据
                 </RouterLink>
               </div>
+              <div style={{
+                color: '#666',
+              }}>
+                <RouterLink to={`/pddCompetitorItem/${pddId}`}>
+                  竞争对手商品
+                </RouterLink>
+              </div>
             </div>
           </div>
         );
@@ -259,7 +265,6 @@ function PddItem() {
           skuGroupPriceMax,
           costPrice,
           profit,
-          fiftyProfitPrice,
           suitPrice,
           shippingPrice,
         } = rowData;
@@ -309,21 +314,6 @@ function PddItem() {
               }}>
               利润率：{(profit / currentPrice * 100).toFixed(1)}%
             </div>
-            {/*
-            <div
-              style={{
-                color: '#3742fa',
-              }}>
-              毛利润50%售价(包括优惠)：{fiftyProfitPrice}：
-              <span
-                style={{
-                  fontSize: 24,
-                  color: '#eb2f06',
-                }}>
-                {Math.floor(fiftyProfitPrice / 10) * 10 + 9}
-              </span>
-            </div>
-            */}
             <div
               style={{
                 color: '#eb2f06',

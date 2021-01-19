@@ -52,6 +52,7 @@ import Bill from './funding/Bill';
 import Keyword from './ad-unit/Keyword';
 import DyOrder from './douyin/DyOrder';
 import PddCompetitor from './PddCompetitor';
+import PddCompetitorItem from './pdd-competitor/PddCompetitorItem';
 
 const drawerWidth = 180;
 
@@ -239,6 +240,9 @@ function DrawerMenu(props) {
             </Route>
             <Route path="/pddCompetitor">
               <PddCompetitor />
+            </Route>
+            <Route path="/pddCompetitorItem/:itemId">
+              <PddCompetitorItem />
             </Route>
             <Route path="/">
               <DashBoard />

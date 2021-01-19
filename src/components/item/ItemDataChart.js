@@ -126,14 +126,6 @@ function ItemDataChart (props) {
     fetchItemData();
   }, [id]);
 
-  const handleOpenSnackbar = ({ message }) => {
-    setSnackbarState({
-      message,
-      open: true,
-      autoHideDuration: 2000,
-    });
-  }
-
   const handleOpenErrorSnackbar = ({ message }) => {
     setSnackbarState({
       message,
