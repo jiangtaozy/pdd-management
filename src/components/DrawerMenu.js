@@ -51,6 +51,7 @@ import DyItem from './douyin/DyItem';
 import Bill from './funding/Bill';
 import Keyword from './ad-unit/Keyword';
 import DyOrder from './douyin/DyOrder';
+import PddCompetitor from './PddCompetitor';
 
 const drawerWidth = 180;
 
@@ -235,6 +236,9 @@ function DrawerMenu(props) {
             </Route>
             <Route path="/dyOrder">
               <DyOrder />
+            </Route>
+            <Route path="/pddCompetitor">
+              <PddCompetitor />
             </Route>
             <Route path="/">
               <DashBoard />
@@ -444,6 +448,18 @@ function DrawerMenu(props) {
                   <FormatListBulletedIcon />
                 </ListItemIcon>
                 <ListItemText primary="货款明细" />
+              </ListItem>
+            </Link>
+            <Link to="/pddCompetitor"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="竞争对手" />
               </ListItem>
             </Link>
             {/*
