@@ -1,7 +1,7 @@
 /*
  * Maintained by jemo from 2021.1.19 to now
- * Created by jemo on 2021.1.19 15:52:00
- * 拼多多竞争对手商品
+ * Created by jemo on 2021.1.19 17:31:43
+ * 拼多多竞争对手商品销量
  */
 
 import React, { useState, useEffect } from 'react';
@@ -10,13 +10,10 @@ import MaterialTable from 'material-table';
 import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
 import { useParams } from 'react-router-dom';
-import Link from '@material-ui/core/Link';
-import { Link as RouterLink } from 'react-router-dom';
 
-function PddCompetitorItem() {
+function PddCompetitorItemSale() {
 
-  const [ pddCompetitorItemList, setPddCompetitorItemList ] = useState([]);
-  const [ competitorList, setCompetitorList ] = useState([]);
+  const [ pddCompetitorItemSaleList, setPddCompetitorItemSaleList ] = useState([]);
   const [ snackbarState, setSnackbarState ] = useState({
     message: '',
     open: false,
@@ -26,42 +23,23 @@ function PddCompetitorItem() {
   const { message, open, autoHideDuration } = snackbarState;
 
   useEffect(() => {
-    fetchPddCompetitorItemList();
-    fetchCompetitorList();
+    fetchPddCompetitorItemSaleList();
   }, []);
 
   const { itemId } = useParams();
 
-  const fetchPddCompetitorItemList = async () => {
+  const fetchPddCompetitorItemSaleList = async () => {
     try {
-      const response = await axios.get('/pddCompetitorItemList', {
+      const response = await axios.get('/pddCompetitorItemSaleList', {
         params: {
           itemId,
         },
       });
       const data = response.data || [];
-      setPddCompetitorItemList(data);
+      setPddCompetitorItemSaleList(data);
     }
     catch(err) {
-      console.error('pdd-competitor-item-fetch-pdd-competitor-item-list-error: ', err);
-      handleOpenErrorSnackbar({
-        message: `出错了：${err.response && err.response.data}`,
-      })
-    }
-  };
-
-  const fetchCompetitorList = async () => {
-    try {
-      const response = await axios.get('/pddCompetitorList');
-      const data = response.data || [];
-      const competitorLookup = {};
-      for(let i = 0; i < data.length; i++) {
-        competitorLookup[data[i].id] = data[i].name;
-      }
-      setCompetitorList(competitorLookup);
-    }
-    catch(err) {
-      console.error('pdd-competitor-item-fetch-competitor-list-error: ', err);
+      console.error('pdd-competitor-item-sale-fetch-pdd-competitor-item-sale-list-error: ', err);
       handleOpenErrorSnackbar({
         message: `出错了：${err.response && err.response.data}`,
       })
@@ -93,8 +71,8 @@ function PddCompetitorItem() {
   return (
     <div>
       <MaterialTable
-        title="竞争对手商品"
-        data={pddCompetitorItemList}
+        title="竞争对手商品销量"
+        data={pddCompetitorItemSaleList}
         icons={tableIcons}
         options={{
           actionsColumnIndex: -1,
@@ -107,64 +85,32 @@ function PddCompetitorItem() {
         }}
         columns={[
           {
-            title: 'id',
-            field: 'id',
-            editable: 'never',
-          },
-          {
-            title: '名称',
-            field: 'name',
-          },
-          {
-            title: '价格',
-            field: 'price',
-          },
-          {
             title: '商品id',
             field: 'goodsId',
-            render: rowData => {
-              const {
-                goodsId,
-              } = rowData;
-              return (
-                <div>
-                  <Link
-                    href={`https://mobile.yangkeduo.com/goods2.html?goods_id=${goodsId}`}
-                    target="_blank">
-                    {goodsId}
-                  </Link>
-                  <div>
-                    <RouterLink to={`/pddCompetitorItemSale/${goodsId}`}>
-                      销量
-                    </RouterLink>
-                  </div>
-                </div>
-              );
-            },
-          },
-          {
-            title: '竞争对手id',
-            field: 'competitorId',
-            lookup: competitorList,
-          },
-          {
-            title: '关联商品id',
-            field: 'relatedItemId',
-            initialEditValue: itemId,
             editable: 'never',
+            initialEditValue: itemId,
+          },
+          {
+            title: '日期',
+            field: 'date',
+            type: 'date',
+          },
+          {
+            title: '销量',
+            field: 'sale',
           },
         ]}
         editable={{
           onRowAdd: newData => new Promise(async (resolve, reject) => {
             try {
-              await axios.post('/pddCompetitorItemSave', newData);
+              await axios.post('/pddCompetitorItemSaleSave', newData);
               handleOpenSnackbar({
                 message: '操作成功',
               });
-              fetchPddCompetitorItemList();
+              fetchPddCompetitorItemSaleList();
             }
             catch(err) {
-              console.error('pdd-competitor-item-add-error: ', err);
+              console.error('pdd-competitor-item-sale-add-error: ', err);
               handleOpenErrorSnackbar({
                 message: `出错了：${err.response && err.response.data}`,
               })
@@ -174,14 +120,14 @@ function PddCompetitorItem() {
           onRowUpdate: (newData, oldData) => {
             return new Promise(async (resolve, reject) => {
               try {
-                await axios.post('/pddCompetitorItemSave', newData);
+                await axios.post('/pddCompetitorItemSaleSave', newData);
                 handleOpenSnackbar({
                   message: '操作成功',
                 });
-                fetchPddCompetitorItemList();
+                fetchPddCompetitorItemSaleList();
               }
               catch(err) {
-                console.error('pdd-competitor-item-update-error: ', err);
+                console.error('pdd-competitor-item-sale-update-error: ', err);
                 handleOpenErrorSnackbar({
                   message: `出错了：${err.response && err.response.data}`,
                 });
@@ -205,4 +151,4 @@ function PddCompetitorItem() {
   );
 }
 
-export default PddCompetitorItem;
+export default PddCompetitorItemSale;
