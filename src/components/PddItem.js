@@ -488,6 +488,17 @@ function PddItem() {
       },
     },
     {
+      title: '总浏览量',
+      field: 'goodsPv',
+      cellStyle: {
+        fontSize: 12,
+        color: '#EC7063',
+      },
+      headerStyle: {
+        color: '#EC7063',
+      },
+    },
+    {
       title: '商品id',
       field: 'pddId',
       cellStyle: {
