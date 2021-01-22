@@ -73,17 +73,12 @@ function PddItem() {
       const { data } = await axios.get('/pddGoods');
       for(let i = 0; i < data.length; i++) {
         let {
-          shippingPrice,
           suitPrice,
-          siteType,
           skuGroupPriceMax,
         } = data[i];
-        if(siteType === 2) {
-          shippingPrice = 5.5;
-        }
         const price = skuGroupPriceMax / 100;
-        // 运费 + 售价 + 运费险(约 6 元) + 服务费(0.6%)
-        const costPrice = Math.round((shippingPrice + suitPrice + 6 + price * 0.006) * 100) / 100;
+        // 运费(5.5) + 售价 + 运费险(约 6 元) + 服务费(0.6%)
+        const costPrice = Math.round((5.5 + suitPrice + 6 + price * 0.006) * 100) / 100;
         const profit = Math.round((price - costPrice) * 100) / 100;
         data[i].costPrice = costPrice;
         data[i].profit = profit;
@@ -266,7 +261,6 @@ function PddItem() {
           costPrice,
           profit,
           suitPrice,
-          shippingPrice,
         } = rowData;
         var currentPrice = skuGroupPriceMin / 100;
         if(skuGroupPriceMin !== skuGroupPriceMax) {
@@ -294,7 +288,7 @@ function PddItem() {
               style={{
                 color: '#17A589',
               }}>
-              运费、发货费、运费险、服务费：{Math.round((shippingPrice + 6 + currentPrice * 0.006) * 100) / 100}
+              运费发货费、运费险、服务费：{Math.round((5.5 + 6 + currentPrice * 0.006) * 100) / 100}
             </div>
             <div
               style={{

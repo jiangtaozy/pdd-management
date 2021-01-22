@@ -33,7 +33,7 @@ function SearchItem() {
     try {
       const { data } = await axios.get('/searchTitleList');
       for(let i = 0; i < data.length; i++) {
-        data[i].sellPrice = (data[i].price + 10) * 2;
+        data[i].sellPrice = (data[i].price + 5.5 + 6) * 2;
       }
       setItemList(data);
     }
@@ -200,6 +200,20 @@ function SearchItem() {
             },
           },
           {
+            title: "毛利率20%零售价格",
+            field: "price20",
+            render: rowData => {
+              const {
+                price,
+              } = rowData;
+              return (
+                <div>
+                  {Math.round((price + 5.5 + 6) / 0.8)}
+                </div>
+              );
+            },
+          },
+          {
             title: "毛利率50%零售价格",
             field: "sellPrice",
             render: rowData => {
@@ -245,6 +259,52 @@ function SearchItem() {
           {
             title: "拼多多标题",
             field: "goodsName",
+          },
+          {
+            title: "获取数据",
+            field: "getData",
+            render: rowData => {
+              const {
+                detailUrl,
+                id,
+              } = rowData;
+              return (
+                <div>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                    style={{
+                      marginTop: 10,
+                    }}
+                    onClick={async () => {
+                      try {
+                        const { data } = await axios.post('/getWomenDetailData', {
+                          id,
+                          detailUrl,
+                        });
+                        if(data === 'ok') {
+                          handleOpenSnackbar({
+                            message: '操作成功',
+                          })
+                        } else {
+                          handleOpenSnackbar({
+                            message: `出错了：${data}`,
+                          })
+                        }
+                      }
+                      catch(err) {
+                        console.error('SearchItemGetDataError: ', err);
+                        handleOpenSnackbar({
+                          message: `出错了：${err.message}`,
+                        })
+                      }
+                    }}>
+                    获取数据
+                  </Button>
+                </div>
+              );
+            },
           },
         ]}
         data={itemList}
