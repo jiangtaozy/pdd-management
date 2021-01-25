@@ -70,6 +70,7 @@ function PddItem() {
 
   const fetchPddGoods = async () => {
     try {
+      const { data: priceData } = await axios.get('/pddItemPriceHistoryData');
       const { data } = await axios.get('/pddGoods');
       for(let i = 0; i < data.length; i++) {
         let {
@@ -138,6 +139,13 @@ function PddItem() {
         for(let j = 0; j < list.length; j++) {
           if(list[j].goodsId === data[i].pddId) {
             data[i].isPromote = true;
+            break;
+          }
+        }
+        for(let k = 0; k < priceData.length; k++) {
+          if(priceData[k].pddId === data[i].pddId) {
+            data[i].afterChangePriceGoodsPv = priceData[k].afterChangePriceGoodsPv;
+            data[i].payOrdrCnt = priceData[k].payOrdrCnt;
             break;
           }
         }
@@ -490,6 +498,28 @@ function PddItem() {
       },
       headerStyle: {
         color: '#EC7063',
+      },
+    },
+    {
+      title: '改价后浏览量',
+      field: 'afterChangePriceGoodsPv',
+      cellStyle: {
+        fontSize: 12,
+        color: '#c0392b',
+      },
+      headerStyle: {
+        color: '#c0392b',
+      },
+    },
+    {
+      title: '改价后订单量',
+      field: 'payOrdrCnt',
+      cellStyle: {
+        fontSize: 12,
+        color: '#c0392b',
+      },
+      headerStyle: {
+        color: '#c0392b',
       },
     },
     {
