@@ -284,49 +284,49 @@ function PddItem() {
               style={{
                 color: '#3333FF',
               }}>
-              售价：{currentPrice}
+              售价：<span style={{fontSize: 14, fontWeight: 'bold'}}>{currentPrice}</span>
             </div>
             <div
               style={{
                 color: '#17A589',
               }}>
-              成本价：{suitPrice}
+              成本价：<span style={{fontSize: 14, fontWeight: 'bold'}}>{suitPrice}</span>
             </div>
             <div
               style={{
                 color: '#17A589',
               }}>
-              运费发货费、运费险、服务费：{Math.round((5.5 + 6 + currentPrice * 0.006) * 100) / 100}
+              运费发货费、运费险、服务费：<span style={{fontSize: 14, fontWeight: 'bold'}}>{Math.round((5.5 + 6 + currentPrice * 0.006) * 100) / 100}</span>
             </div>
             <div
               style={{
                 color: '#17A589',
               }}>
-              总成本：{costPrice}
+              总成本：<span style={{fontSize: 14, fontWeight: 'bold'}}>{costPrice}</span>
             </div>
             <div
               style={{
                 color: '#d63031',
               }}>
-              利润：{profit}
+              利润：<span style={{fontSize: 14, fontWeight: 'bold'}}>{profit}</span>
             </div>
             <div
               style={{
                 color: '#2ed573',
               }}>
-              利润率：{(profit / currentPrice * 100).toFixed(1)}%
+              利润率：<span style={{fontSize: 14, fontWeight: 'bold'}}>{(profit / currentPrice * 100).toFixed(1)}%</span>
             </div>
             <div
               style={{
                 color: '#eb2f06',
               }}>
-              毛利润20%售价：<span style={{fontSize: 24}}>{Math.round(costPrice / (1 - 0.006 - 0.2))}</span>
+              毛利润20%售价：<span style={{fontSize: 14, fontWeight: 'bold'}}>{Math.round(costPrice / (1 - 0.006 - 0.2))}</span>
             </div>
             <div
               style={{
                 color: '#EA2027',
               }}>
-              阈值ROI：{Math.round(currentPrice / profit * 100) / 100}
+              阈值ROI：<span style={{fontSize: 14, fontWeight: 'bold'}}>{Math.round(currentPrice / profit * 100) / 100}</span>
             </div>
             {/*
             <div
