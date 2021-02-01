@@ -545,6 +545,64 @@ function PddItem() {
       },
     },
     {
+      title: '是否云仓',
+      field: 'isCloudWarehouse',
+      type: 'boolean',
+      cellStyle: {
+        fontSize: 12,
+        color: '#9B59B6',
+      },
+      headerStyle: {
+        color: '#9B59B6',
+      },
+    },
+    {
+      title: "获取数据",
+      field: "getData",
+      render: rowData => {
+        const {
+          detailUrl,
+          outGoodsSn,
+        } = rowData;
+        return (
+          <div>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              style={{
+                marginTop: 10,
+              }}
+              onClick={async () => {
+                try {
+                  const { data } = await axios.post('/getWomenDetailData', {
+                    id: parseInt(outGoodsSn),
+                    detailUrl,
+                  });
+                  if(data === 'ok') {
+                    handleOpenSnackbar({
+                      message: '操作成功',
+                    })
+                  } else {
+                    handleOpenSnackbar({
+                      message: `出错了：${data}`,
+                    })
+                  }
+                }
+                catch(err) {
+                  console.error('SearchItemGetDataError: ', err);
+                  handleOpenSnackbar({
+                    message: `出错了：${err.message}`,
+                  })
+                }
+              }}>
+              获取数据
+            </Button>
+          </div>
+        );
+      },
+    },
+    {
       title: '是否推广',
       field: 'isPromote',
       type: 'boolean',
