@@ -22,6 +22,7 @@ function PddCompetitorItem() {
     open: false,
     autoHideDuration: null,
   });
+  const [ selectedRow, setSelectedRow ] = useState();
 
   const { message, open, autoHideDuration } = snackbarState;
 
@@ -99,6 +100,9 @@ function PddCompetitorItem() {
         options={{
           actionsColumnIndex: -1,
           filtering: false,
+          rowStyle: rowData => ({
+            backgroundColor: (selectedRow && selectedRow.tableData.id === rowData.tableData.id) ? '#EEE' : '#fff',
+          }),
         }}
         localization={{
           header: {
@@ -154,6 +158,7 @@ function PddCompetitorItem() {
             editable: 'never',
           },
         ]}
+        onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow))}
         editable={{
           onRowAdd: newData => new Promise(async (resolve, reject) => {
             try {
