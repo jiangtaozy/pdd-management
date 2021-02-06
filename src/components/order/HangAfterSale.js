@@ -71,6 +71,7 @@ function HangAfterSale(props) {
             <Button
               variant="outlined"
               size="large"
+              fullWidth={true}
               style={{
                 textTransform: 'none',
               }}>

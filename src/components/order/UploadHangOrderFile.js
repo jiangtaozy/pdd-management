@@ -72,6 +72,7 @@ function UploadHangOrderFile(props) {
             <Button
               variant="outlined"
               size="large"
+              fullWidth={true}
               style={{
                 marginTop: 10,
               }}>
