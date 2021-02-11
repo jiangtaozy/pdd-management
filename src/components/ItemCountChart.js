@@ -77,6 +77,39 @@ function ItemCountChart() {
         count: total,
       });
     }
+  } else if(chartType === 'week') {
+    const startWeek = new Date(
+      startDate.getFullYear(),
+      startDate.getMonth(),
+      startDate.getDate() - startDate.getDay() + (startDate.getDay() === 0 ? -6 : 1),
+    );
+    const endWeek = new Date(
+      endDate.getFullYear(),
+      endDate.getMonth(),
+      endDate.getDate() - endDate.getDay() + (startDate.getDay() === 0 ? -6 : 1),
+    );
+    startDate = startWeek;
+    endDate = endWeek;
+    const weekDifference = (endDate.getTime() - startDate.getTime()) / 1000 / 60 / 60 / 24 / 7;
+    data = [];
+    for(let i = 0; i <= weekDifference; i++) {
+      const week = new Date(startWeek.getTime() + 7 * 24 * 60 * 60 * 1000 * i);
+      let total = 0;
+      let xTotal = 0;
+      let yTotal = 0;
+      for(let k = 0; k < itemCountList.length; k++) {
+        const date = new Date(itemCountList[k].date);
+        if((date.getTime() - week.getTime()) >= 0 &&
+          (date.getTime() - week.getTime()) < 7 * 24 * 60 * 60 * 1000) {
+          total += itemCountList[k].count;
+        }
+      }
+      const weekData = {
+        date: week,
+      }
+      weekData.count = total;
+      data.push(weekData);
+    }
   }
   const [ snackbarState, setSnackbarState ] = useState({
     message: '',
@@ -239,6 +272,11 @@ function ItemCountChart() {
             value='day'
             control={<Radio />}
             label='天'
+          />
+          <FormControlLabel
+            value='week'
+            control={<Radio />}
+            label='周'
           />
           <FormControlLabel
             value='month'
