@@ -95,8 +95,6 @@ function ItemCountChart() {
     for(let i = 0; i <= weekDifference; i++) {
       const week = new Date(startWeek.getTime() + 7 * 24 * 60 * 60 * 1000 * i);
       let total = 0;
-      let xTotal = 0;
-      let yTotal = 0;
       for(let k = 0; k < itemCountList.length; k++) {
         const date = new Date(itemCountList[k].date);
         if((date.getTime() - week.getTime()) >= 0 &&

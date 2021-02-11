@@ -227,6 +227,7 @@ function SearchItem() {
               );
             },
           },
+          /*
           {
             title: "抖音设置利润",
             render: rowData => {
@@ -252,6 +253,7 @@ function SearchItem() {
               );
             },
           },
+          */
           {
             title: "女装网id",
             field: "womenProductId",

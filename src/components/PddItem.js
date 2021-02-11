@@ -563,6 +563,7 @@ function PddItem() {
         const {
           detailUrl,
           outGoodsSn,
+          womenProductId,
         } = rowData;
         return (
           <div>
@@ -597,6 +598,38 @@ function PddItem() {
                 }
               }}>
               获取数据
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              style={{
+                marginTop: 10,
+              }}
+              onClick={async () => {
+                try {
+                  const { data } = await axios.post('/getWomenCloudWarehouseStock', {
+                    id: parseInt(outGoodsSn),
+                    womenProductId: womenProductId,
+                  });
+                  if(data === 'ok') {
+                    handleOpenSnackbar({
+                      message: '操作成功',
+                    })
+                  } else {
+                    handleOpenSnackbar({
+                      message: `出错了：${data}`,
+                    })
+                  }
+                }
+                catch(err) {
+                  console.error('SearchItemGetWomenCloudWarehouseStockError: ', err);
+                  handleOpenSnackbar({
+                    message: `出错了：${err.message}`,
+                  })
+                }
+              }}>
+              获取库存
             </Button>
           </div>
         );
