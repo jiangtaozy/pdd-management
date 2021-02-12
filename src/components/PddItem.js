@@ -133,7 +133,10 @@ function PddItem() {
           data[i].perClickProfitSpend = Math.round((orderProfit / (spend / 1000) || 0) * 100) / 100;
         }
       }
-      const { data: list } = await axios.get('/pddItemLastThreeDayPromoteList');
+      let { data: list } = await axios.get('/pddItemLastThreeDayPromoteList');
+      if(!list) {
+        list = [];
+      }
       for(let i = 0; i < data.length; i++) {
         data[i].isPromote = false;
         for(let j = 0; j < list.length; j++) {
