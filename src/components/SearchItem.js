@@ -125,190 +125,199 @@ function SearchItem() {
     });
   }
 
+  const [ columns ] = useState([
+    {
+      title: "id",
+      field: "id",
+      type: "numeric",
+      editable: "never",
+      render: rowData => {
+        const {
+          id,
+        } = rowData;
+        return (
+          <div>
+            <RouterLink to={`/product/select/${id}`}>
+              {id}
+            </RouterLink>
+          </div>
+        );
+      },
+    },
+    {
+      title: "主图",
+      field: "imgUrl",
+      render: rowData => {
+        const {
+          imgUrl,
+        } = rowData;
+        return (
+          <div>
+            <img
+              src={imgUrl}
+              width='100'
+              height='100'
+              alt=''
+            />
+          </div>
+        );
+      },
+    },
+    {
+      title: "标题",
+      field: "name",
+      render: rowData => {
+        const {
+          detailUrl,
+          name,
+        } = rowData;
+        return (
+          <div>
+            <Link
+              href={detailUrl}
+              target='_blank'>
+              {name}
+            </Link>
+          </div>
+        );
+      },
+    },
+    {
+      title: "价格",
+      field: "price",
+      render: rowData => {
+        const {
+          price,
+        } = rowData;
+        return (
+          <div>
+            {price}
+          </div>
+        );
+      },
+    },
+    {
+      title: "毛利率20%零售价格",
+      field: "price20",
+      render: rowData => {
+        const {
+          price,
+        } = rowData;
+        return (
+          <div>
+            {Math.round((price + 5.5 + 6) / 0.8)}
+          </div>
+        );
+      },
+    },
+    {
+      title: "毛利率50%零售价格",
+      field: "sellPrice",
+      render: rowData => {
+        const {
+          sellPrice,
+        } = rowData;
+        return (
+          <div>
+            {sellPrice}
+          </div>
+        );
+      },
+    },
+    /*
+    {
+      title: "抖音设置利润",
+      render: rowData => {
+        const {
+          price,
+          sellPrice,
+        } = rowData;
+        return (
+          <div>
+            <div>
+              设置利润：{sellPrice - price}
+            </div>
+            <div>
+              佣金：{sellPrice * 0.4}
+            </div>
+            <div>
+              利润：{sellPrice * 0.1}
+            </div>
+            <div>
+              佣金比例：40%
+            </div>
+          </div>
+        );
+      },
+    },
+    */
+    {
+      title: "女装网id",
+      field: "womenProductId",
+      type: "numeric",
+    },
+    {
+      title: "拼多多标题",
+      field: "goodsName",
+    },
+    {
+      title: "获取数据",
+      field: "getData",
+      render: rowData => {
+        const {
+          detailUrl,
+          id,
+        } = rowData;
+        return (
+          <div>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              style={{
+                marginTop: 10,
+              }}
+              onClick={async () => {
+                try {
+                  const { data } = await axios.post('/getWomenDetailData', {
+                    id,
+                    detailUrl,
+                  });
+                  if(data === 'ok') {
+                    handleOpenSnackbar({
+                      message: '操作成功',
+                    })
+                  } else {
+                    console.error('SearchItemGetDataErrorData: ', data);
+                    handleOpenSnackbar({
+                      message: `出错了：${data}`,
+                    })
+                  }
+                }
+                catch(err) {
+                  console.error('SearchItemGetDataCatchError: ', err);
+                  handleOpenSnackbar({
+                    message: `出错了：${err.message}`,
+                  })
+                }
+              }}>
+              获取数据
+            </Button>
+          </div>
+        );
+      },
+    },
+  ]);
+
   return (
     <div>
       <MaterialTable
         icons={tableIcons}
-        columns={[
-          {
-            title: "id",
-            field: "id",
-            editable: "never",
-            render: rowData => {
-              const {
-                id,
-              } = rowData;
-              return (
-                <div>
-                  <RouterLink to={`/product/select/${id}`}>
-                    {id}
-                  </RouterLink>
-                </div>
-              );
-            },
-          },
-          {
-            title: "主图",
-            field: "imgUrl",
-            render: rowData => {
-              const {
-                imgUrl,
-              } = rowData;
-              return (
-                <div>
-                  <img
-                    src={imgUrl}
-                    width='100'
-                    height='100'
-                    alt=''
-                  />
-                </div>
-              );
-            },
-          },
-          {
-            title: "标题",
-            field: "name",
-            render: rowData => {
-              const {
-                detailUrl,
-                name,
-              } = rowData;
-              return (
-                <div>
-                  <Link
-                    href={detailUrl}
-                    target='_blank'>
-                    {name}
-                  </Link>
-                </div>
-              );
-            },
-          },
-          {
-            title: "价格",
-            field: "price",
-            render: rowData => {
-              const {
-                price,
-              } = rowData;
-              return (
-                <div>
-                  {price}
-                </div>
-              );
-            },
-          },
-          {
-            title: "毛利率20%零售价格",
-            field: "price20",
-            render: rowData => {
-              const {
-                price,
-              } = rowData;
-              return (
-                <div>
-                  {Math.round((price + 5.5 + 6) / 0.8)}
-                </div>
-              );
-            },
-          },
-          {
-            title: "毛利率50%零售价格",
-            field: "sellPrice",
-            render: rowData => {
-              const {
-                sellPrice,
-              } = rowData;
-              return (
-                <div>
-                  {sellPrice}
-                </div>
-              );
-            },
-          },
-          /*
-          {
-            title: "抖音设置利润",
-            render: rowData => {
-              const {
-                price,
-                sellPrice,
-              } = rowData;
-              return (
-                <div>
-                  <div>
-                    设置利润：{sellPrice - price}
-                  </div>
-                  <div>
-                    佣金：{sellPrice * 0.4}
-                  </div>
-                  <div>
-                    利润：{sellPrice * 0.1}
-                  </div>
-                  <div>
-                    佣金比例：40%
-                  </div>
-                </div>
-              );
-            },
-          },
-          */
-          {
-            title: "女装网id",
-            field: "womenProductId",
-          },
-          {
-            title: "拼多多标题",
-            field: "goodsName",
-          },
-          {
-            title: "获取数据",
-            field: "getData",
-            render: rowData => {
-              const {
-                detailUrl,
-                id,
-              } = rowData;
-              return (
-                <div>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    size="small"
-                    style={{
-                      marginTop: 10,
-                    }}
-                    onClick={async () => {
-                      try {
-                        const { data } = await axios.post('/getWomenDetailData', {
-                          id,
-                          detailUrl,
-                        });
-                        if(data === 'ok') {
-                          handleOpenSnackbar({
-                            message: '操作成功',
-                          })
-                        } else {
-                          handleOpenSnackbar({
-                            message: `出错了：${data}`,
-                          })
-                        }
-                      }
-                      catch(err) {
-                        console.error('SearchItemGetDataError: ', err);
-                        handleOpenSnackbar({
-                          message: `出错了：${err.message}`,
-                        })
-                      }
-                    }}>
-                    获取数据
-                  </Button>
-                </div>
-              );
-            },
-          },
-        ]}
+        options={{
+          filtering: true,
+          actionsColumnIndex: -1,
+        }}
+        columns={columns}
         data={itemList}
         title="商品列表"
         editable={{
@@ -358,9 +367,6 @@ function SearchItem() {
               }
               resolve();
             })
-        }}
-        options={{
-          actionsColumnIndex: -1,
         }}
       />
       <TextField

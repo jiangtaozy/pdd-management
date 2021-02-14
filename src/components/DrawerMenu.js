@@ -54,6 +54,7 @@ import DyOrder from './douyin/DyOrder';
 import PddCompetitor from './PddCompetitor';
 import PddCompetitorItem from './pdd-competitor/PddCompetitorItem';
 import PddCompetitorItemSale from './pdd-competitor/PddCompetitorItemSale';
+import ItemStockCheck from './item/ItemStockCheck';
 
 const drawerWidth = 180;
 
@@ -247,6 +248,9 @@ function DrawerMenu(props) {
             </Route>
             <Route path="/pddCompetitorItemSale/:itemId">
               <PddCompetitorItemSale />
+            </Route>
+            <Route path="/itemStockCheck">
+              <ItemStockCheck />
             </Route>
             <Route path="/">
               <DashBoard />
@@ -468,6 +472,18 @@ function DrawerMenu(props) {
                   <FormatListBulletedIcon />
                 </ListItemIcon>
                 <ListItemText primary="竞争对手" />
+              </ListItem>
+            </Link>
+            <Link to="/itemStockCheck"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="库存检查" />
               </ListItem>
             </Link>
             {/*

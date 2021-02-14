@@ -560,6 +560,18 @@ function PddItem() {
       },
     },
     {
+      title: '女装网id',
+      field: 'womenProductId',
+      type: 'numeric',
+      cellStyle: {
+        fontSize: 12,
+        color: '#9B59B6',
+      },
+      headerStyle: {
+        color: '#9B59B6',
+      },
+    },
+    {
       title: "获取数据",
       field: "getData",
       render: rowData => {
