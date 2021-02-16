@@ -370,6 +370,25 @@ function SearchItem() {
         }}
       />
       <TextField
+        label="输入女装网商品列表地址"
+        fullWidth
+        value={womenItemListUrl}
+        onChange={(event) => {
+          setWomenItemListUrl(event.target.value)
+        }}
+      />
+      <Button
+        variant="outlined"
+        color="primary"
+        fullWidth
+        style={{
+          marginTop: 10,
+        }}
+        onClick={handleWomenItemListUrlButtonClick}
+      >
+        确定
+      </Button>
+      <TextField
         label="输入商品标题"
         fullWidth
         value={searchTitle}
@@ -384,24 +403,6 @@ function SearchItem() {
           marginTop: 10,
         }}
         onClick={handleSearchTitleButtonClick}
-      >
-        确定
-      </Button>
-      <TextField
-        label="输入女装网商品列表地址"
-        fullWidth
-        value={womenItemListUrl}
-        onChange={(event) => {
-          setWomenItemListUrl(event.target.value)
-        }}
-      />
-      <Button
-        variant="outlined"
-        color="primary"
-        style={{
-          marginTop: 10,
-        }}
-        onClick={handleWomenItemListUrlButtonClick}
       >
         确定
       </Button>
