@@ -10,6 +10,7 @@ import tableIcons from '../utils/TableIcons';
 import MaterialTable from 'material-table';
 import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
+import Button from '@material-ui/core/Button';
 
 function ItemStockCheck() {
 
@@ -34,6 +35,28 @@ function ItemStockCheck() {
     }
     catch(err) {
       console.error('ItemStockCheck.js-fetch-list-catch-error: ', err);
+      handleOpenErrorSnackbar({
+        message: `出错了：${err.response && err.response.data}`,
+      });
+    }
+  }
+
+  const handleSyncCloudWarehouseStock = async () => {
+    try {
+      const { data } = await axios.get('/syncCloudWarehouseStock');
+      if(data === 'ok') {
+        handleOpenSnackbar({
+          message: '同步成功',
+        });
+      } else {
+        console.error('ItemStockCheck.js-handleSyncCloudWarehouseStock-ok-error-data: ', data)
+        handleOpenErrorSnackbar({
+          message: `出错了：${data}`,
+        });
+      }
+    }
+    catch(err) {
+      console.error('ItemStockCheck.js-handleSyncCloudWarehouseStock-catch-error-response: ', err.response)
       handleOpenErrorSnackbar({
         message: `出错了：${err.response && err.response.data}`,
       });
@@ -171,6 +194,15 @@ function ItemStockCheck() {
         onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow))}
         columns={columns}
       />
+      <Button
+        variant='outlined'
+        color='primary'
+        style={{
+          marginTop: 10,
+        }}
+        onClick={handleSyncCloudWarehouseStock}>
+        同步全部云仓库存
+      </Button>
       <Snackbar
         anchorOrigin={{
           horizontal: "center",
