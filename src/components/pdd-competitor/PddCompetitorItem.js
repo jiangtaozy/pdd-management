@@ -129,6 +129,7 @@ function PddCompetitorItem() {
             render: rowData => {
               const {
                 goodsId,
+                sale = [],
               } = rowData;
               return (
                 <div>
@@ -139,7 +140,7 @@ function PddCompetitorItem() {
                   </Link>
                   <div>
                     <RouterLink to={`/pddCompetitorItemSale/${goodsId}`}>
-                      销量
+                      销量: {sale.length > 0 && sale[sale.length - 1]}
                     </RouterLink>
                   </div>
                 </div>
