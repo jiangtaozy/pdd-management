@@ -100,6 +100,11 @@ function ItemStockCheck() {
       field: 'isCloudWarehouse',
       type: 'boolean',
     },
+    {
+      title: '是否上架',
+      field: 'isOnShelf',
+      type: 'boolean',
+    },
     /*
     {
       title: 'outGoodsSn',
