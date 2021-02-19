@@ -57,6 +57,7 @@ function OrderStatistics() {
             profit: 0,
             spend: 0,
             click: 0,
+            goodsFavNum: 0,
             impression: 0,
             orderNumber: 0,
             totalOrderNumber: 0,
@@ -120,6 +121,7 @@ function OrderStatistics() {
               time.getDate() === day.getDate()) {
               orderData.spend += adData[k].spend;
               orderData.click += adData[k].click;
+              orderData.goodsFavNum += adData[k].goodsFavNum;
               orderData.impression += adData[k].impression;
             }
           }
@@ -193,6 +195,24 @@ function OrderStatistics() {
             ratio: true,
             x: 'click',
             y: 'impression',
+          },
+          {
+            value: 'goodsFavNum',
+            label: '收藏量',
+          },
+          {
+            value: 'goodsFavRate',
+            label: '收藏率',
+            ratio: true,
+            x: 'goodsFavNum',
+            y: 'click',
+          },
+          {
+            value: 'goodsFavOrderRate',
+            label: '收藏转化率',
+            ratio: true,
+            x: 'orderNumber',
+            y: 'goodsFavNum',
           },
           {
             value: 'spend',
