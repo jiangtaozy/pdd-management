@@ -401,6 +401,29 @@ function PddItem() {
       },
     },
     {
+      title: '降低5%利润率后价格',
+      field: 'priceOfFivePercent',
+      cellStyle: {
+        fontSize: 12,
+        color: '#2ed573',
+      },
+      headerStyle: {
+        color: '#2ed573',
+      },
+      render: rowData => {
+        const {
+          skuGroupPriceMin,
+          costPrice,
+        } = rowData;
+        var currentPrice = skuGroupPriceMin / 100;
+        return (
+          <div>
+            {Math.round(costPrice/(costPrice/currentPrice + 0.05))}元，降幅{Math.round((1 - costPrice/(costPrice/currentPrice + 0.05)/currentPrice)*100)}%
+          </div>
+        );
+      },
+    },
+    {
       title: '商品名称',
       field: 'name',
       cellStyle: {
