@@ -11,6 +11,8 @@ import MaterialTable from 'material-table';
 import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 function ItemStockCheck() {
 
@@ -22,6 +24,7 @@ function ItemStockCheck() {
   });
   const { message, open, autoHideDuration } = snackbarState;
   const [ selectedRow, setSelectedRow ] = useState();
+  const [ backdropShow, setBackdropShow ] = useState(false);
 
   useEffect(() => {
     fetchList();
@@ -43,8 +46,11 @@ function ItemStockCheck() {
 
   const handleSyncCloudWarehouseStock = async () => {
     try {
+      setBackdropShow(true);
       const { data } = await axios.get('/syncCloudWarehouseStock');
+      setBackdropShow(false);
       if(data === 'ok') {
+        fetchList();
         handleOpenSnackbar({
           message: '同步成功',
         });
@@ -57,6 +63,31 @@ function ItemStockCheck() {
     }
     catch(err) {
       console.error('ItemStockCheck.js-handleSyncCloudWarehouseStock-catch-error-response: ', err.response)
+      handleOpenErrorSnackbar({
+        message: `出错了：${err.response && err.response.data}`,
+      });
+    }
+  }
+
+  const handleSyncWomenOnShelf = async () => {
+    try {
+      setBackdropShow(true);
+      const { data } = await axios.get('/syncWomenOnShelf');
+      setBackdropShow(false);
+      if(data === 'ok') {
+        fetchList();
+        handleOpenSnackbar({
+          message: '同步成功',
+        });
+      } else {
+        console.error('ItemStockCheck.js-handleSyncWomenOnShelf-ok-error-data: ', data)
+        handleOpenErrorSnackbar({
+          message: `出错了：${data}`,
+        });
+      }
+    }
+    catch(err) {
+      console.error('ItemStockCheck.js-handleSyncWomenOnShelf-catch-error-response: ', err.response)
       handleOpenErrorSnackbar({
         message: `出错了：${err.response && err.response.data}`,
       });
@@ -91,17 +122,17 @@ function ItemStockCheck() {
       field: 'pddId',
     },
     {
-      title: '是否预售',
+      title: '拼多多是否预售',
       field: 'isPreSale',
       type: 'boolean',
     },
     {
-      title: '是否云仓',
+      title: '女装网是否云仓',
       field: 'isCloudWarehouse',
       type: 'boolean',
     },
     {
-      title: '是否上架',
+      title: '女装网是否上架',
       field: 'isOnShelf',
       type: 'boolean',
     },
@@ -205,6 +236,15 @@ function ItemStockCheck() {
         style={{
           marginTop: 10,
         }}
+        onClick={handleSyncWomenOnShelf}>
+        同步全部上架数据
+      </Button>
+      <Button
+        variant='outlined'
+        color='primary'
+        style={{
+          marginTop: 10,
+        }}
         onClick={handleSyncCloudWarehouseStock}>
         同步全部云仓库存
       </Button>
@@ -218,6 +258,14 @@ function ItemStockCheck() {
         onClose={handleCloseSnackbar}
         message={message}
       />
+      <Backdrop
+        style={{
+          zIndex: 11,
+          color: '#fff',
+        }}
+        open={backdropShow}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 }
