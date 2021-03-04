@@ -406,6 +406,7 @@ function Keyword() {
         );
       },
     },
+    */
     {
       title: "点击收藏率",
       field: "gfvr",
@@ -428,6 +429,7 @@ function Keyword() {
         );
       },
     },
+    /*
     {
       title: "出价",
       field: "bid",
@@ -662,10 +664,12 @@ function Keyword() {
             value: 'realOrderNum',
             label: '实际订单',
           },
+          /*
           {
             value: 'cpm',
             label: '千次曝光花费(元)',
           },
+          */
           {
             value: 'orderNum',
             label: '订单量',
@@ -679,9 +683,24 @@ function Keyword() {
             label: '商品收藏量',
           },
           {
+            value: 'goodsFavPerClick',
+            label: '点击收藏率',
+            ratio: true,
+            x: 'goodsFavNum',
+            y: 'click',
+          },
+          {
             value: 'mallFavNum',
             label: '店铺关注量',
           },
+          {
+            value: 'mallFavPerClick',
+            label: '点击关注率',
+            ratio: true,
+            x: 'mallFavNum',
+            y: 'click',
+          },
+          /*
           {
             value: 'bid',
             label: '出价(元)',
@@ -702,6 +721,7 @@ function Keyword() {
             value: 'qualityScore',
             label: '质量分',
           },
+          */
         ]}
       />
       <RadioGroup

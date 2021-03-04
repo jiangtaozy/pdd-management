@@ -669,6 +669,38 @@ function PddItem() {
               }}>
               获取库存
             </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              style={{
+                marginTop: 10,
+              }}
+              onClick={async () => {
+                try {
+                  const { data } = await axios.post('/getWomenImage', {
+                    id: parseInt(outGoodsSn),
+                    womenProductId: womenProductId,
+                  });
+                  if(data === 'ok') {
+                    handleOpenSnackbar({
+                      message: '操作成功',
+                    })
+                  } else {
+                    handleOpenSnackbar({
+                      message: `出错了：${data}`,
+                    })
+                  }
+                }
+                catch(err) {
+                  console.error('PddItem.js-GetWomenImageError: ', err);
+                  handleOpenSnackbar({
+                    message: `出错了：${err.message}`,
+                  })
+                }
+              }}>
+              下载主图
+            </Button>
           </div>
         );
       },
