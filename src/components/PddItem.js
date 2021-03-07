@@ -401,7 +401,7 @@ function PddItem() {
       },
     },
     {
-      title: '降低5%利润率后价格',
+      title: '降低5%利润率折扣',
       field: 'priceOfFivePercent',
       cellStyle: {
         fontSize: 12,
@@ -418,7 +418,9 @@ function PddItem() {
         var currentPrice = skuGroupPriceMin / 100;
         return (
           <div>
-            {Math.round(costPrice/(costPrice/currentPrice + 0.05))}元，降幅{Math.round((1 - costPrice/(costPrice/currentPrice + 0.05)/currentPrice)*100)}%
+            <div>{Math.round(costPrice/(costPrice/currentPrice + 0.05))}元</div>
+            <div>降幅{Math.round((1 - costPrice/(costPrice/currentPrice + 0.05)/currentPrice)*100)}%</div>
+            <div><span style={{fontSize: 20, color: 'red'}}>{Math.round((costPrice/(costPrice/currentPrice + 0.05)/currentPrice)*100)/10}</span>折</div>
           </div>
         );
       },
@@ -663,7 +665,7 @@ function PddItem() {
                 catch(err) {
                   console.error('SearchItemGetWomenCloudWarehouseStockError: ', err);
                   handleOpenSnackbar({
-                    message: `出错了：${err.message}`,
+                    message: `出错了：${err.response && err.response.data}`,
                   })
                 }
               }}>

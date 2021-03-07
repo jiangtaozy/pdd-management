@@ -219,7 +219,34 @@ function SearchItem() {
         } = rowData;
         return (
           <div>
+            <div>
             {sellPrice}
+            </div>
+            <div>
+            {Math.round(sellPrice + Math.random() * 5)}' '
+            {Math.round(sellPrice + Math.random() * 5)}' '
+            {Math.round(sellPrice + Math.random() * 5)}
+            </div>
+            <div>
+            {Math.round(sellPrice + Math.random() * 5)}' '
+            {Math.round(sellPrice + Math.random() * 5)}' '
+            {Math.round(sellPrice + Math.random() * 5)}
+            </div>
+            <div>
+            {Math.round(sellPrice + Math.random() * 5)}' '
+            {Math.round(sellPrice + Math.random() * 5)}' '
+            {Math.round(sellPrice + Math.random() * 5)}
+            </div>
+            <div>
+            {Math.round(sellPrice + Math.random() * 5)}' '
+            {Math.round(sellPrice + Math.random() * 5)}' '
+            {Math.round(sellPrice + Math.random() * 5)}
+            </div>
+            <div>
+            {Math.round(sellPrice + Math.random() * 5)}' '
+            {Math.round(sellPrice + Math.random() * 5)}' '
+            {Math.round(sellPrice + Math.random() * 5)}
+            </div>
           </div>
         );
       },

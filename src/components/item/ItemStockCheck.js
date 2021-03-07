@@ -70,10 +70,9 @@ function ItemStockCheck() {
   }
 
   const handleSyncWomenOnShelf = async () => {
+    setBackdropShow(true);
     try {
-      setBackdropShow(true);
       const { data } = await axios.get('/syncWomenOnShelf');
-      setBackdropShow(false);
       if(data === 'ok') {
         fetchList();
         handleOpenSnackbar({
@@ -92,6 +91,7 @@ function ItemStockCheck() {
         message: `出错了：${err.response && err.response.data}`,
       });
     }
+    setBackdropShow(false);
   }
 
   const handleOpenSnackbar = ({message}) => {
