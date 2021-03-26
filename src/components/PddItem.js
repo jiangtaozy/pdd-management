@@ -14,6 +14,7 @@ import tableIcons from './utils/TableIcons';
 import MaterialTable from 'material-table';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 function PddItem() {
 
@@ -126,11 +127,13 @@ function PddItem() {
         data[i].perClickProfit = Math.round((orderProfit / click || 0) * 100) / 100;
         data[i].perClickSpend = Math.round((spend / 1000 / click || 0) * 100) / 100;
         data[i].perClickProfitSpend = 0;
+        data[i].netProfitSpend = 0;
         data[i].totalOrderNum = totalOrderNum;
         data[i].realOrderNum = realOrderNum;
         data[i].afterSaleRate = totalOrderNum ? (totalOrderNum - realOrderNum) / totalOrderNum : 0;
         if(spend !== 0) {
           data[i].perClickProfitSpend = Math.round((orderProfit / (spend / 1000) || 0) * 100) / 100;
+          data[i].netProfitSpend = Math.round((orderProfit / (spend / 1000) || 0) * 100) / 100 - 1;
         }
       }
       let { data: list } = await axios.get('/pddItemLastThreeDayPromoteList');
@@ -319,12 +322,14 @@ function PddItem() {
               }}>
               利润率：<span style={{fontSize: 14, fontWeight: 'bold'}}>{(profit / currentPrice * 100).toFixed(1)}%</span>
             </div>
+            {/*
             <div
               style={{
                 color: '#eb2f06',
               }}>
               毛利润20%售价：<span style={{fontSize: 14, fontWeight: 'bold'}}>{Math.round(costPrice / (1 - 0.006 - 0.2))}</span>
             </div>
+            */}
             <div
               style={{
                 color: '#EA2027',
@@ -401,6 +406,39 @@ function PddItem() {
       },
     },
     {
+      title: '利润率10%售价',
+      field: 'profit10price',
+      cellStyle: {
+        fontSize: 12,
+        color: 'red',
+      },
+      headerStyle: {
+        color: 'red',
+      },
+      render: rowData => {
+        const {
+          costPrice,
+        } = rowData;
+        const profitTenPrice = Math.round(costPrice / (1 - 0.006 - 0.1));
+        return (
+          <div>
+            <CopyToClipboard
+              text={profitTenPrice}
+              onCopy={() =>
+                handleOpenSnackbar({
+                  message: '已复制',
+                })
+              }>
+              <div>
+                {profitTenPrice}
+              </div>
+            </CopyToClipboard>
+          </div>
+        );
+      },
+    },
+    /*
+    {
       title: '降低5%利润率折扣',
       field: 'priceOfFivePercent',
       cellStyle: {
@@ -425,6 +463,7 @@ function PddItem() {
         );
       },
     },
+    */
     {
       title: '商品名称',
       field: 'name',
@@ -437,8 +476,8 @@ function PddItem() {
       },
     },
     {
-      title: '利润花费比',
-      field: 'perClickProfitSpend',
+      title: '净利润花费比',
+      field: 'netProfitSpend',
       cellStyle: {
         fontSize: 12,
         color: '#ff0000',
@@ -528,6 +567,7 @@ function PddItem() {
         color: '#EC7063',
       },
     },
+    /*
     {
       title: '改价后浏览量',
       field: 'afterChangePriceGoodsPv',
@@ -550,6 +590,7 @@ function PddItem() {
         color: '#c0392b',
       },
     },
+    */
     {
       title: '商品id',
       field: 'pddId',

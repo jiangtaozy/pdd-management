@@ -14,6 +14,7 @@ import MaterialTable from 'material-table';
 import tableIcons from './utils/TableIcons';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 function SearchItem() {
 
@@ -140,6 +141,22 @@ function SearchItem() {
             <RouterLink to={`/product/select/${id}`}>
               {id}
             </RouterLink>
+            <CopyToClipboard
+              text={id}
+              onCopy={() =>
+                handleOpenSnackbar({
+                  message: '已复制',
+                })
+              }>
+              <Button
+                variant='outlined'
+                size='small'
+                style={{
+                  marginLeft: 10,
+                }}>
+                {id}
+              </Button>
+            </CopyToClipboard>
           </div>
         );
       },
@@ -197,19 +214,33 @@ function SearchItem() {
       },
     },
     {
-      title: "毛利率20%零售价格",
-      field: "price20",
+      title: "毛利率10%零售价格",
+      field: "price10",
       render: rowData => {
         const {
           price,
         } = rowData;
+        const price10 = Math.round((price + 5.5 + 6) / 0.9);
         return (
           <div>
-            {Math.round((price + 5.5 + 6) / 0.8)}
+            <CopyToClipboard
+              text={price10}
+              onCopy={() =>
+                handleOpenSnackbar({
+                  message: '已复制',
+                })
+              }>
+              <Button
+                variant='outlined'
+                size='small'>
+                {price10}
+              </Button>
+            </CopyToClipboard>
           </div>
         );
       },
     },
+    /*
     {
       title: "毛利率50%零售价格",
       field: "sellPrice",
@@ -222,35 +253,11 @@ function SearchItem() {
             <div>
             {sellPrice}
             </div>
-            <div>
-            {Math.round(sellPrice + Math.random() * 5)}' '
-            {Math.round(sellPrice + Math.random() * 5)}' '
-            {Math.round(sellPrice + Math.random() * 5)}
-            </div>
-            <div>
-            {Math.round(sellPrice + Math.random() * 5)}' '
-            {Math.round(sellPrice + Math.random() * 5)}' '
-            {Math.round(sellPrice + Math.random() * 5)}
-            </div>
-            <div>
-            {Math.round(sellPrice + Math.random() * 5)}' '
-            {Math.round(sellPrice + Math.random() * 5)}' '
-            {Math.round(sellPrice + Math.random() * 5)}
-            </div>
-            <div>
-            {Math.round(sellPrice + Math.random() * 5)}' '
-            {Math.round(sellPrice + Math.random() * 5)}' '
-            {Math.round(sellPrice + Math.random() * 5)}
-            </div>
-            <div>
-            {Math.round(sellPrice + Math.random() * 5)}' '
-            {Math.round(sellPrice + Math.random() * 5)}' '
-            {Math.round(sellPrice + Math.random() * 5)}
-            </div>
           </div>
         );
       },
     },
+    */
     /*
     {
       title: "抖音设置利润",
