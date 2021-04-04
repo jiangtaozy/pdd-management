@@ -128,21 +128,21 @@ function SearchItem() {
 
   const [ columns ] = useState([
     {
-      title: "id",
-      field: "id",
+      title: "searchId",
+      field: "searchId",
       type: "numeric",
       editable: "never",
       render: rowData => {
         const {
-          id,
+          searchId,
         } = rowData;
         return (
           <div>
-            <RouterLink to={`/product/select/${id}`}>
-              {id}
+            <RouterLink to={`/product/select/${searchId}`}>
+              {searchId}
             </RouterLink>
             <CopyToClipboard
-              text={id}
+              text={searchId}
               onCopy={() =>
                 handleOpenSnackbar({
                   message: '已复制',
@@ -154,7 +154,7 @@ function SearchItem() {
                 style={{
                   marginLeft: 10,
                 }}>
-                {id}
+                {searchId}
               </Button>
             </CopyToClipboard>
           </div>
@@ -220,7 +220,7 @@ function SearchItem() {
         const {
           price,
         } = rowData;
-        const price10 = Math.round((price + 5.5 + 6) / 0.9);
+        const price10 = Math.round((price + 5.5 + 6) / (0.9 - 0.006));
         return (
           <div>
             <CopyToClipboard
@@ -384,6 +384,7 @@ function SearchItem() {
                 const { data } = await axios.post('/deleteSearchTitle', newData);
                 if(data === 'ok') {
                   itemList.splice(itemList.indexOf(newData), 1)
+                  setItemList(itemList);
                   handleOpenSnackbar({
                     message: '操作成功',
                   })

@@ -124,6 +124,7 @@ function PddItem() {
           }
         }
         data[i].orderProfit = Math.round(orderProfit * 100) / 100;
+        data[i].netProfit = Math.round((orderProfit - spend / 1000) * 100) / 100;
         data[i].perClickProfit = Math.round((orderProfit / click || 0) * 100) / 100;
         data[i].perClickSpend = Math.round((spend / 1000 / click || 0) * 100) / 100;
         data[i].perClickProfitSpend = 0;
@@ -132,9 +133,10 @@ function PddItem() {
         data[i].realOrderNum = realOrderNum;
         data[i].afterSaleRate = totalOrderNum ? (totalOrderNum - realOrderNum) / totalOrderNum : 0;
         if(spend !== 0) {
-          data[i].perClickProfitSpend = Math.round((orderProfit / (spend / 1000) || 0) * 100) / 100;
-          data[i].netProfitSpend = Math.round((orderProfit / (spend / 1000) || 0) * 100) / 100 - 1;
+          data[i].perClickProfitSpend = Math.round((orderProfit / (spend / 1000)) * 100) / 100;
+          data[i].netProfitSpend = Math.round((orderProfit / (spend / 1000) - 1) * 100) / 100;
         }
+        data[i].orderProfitPriceDiff = Math.round(costPrice / (0.9 - 0.01 * realOrderNum) - price)
       }
       let { data: list } = await axios.get('/pddItemLastThreeDayPromoteList');
       if(!list) {
@@ -275,6 +277,7 @@ function PddItem() {
           costPrice,
           profit,
           suitPrice,
+          realOrderNum,
         } = rowData;
         var currentPrice = skuGroupPriceMin / 100;
         if(skuGroupPriceMin !== skuGroupPriceMax) {
@@ -336,52 +339,38 @@ function PddItem() {
               }}>
               阈值ROI：<span style={{fontSize: 14, fontWeight: 'bold'}}>{Math.round(currentPrice / profit * 100) / 100}</span>
             </div>
-            {/*
             <div
               style={{
                 color: '#EA2027',
               }}>
-              阈值折扣：
-              <span
-                style={{
-                  fontSize: 24,
-                }}>
-                {((costPrice + 10 + 15 + 19) / currentPrice * 10).toFixed(1)}折
-              </span>
+              订单-利润率价格：<span style={{fontSize: 14, fontWeight: 'bold'}}>{Math.round(costPrice / (0.9 - 0.01 * realOrderNum))}</span>
             </div>
-            <div
-              style={{
-                color: '#EA2027',
-              }}>
-              折扣价：{costPrice + 10 + 15 + 19}元
-            </div>
-            <div
-              style={{
-                color: '#9b59b6',
-              }}>
-              抖音售价：{Math.round((suitPrice + shippingPrice) / (1 - 0.1 - 0.4))}
-            </div>
-            <div
-              style={{
-                color: '#34495e',
-              }}>
-              抖音成本：{suitPrice + shippingPrice}
-            </div>
-            <div
-              style={{
-                color: '#e74c3c',
-              }}>
-              抖音佣金：{Math.round((suitPrice + shippingPrice) / (1 - 0.1 - 0.4) * 0.4)}
-            </div>
-            <div
-              style={{
-                color: '#e84393',
-              }}>
-              抖音利润：{Math.round((suitPrice + shippingPrice) / (1 - 0.1 - 0.4) * 0.1)}
-            </div>
-            */}
           </div>
         );
+      },
+    },
+    {
+      title: '无售后订单量',
+      field: 'realOrderNum',
+      type: 'numeric',
+      cellStyle: {
+        fontSize: 12,
+        color: '#ff0000',
+      },
+      headerStyle: {
+        color: '#ff0000',
+      },
+    },
+    {
+      title: '订单-利润率价格差',
+      field: 'orderProfitPriceDiff',
+      type: 'numeric',
+      cellStyle: {
+        fontSize: 12,
+        color: '#2ed573',
+      },
+      headerStyle: {
+        color: '#2ed573',
       },
     },
     {
@@ -476,8 +465,21 @@ function PddItem() {
       },
     },
     {
+      title: '净利润',
+      field: 'netProfit',
+      type: 'numeric',
+      cellStyle: {
+        fontSize: 12,
+        color: '#ff0000',
+      },
+      headerStyle: {
+        color: '#ff0000',
+      },
+    },
+    {
       title: '净利润花费比',
       field: 'netProfitSpend',
+      type: 'numeric',
       cellStyle: {
         fontSize: 12,
         color: '#ff0000',
