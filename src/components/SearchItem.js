@@ -200,6 +200,10 @@ function SearchItem() {
       },
     },
     {
+      title: "关键词",
+      field: "keyName",
+    },
+    {
       title: "价格",
       field: "price",
       render: rowData => {
@@ -214,17 +218,18 @@ function SearchItem() {
       },
     },
     {
-      title: "毛利率10%零售价格",
+      title: "毛利率28.7%零售价格",
       field: "price10",
       render: rowData => {
         const {
           price,
         } = rowData;
-        const price10 = Math.round((price + 5.5 + 6) / (0.9 - 0.006));
+        const sellPrice = Math.round((price + 5.5 + 6) / (1 - 0.287 - 0.006));
+        const bidPrice = Math.round(sellPrice * 0.187 / 2);
         return (
           <div>
             <CopyToClipboard
-              text={price10}
+              text={sellPrice}
               onCopy={() =>
                 handleOpenSnackbar({
                   message: '已复制',
@@ -233,7 +238,20 @@ function SearchItem() {
               <Button
                 variant='outlined'
                 size='small'>
-                {price10}
+                {sellPrice}
+              </Button>
+            </CopyToClipboard>
+            <CopyToClipboard
+              text={bidPrice}
+              onCopy={() =>
+                handleOpenSnackbar({
+                  message: '已复制',
+                })
+              }>
+              <Button
+                variant='outlined'
+                size='small'>
+                出价：{bidPrice}
               </Button>
             </CopyToClipboard>
           </div>
