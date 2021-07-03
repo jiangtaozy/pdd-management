@@ -17,6 +17,8 @@ import Link from '@material-ui/core/Link';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 function SearchItem() {
 
@@ -32,10 +34,13 @@ function SearchItem() {
   } = state;
   const [itemList, setItemList] = useState([]);
   const [ womenItemListUrl, setWomenItemListUrl ] = useState('');
+  const [ showLoading, setShowLoading ] = useState(false);
 
   const fetchItemList = async (keyword) => {
+    setShowLoading(true);
     try {
       if(keyword.length === 0) {
+        setShowLoading(false);
         return;
       }
       const { data } = await axios.get('/searchTitleList', {
@@ -44,15 +49,18 @@ function SearchItem() {
         },
       });
       if(data === null) {
+        setShowLoading(false);
         return
       }
       for(let i = 0; i < data.length; i++) {
         data[i].sellPrice = (data[i].price + 5.5 + 6) * 2;
       }
       setItemList(data);
+      setShowLoading(false);
     }
     catch(err) {
       console.error('SearchItemGetItemListError: ', err);
+      setShowLoading(false);
       handleOpenSnackbar({
         message: `出错了：${err.message}`,
       })
@@ -506,6 +514,14 @@ function SearchItem() {
         onClose={handleCloseSnackbar}
         message={message}
       />
+      <Backdrop
+        style={{
+          zIndex: 11,
+          color: '#fff',
+        }}
+        open={showLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 }
