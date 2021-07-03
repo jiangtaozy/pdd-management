@@ -29,7 +29,7 @@ function PddCompetitorItem() {
   useEffect(() => {
     fetchPddCompetitorItemList();
     fetchCompetitorList();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const { itemId } = useParams();
 

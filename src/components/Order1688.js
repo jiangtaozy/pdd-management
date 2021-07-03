@@ -37,7 +37,7 @@ function Order1688() {
 
   useEffect(() => {
     fetchOrderList();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleOpenSnackbar = ({ message }) => {
     setSnackbarState({
@@ -72,7 +72,7 @@ function Order1688() {
       });
       console.error("OrderOnDropError: ", err);
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const {
     getRootProps,

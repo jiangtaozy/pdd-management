@@ -23,7 +23,7 @@ function PddCompetitor() {
 
   useEffect(() => {
     fetchPddCompetitorList();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchPddCompetitorList = async () => {
     try {

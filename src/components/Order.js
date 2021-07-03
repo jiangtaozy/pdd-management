@@ -11,7 +11,7 @@ import MaterialTable from 'material-table';
 import tableIcons from './utils/TableIcons';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
-import TextField from '@material-ui/core/TextField';
+//import TextField from '@material-ui/core/TextField';
 //import { useDropzone } from 'react-dropzone';
 import { GetTimeString } from './utils/Time';
 import UploadHangOrderFile from './order/UploadHangOrderFile';
@@ -26,8 +26,8 @@ function Order() {
     message: '',
   });
   const [ orderList, setOrderList ] = useState([]);
-  const [ orderData, setOrderData ] = useState('');
-  const [ afterSaleOrderData, setAfterSaleOrderData ] = useState('');
+  //const [ orderData, setOrderData ] = useState('');
+  //const [ afterSaleOrderData, setAfterSaleOrderData ] = useState('');
   const { open, message } = snackbarState;
   const [ selectedRow, setSelectedRow ] = useState();
   const [ columns ] = useState([
@@ -391,7 +391,7 @@ function Order() {
 
   useEffect(() => {
     fetchOrderList();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleOpenSnackbar = ({ message }) => {
     setSnackbarState({
@@ -426,6 +426,7 @@ function Order() {
     }
   }
 
+  /*
   async function handleOrderDataButtonClick() {
     if(!orderData) {
       return handleOpenSnackbar({
@@ -449,7 +450,9 @@ function Order() {
       });
     }
   }
+  */
 
+  /*
   async function handleAfterSaleOrderDataButtonClick() {
     if(!afterSaleOrderData) {
       return handleOpenSnackbar({
@@ -473,6 +476,7 @@ function Order() {
       });
     }
   }
+  */
 
   /*
   const onDrop = useCallback(async acceptedFiles => {

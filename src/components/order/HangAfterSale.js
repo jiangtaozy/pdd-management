@@ -53,7 +53,7 @@ function HangAfterSale(props) {
       });
       console.error("HangAfterSaleOnDropError: ", err);
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const {
     getRootProps,

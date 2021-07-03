@@ -62,7 +62,7 @@ function PddActivity() {
 
   useEffect(() => {
     fetchPddActivity();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchPddActivity = async () => {
     try {

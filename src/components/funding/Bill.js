@@ -39,7 +39,7 @@ function Bill() {
 
   useEffect(() => {
     fetchBillList();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleBillDataButtonClick() {
     if(!billData) {

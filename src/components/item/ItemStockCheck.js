@@ -28,7 +28,7 @@ function ItemStockCheck() {
 
   useEffect(() => {
     fetchList();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchList = async () => {
     try {

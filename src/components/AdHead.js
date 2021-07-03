@@ -23,7 +23,7 @@ function AdHead() {
 
   useEffect(() => {
     fetchAdHeadList();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchAdHeadList = async () => {
     try {

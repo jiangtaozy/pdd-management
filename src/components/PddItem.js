@@ -67,7 +67,7 @@ function PddItem() {
 
   useEffect(() => {
     fetchPddGoods();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchPddGoods = async () => {
     try {
@@ -290,7 +290,7 @@ function PddItem() {
           costPrice,
           profit,
           suitPrice,
-          realOrderNum,
+          //realOrderNum,
         } = rowData;
         var currentPrice = skuGroupPriceMin / 100;
         if(skuGroupPriceMin !== skuGroupPriceMax) {

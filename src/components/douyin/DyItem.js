@@ -62,7 +62,7 @@ function DyItem() {
 
   useEffect(() => {
     fetchList();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSyncDyData = async () => {
     try {

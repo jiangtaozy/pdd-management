@@ -88,7 +88,7 @@ function Keyword() {
   useEffect(() => {
     fetchKeywordList();
     fetchMallTotalData();
-  }, [id]);
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getRefactoredList = (keywordList, orderList) => {
     const refactoredList = [];

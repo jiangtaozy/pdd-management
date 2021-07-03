@@ -24,7 +24,7 @@ function Stall() {
 
   useEffect(() => {
     fetchStallList();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchStallList = async () => {
     try {

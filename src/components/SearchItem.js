@@ -48,7 +48,7 @@ function SearchItem() {
 
   useEffect(() => {
     fetchItemList();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleSearchTitleButtonClick() {
     if(!searchTitle) {
