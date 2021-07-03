@@ -86,8 +86,9 @@ function PddItem() {
         data[i].profit = profit;
         data[i].conversionThreshold = Math.round(0.1 / profit * 100 * 100) / 100;
         data[i].profitMargin = Math.round(profit / price * 100 * 100) / 100;
-        data[i].promotionProfit = Math.round(((price - 10) * (1 - 0.33) - costPrice) * 100) / 100;
-        data[i].limitDiscount = Math.round((1 - profit / price) * 10 * 100) / 100;
+        //data[i].promotionProfit = Math.round(((price - 10) * (1 - 0.33) - costPrice) * 100) / 100;
+        //data[i].limitDiscount = Math.round((1 - profit / price) * 10 * 100) / 100;
+        data[i].sellPrice = Math.round((suitPrice + 5.5 + 6) / (1 - 0.287 - 0.006));
         const adList = data[i].adList || [];
         let impression = 0;
         let click = 0;
@@ -136,7 +137,7 @@ function PddItem() {
           data[i].perClickProfitSpend = Math.round((orderProfit / (spend / 1000)) * 100) / 100;
           data[i].netProfitSpend = Math.round((orderProfit / (spend / 1000) - 1) * 100) / 100;
         }
-        data[i].orderProfitPriceDiff = Math.round(costPrice / (0.9 - 0.01 * realOrderNum) - price)
+        //data[i].orderProfitPriceDiff = Math.round(costPrice / (0.9 - 0.01 * realOrderNum) - price)
       }
       let { data: list } = await axios.get('/pddItemLastThreeDayPromoteList');
       if(!list) {
@@ -210,7 +211,19 @@ function PddItem() {
                 <div style={{
                   color: '#666',
                 }}>
-                  {pddId}
+                  <CopyToClipboard
+                    text={pddId}
+                    onCopy={() =>
+                      handleOpenSnackbar({
+                        message: '已复制',
+                      })
+                    }>
+                    <Button
+                      variant='outlined'
+                      size='small'>
+                      {pddId}
+                    </Button>
+                  </CopyToClipboard>
                 </div>
                 <div>
                   {goodsInfoScr}
@@ -339,12 +352,14 @@ function PddItem() {
               }}>
               阈值ROI：<span style={{fontSize: 14, fontWeight: 'bold'}}>{Math.round(currentPrice / profit * 100) / 100}</span>
             </div>
+            {/*
             <div
               style={{
                 color: '#EA2027',
               }}>
               订单-利润率价格：<span style={{fontSize: 14, fontWeight: 'bold'}}>{Math.round(costPrice / (0.9 - 0.01 * realOrderNum))}</span>
             </div>
+            */}
           </div>
         );
       },
@@ -361,6 +376,7 @@ function PddItem() {
         color: '#ff0000',
       },
     },
+    /*
     {
       title: '订单-利润率价格差',
       field: 'orderProfitPriceDiff',
@@ -373,6 +389,7 @@ function PddItem() {
         color: '#2ed573',
       },
     },
+    */
     {
       title: '利润率',
       field: 'profitMargin',
@@ -386,14 +403,43 @@ function PddItem() {
       render: rowData => {
         const {
           profitMargin,
+          sellPrice,
         } = rowData;
+        const bidPrice = Math.round(sellPrice * 0.187);
         return (
           <div>
             {profitMargin}%
+            <CopyToClipboard
+              text={sellPrice}
+              onCopy={() =>
+                handleOpenSnackbar({
+                  message: '已复制',
+                })
+              }>
+              <Button
+                variant='outlined'
+                size='small'>
+                售价:{sellPrice}
+              </Button>
+            </CopyToClipboard>
+            <CopyToClipboard
+              text={bidPrice}
+              onCopy={() =>
+                handleOpenSnackbar({
+                  message: '已复制',
+                })
+              }>
+              <Button
+                variant='outlined'
+                size='small'>
+                出价:{bidPrice}
+              </Button>
+            </CopyToClipboard>
           </div>
         );
       },
     },
+    /*
     {
       title: '利润率10%售价',
       field: 'profit10price',
@@ -426,6 +472,7 @@ function PddItem() {
         );
       },
     },
+    */
     /*
     {
       title: '降低5%利润率折扣',
