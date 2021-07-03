@@ -15,10 +15,13 @@ import tableIcons from './utils/TableIcons';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import SearchIcon from '@material-ui/icons/Search';
 
 function SearchItem() {
 
   const [searchTitle, setSearchTitle] = useState('');
+  const [keyword, setKeyword] = useState('');
   const [state, setState] = useState({
     open: false,
     message: '',
@@ -30,9 +33,19 @@ function SearchItem() {
   const [itemList, setItemList] = useState([]);
   const [ womenItemListUrl, setWomenItemListUrl ] = useState('');
 
-  const fetchItemList = async () => {
+  const fetchItemList = async (keyword) => {
     try {
-      const { data } = await axios.get('/searchTitleList');
+      if(keyword.length === 0) {
+        return;
+      }
+      const { data } = await axios.get('/searchTitleList', {
+        params: {
+          keyword,
+        },
+      });
+      if(data === null) {
+        return
+      }
       for(let i = 0; i < data.length; i++) {
         data[i].sellPrice = (data[i].price + 5.5 + 6) * 2;
       }
@@ -47,8 +60,8 @@ function SearchItem() {
   }
 
   useEffect(() => {
-    fetchItemList();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    fetchItemList(keyword);
+  }, [keyword]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleSearchTitleButtonClick() {
     if(!searchTitle) {
@@ -363,15 +376,39 @@ function SearchItem() {
 
   return (
     <div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}>
+        <TextField
+          label="搜索关键词"
+          value={keyword}
+          style={{
+            marginBottom: 10,
+          }}
+          onChange={(event) => {
+            setKeyword(event.target.value)
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </div>
       <MaterialTable
         icons={tableIcons}
         options={{
+          search: false,
           filtering: true,
           actionsColumnIndex: -1,
         }}
         columns={columns}
         data={itemList}
-        title="商品列表"
+        title="女装网商品列表"
         editable={{
           onRowUpdate: (newData, oldData) =>
             new Promise(async (resolve, reject) => {

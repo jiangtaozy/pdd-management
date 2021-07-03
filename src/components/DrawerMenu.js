@@ -141,6 +141,7 @@ function DrawerMenu(props) {
         <CssBaseline />
         <HideOnScroll {...props}>
           <AppBar
+            color="inherit"
             position="fixed"
             className={clsx(classes.appBar, {
               [classes.appBarShift]: open,
