@@ -55,6 +55,7 @@ import PddCompetitor from './PddCompetitor';
 import PddCompetitorItem from './pdd-competitor/PddCompetitorItem';
 import PddCompetitorItemSale from './pdd-competitor/PddCompetitorItemSale';
 import ItemStockCheck from './item/ItemStockCheck';
+import AfterSalesOrder from './AfterSalesOrder';
 
 const drawerWidth = 180;
 
@@ -253,6 +254,9 @@ function DrawerMenu(props) {
             <Route path="/itemStockCheck">
               <ItemStockCheck />
             </Route>
+            <Route path="/afterSalesOrder">
+              <AfterSalesOrder />
+            </Route>
             <Route path="/">
               <DashBoard />
             </Route>
@@ -337,6 +341,19 @@ function DrawerMenu(props) {
                   <FormatListBulletedIcon />
                 </ListItemIcon>
                 <ListItemText primary="订单" />
+              </ListItem>
+            </Link>
+            <Divider />
+            <Link to="/afterSalesOrder"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="售后订单" />
               </ListItem>
             </Link>
             <Divider />
