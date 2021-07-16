@@ -13,6 +13,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MaterialTable from 'material-table';
 import tableIcons from './utils/TableIcons';
 import { TimeFormat } from './utils/Time';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import Button from '@material-ui/core/Button';
 
 function AfterSalesOrder() {
   const [ list, setList ] = useState([]);
@@ -23,7 +25,6 @@ function AfterSalesOrder() {
     autoHideDuration: null,
   });
   const { message, open, autoHideDuration } = snackbarState;
-  /*
   const openSnackbar = ({ message }) => {
     setSnackbarState({
       message,
@@ -31,7 +32,6 @@ function AfterSalesOrder() {
       autoHideDuration: 2000, // 毫秒
     });
   }
-  */
   const openErrorSnackbar = ({ message }) => {
     setSnackbarState({
       message,
@@ -100,6 +100,25 @@ function AfterSalesOrder() {
     {
       title: "订单号",
       field: "orderSn",
+      render: rowData => {
+        return (
+          <div>
+            <CopyToClipboard
+              text={rowData.orderSn}
+              onCopy={() =>
+                openSnackbar({
+                  message: '已复制',
+                })
+              }>
+              <Button
+                variant="outlined"
+                size="small">
+                {rowData.orderSn}
+              </Button>
+            </CopyToClipboard>
+          </div>
+        );
+      },
     },
     {
       title: "售后物流状态",
@@ -126,6 +145,25 @@ function AfterSalesOrder() {
     {
       title: "女装网订单号",
       field: "outerOrderId",
+      render: rowData => {
+        return (
+          <div>
+            <CopyToClipboard
+              text={rowData.outerOrderId}
+              onCopy={() =>
+                openSnackbar({
+                  message: '已复制',
+                })
+              }>
+              <Button
+                variant="outlined"
+                size="small">
+                {rowData.outerOrderId}
+              </Button>
+            </CopyToClipboard>
+          </div>
+        );
+      },
     },
     {
       title: "女装网售后状态描述",
