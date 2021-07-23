@@ -24,6 +24,7 @@ function AfterSalesOrder() {
     open: false,
     autoHideDuration: null,
   });
+  const [ selectedRow, setSelectedRow ] = useState();
   const { message, open, autoHideDuration } = snackbarState;
   const openSnackbar = ({ message }) => {
     setSnackbarState({
@@ -77,21 +78,12 @@ function AfterSalesOrder() {
         '12': '退退货退款，款关闭',
         '16': '确认完成换货',
         '17': '换货关闭',
+        '18': '换货，待消费者收货',
       },
     },
     {
       title: "售后状态描述",
       field: "afterSalesTitle",
-      lookup: {
-        '仅退款，退款关闭': '仅退款，退款关闭',
-        '仅退款，退款成功': '仅退款，退款成功',
-        '换货，换货关闭': '换货，换货关闭',
-        '换货，确认完成换货': '换货，确认完成换货',
-        '退货退款，待商家确认收货': '退货退款，待商家确认收货',
-        '退货退款，待消费者寄货': '退货退款，待消费者寄货',
-        '退货退款，退款关闭': '退货退款，退款关闭',
-        '退货退款，退款成功': '退货退款，退款成功',
-      },
     },
     {
       title: "售后类型",
@@ -173,6 +165,10 @@ function AfterSalesOrder() {
       title: "女装网订单状态描述",
       field: "orderStatusStr",
     },
+    {
+      title: "女装网订单状态",
+      field: "orderStatus",
+    },
   ]);
   return (
     <div>
@@ -183,7 +179,11 @@ function AfterSalesOrder() {
         title="售后订单"
         options={{
           filtering: true,
+          rowStyle: rowData => ({
+            backgroundColor: (selectedRow && selectedRow.tableData.id === rowData.tableData.id) ? '#EEE' : '#fff',
+          }),
         }}
+        onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow))}
       />
       <Backdrop
         style={{
