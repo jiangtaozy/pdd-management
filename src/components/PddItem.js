@@ -365,8 +365,32 @@ function PddItem() {
       },
     },
     {
+      title: '总订单量',
+      field: 'totalOrderNum',
+      type: 'numeric',
+      cellStyle: {
+        fontSize: 12,
+        color: '#ff0000',
+      },
+      headerStyle: {
+        color: '#ff0000',
+      },
+    },
+    {
       title: '无售后订单量',
       field: 'realOrderNum',
+      type: 'numeric',
+      cellStyle: {
+        fontSize: 12,
+        color: '#ff0000',
+      },
+      headerStyle: {
+        color: '#ff0000',
+      },
+    },
+    {
+      title: '退货率',
+      field: 'afterSaleRate',
       type: 'numeric',
       cellStyle: {
         fontSize: 12,

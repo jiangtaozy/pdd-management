@@ -246,7 +246,7 @@ function SearchItem() {
           price,
         } = rowData;
         const sellPrice = Math.round((price + 5.5 + 6) / (1 - 0.287 - 0.006));
-        const bidPrice = Math.round(sellPrice * 0.187);
+        //const bidPrice = Math.round(sellPrice * 0.187);
         return (
           <div>
             <CopyToClipboard
@@ -262,6 +262,7 @@ function SearchItem() {
                 {sellPrice}
               </Button>
             </CopyToClipboard>
+            {/*
             <CopyToClipboard
               text={bidPrice}
               onCopy={() =>
@@ -275,6 +276,7 @@ function SearchItem() {
                 出价：{bidPrice}
               </Button>
             </CopyToClipboard>
+            */}
           </div>
         );
       },
