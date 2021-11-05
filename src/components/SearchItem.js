@@ -52,9 +52,9 @@ function SearchItem() {
         setShowLoading(false);
         return
       }
-      for(let i = 0; i < data.length; i++) {
-        data[i].sellPrice = (data[i].price + 5.5 + 6) * 2;
-      }
+      //for(let i = 0; i < data.length; i++) {
+      //  data[i].sellPrice = (data[i].price + 5.5 + 6) * 2;
+      //}
       setItemList(data);
       setShowLoading(false);
     }
@@ -389,10 +389,9 @@ function SearchItem() {
       <div
         style={{
           display: 'flex',
-          justifyContent: 'flex-end',
         }}>
         <TextField
-          label="搜索关键词"
+          label="搜索货号"
           value={keyword}
           style={{
             marginBottom: 10,
