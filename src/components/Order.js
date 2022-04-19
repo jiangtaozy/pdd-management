@@ -16,7 +16,6 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 function Order() {
 
   const [ orderList, setOrderList ] = useState([]);
-  const [ selectedRow, setSelectedRow ] = useState();
   const [ columns ] = useState([
     {
       title: "订单编号",
@@ -386,12 +385,8 @@ function Order() {
           filtering: true,
           actionsColumnIndex: 9,
           searchFieldAlignment: 'left',
-          rowStyle: rowData => ({
-            backgroundColor: (selectedRow && selectedRow.tableData.id === rowData.tableData.id) ? '#EEE' : '#fff',
-          }),
           pageSizeOptions: [5, 10, 20, 50, 100],
         }}
-        onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow))}
         editable={{
           onRowUpdate: (newData, oldData) =>
             new Promise(async (resolve, reject) => {

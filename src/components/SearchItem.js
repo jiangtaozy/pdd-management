@@ -26,7 +26,6 @@ function SearchItem() {
   const [ itemSkuList, setItemSkuList ] = useState([]);
   const [ pddItemSkuList, setPddItemSkuList ] = useState([]);
   const [ showLoading, setShowLoading ] = useState(false);
-  const [ selectedRow, setSelectedRow ] = useState();
   const [state, setState] = useState({
     open: false,
     message: '',
@@ -560,11 +559,7 @@ function SearchItem() {
           actionsColumnIndex: -1,
           toolbar: false,
           paging: false,
-          rowStyle: rowData => ({
-            backgroundColor: (selectedRow && selectedRow.tableData.id === rowData.tableData.id) ? '#EEE' : '#fff',
-          }),
         }}
-        onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow))}
         columns={pddItemSkuListColumns}
         data={pddItemSkuList}
         style={{
