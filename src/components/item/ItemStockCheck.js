@@ -165,7 +165,7 @@ function ItemStockCheck() {
     },
     */
     {
-      title: 'skuQuantity',
+      title: '拼多多sku商品数skuQuantity',
       field: 'skuQuantity',
       type: 'numeric',
     },
@@ -180,36 +180,36 @@ function ItemStockCheck() {
     },
     */
     {
-      title: 'ycAvailNum',
+      title: '女装网云仓数量ycAvailNum',
       field: 'ycAvailNum',
       type: 'numeric',
     },
     {
-      title: 'ycStockTips',
+      title: '女装网云仓提示ycStockTips',
       field: 'ycStockTips',
     },
     {
-      title: 'spec',
+      title: '拼多多规格spec',
       field: 'spec',
     },
     {
-      title: 'skuDesc',
+      title: '女装网云仓规格skuDesc',
       field: 'skuDesc',
     },
     {
-      title: 'specColor',
+      title: '拼多多颜色specColor',
       field: 'specColor',
     },
     {
-      title: 'skuColor',
+      title: '女装网云仓颜色skuColor',
       field: 'skuColor',
     },
     {
-      title: 'specSize',
+      title: '拼多多大小specSize',
       field: 'specSize',
     },
     {
-      title: 'skuSize',
+      title: '女装网云仓大小skuSize',
       field: 'skuSize',
     },
   ]);

@@ -12,7 +12,6 @@ import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
 import MaterialTable from 'material-table';
 import tableIcons from './utils/TableIcons';
-import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -22,8 +21,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 function SearchItem() {
 
-  const [searchTitle, setSearchTitle] = useState('');
-  const [keyword, setKeyword] = useState('');
+  const [ keyword, setKeyword ] = useState('');
+  const [ itemList, setItemList ] = useState([]);
+  const [ itemSkuList, setItemSkuList ] = useState([]);
+  const [ pddItemSkuList, setPddItemSkuList ] = useState([]);
+  const [ showLoading, setShowLoading ] = useState(false);
+  const [ selectedRow, setSelectedRow ] = useState();
   const [state, setState] = useState({
     open: false,
     message: '',
@@ -32,30 +35,16 @@ function SearchItem() {
     open,
     message,
   } = state;
-  const [itemList, setItemList] = useState([]);
-  const [ womenItemListUrl, setWomenItemListUrl ] = useState('');
-  const [ showLoading, setShowLoading ] = useState(false);
 
   const fetchItemList = async (keyword) => {
     setShowLoading(true);
     try {
-      if(keyword.length === 0) {
-        setShowLoading(false);
-        return;
-      }
-      const { data } = await axios.get('/searchTitleList', {
+      let { data } = await axios.get('/searchTitleList', {
         params: {
           keyword,
         },
       });
-      if(data === null) {
-        setShowLoading(false);
-        return
-      }
-      //for(let i = 0; i < data.length; i++) {
-      //  data[i].sellPrice = (data[i].price + 5.5 + 6) * 2;
-      //}
-      setItemList(data);
+      setItemList(data || []);
       setShowLoading(false);
     }
     catch(err) {
@@ -67,71 +56,238 @@ function SearchItem() {
     }
   }
 
+  const fetchItemSkuList = async () => {
+    if(itemList.length === 0) {
+      return
+    }
+    const { searchId } = itemList[0];
+    try {
+      const { data: itemSkuList } = await axios.get('/itemSkuListBySearchId', {
+        params: {
+          searchId,
+        },
+      });
+      setItemSkuList(itemSkuList || []);
+      if(itemSkuList) {
+        const pddItemSkuList = [];
+        const skuLength = itemSkuList.length;
+        for(let count = 4; count > 0; count--) {
+          const countNum = Math.floor(skuLength / count);
+          if(countNum >= 1) {
+            for(let countNumIndex = 0; countNumIndex < countNum; countNumIndex++) {
+              const itemSku = itemSkuList[countNumIndex * count];
+              const pddItemSku = {
+                skuName: itemSku.shortSkuName,
+                skuNum: itemList[0].itemNum + '-' + itemSku.shortSkuNum,
+                costPrice: itemSku.price,
+              }
+              for(let i = countNumIndex * count + 1; i < (countNumIndex + 1) * count; i++) {
+                pddItemSku.skuName += '+' + itemSkuList[i].shortSkuName;
+                pddItemSku.skuNum += '+' + itemSkuList[i].shortSkuNum;
+                pddItemSku.costPrice += itemSkuList[i].price;
+              }
+              pddItemSku.price = Math.round((pddItemSku.costPrice / 100 + 3.3 + 0.35 + 0.5) / 0.7 * 100) / 100;
+              pddItemSku.meanPrice = Math.round(pddItemSku.price / count * 100) / 100;
+              pddItemSku.skuName += '【共' + count + '个】';
+              pddItemSkuList.push(pddItemSku);
+            }
+            if(count > 1) {
+              pddItemSkuList.push({
+                skuName: '【任选' + count + '个】颜色备注',
+                skuNum: itemList[0].itemNum + '-' + count,
+                price: pddItemSkuList[pddItemSkuList.length - 1].price,
+                meanPrice: pddItemSkuList[pddItemSkuList.length - 1].meanPrice,
+              });
+            }
+          }
+        }
+        setPddItemSkuList(pddItemSkuList);
+      }
+    }
+    catch(err) {
+      console.error('SearchItemFetchItemSkuListError: ', err);
+      handleOpenSnackbar({
+        message: `出错了：${err.message}`,
+      })
+    }
+  }
+
+  const fetchItemTypeList = async () => {
+    try {
+      const { data: itemTypeList } = await axios.get('/itemTypeList');
+      if(itemTypeList) {
+        setColumns([
+          {
+            title: "searchId",
+            field: "searchId",
+            type: "numeric",
+            editable: "never",
+            render: rowData => {
+              const {
+                searchId,
+              } = rowData;
+              return (
+                <div>
+                  <CopyToClipboard
+                    text={searchId}
+                    onCopy={() =>
+                      handleOpenSnackbar({
+                        message: '已复制',
+                      })
+                    }>
+                    <Button
+                      variant='outlined'
+                      size='small'
+                      style={{
+                        marginLeft: 10,
+                      }}>
+                      {searchId}
+                    </Button>
+                  </CopyToClipboard>
+                </div>
+              );
+            },
+          },
+          {
+            title: "主图",
+            field: "imgUrl",
+            editable: "never",
+            render: rowData => {
+              const {
+                imgUrl,
+              } = rowData;
+              return (
+                <div>
+                  <img
+                    src={imgUrl}
+                    width='100'
+                    height='100'
+                    alt=''
+                  />
+                </div>
+              );
+            },
+          },
+          {
+            title: "标题",
+            field: "name",
+            editable: "never",
+            render: rowData => {
+              const {
+                detailUrl,
+                name,
+              } = rowData;
+              return (
+                <div>
+                  <Link
+                    href={detailUrl}
+                    target='_blank'>
+                    {name}
+                  </Link>
+                </div>
+              );
+            },
+          },
+          {
+            title: "价格",
+            field: "price",
+            editable: "never",
+            render: rowData => {
+              const {
+                price,
+              } = rowData;
+              return (
+                <div>
+                  {price}
+                </div>
+              );
+            },
+          },
+          {
+            title: "商品类型",
+            field: "itemTypeKey",
+            lookup: itemTypeList.reduce(function(acc, cur, i) {
+              const {
+                id,
+                typeName,
+              } = cur;
+              acc[id]= typeName;
+              return acc;
+            }, {}),
+          },
+          {
+            title: "商品类型编码",
+            field: "itemTypeKey",
+            lookup: itemTypeList.reduce(function(acc, cur, i) {
+              const {
+                id,
+                typeNum,
+              } = cur;
+              acc[id]= typeNum;
+              return acc;
+            }, {}),
+          },
+          {
+            title: "商品编码",
+            field: "itemNum",
+          },
+          {
+            title: "拼多多标题",
+            field: "goodsName",
+            editable: "never",
+          },
+          {
+            title: "拼多多ID",
+            field: "pddId",
+            editable: "never",
+            render: rowData => {
+              const {
+                pddId,
+              } = rowData;
+              return (
+                <div>
+                  {pddId ?
+                    <CopyToClipboard
+                      text={pddId}
+                      onCopy={() =>
+                        handleOpenSnackbar({
+                          message: '已复制',
+                        })
+                      }>
+                      <Button
+                        variant='outlined'
+                        size='small'>
+                        {pddId}
+                      </Button>
+                    </CopyToClipboard>
+                    : null
+                  }
+                </div>
+              );
+            }
+          },
+        ]);
+      }
+    }
+    catch(err) {
+      console.error('SearchItemFetchItemTypeListError: ', err);
+      handleOpenSnackbar({
+        message: `出错了：${err.message}`,
+      })
+    }
+  }
+
   useEffect(() => {
     fetchItemList(keyword);
   }, [keyword]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  async function handleSearchTitleButtonClick() {
-    if(!searchTitle) {
-      handleOpenSnackbar({
-        message: '请输入商品标题',
-      })
-      return
-    }
-    try {
-      const { data } = await axios.post('/searchTitle', {
-        searchTitle,
-      });
-      if(data === 'ok') {
-        handleOpenSnackbar({
-          message: '操作成功',
-        })
-        setSearchTitle('');
-        fetchItemList();
-      } else {
-        handleOpenSnackbar({
-          message: `出错了：${data}`,
-        })
-      }
-    }
-    catch(err) {
-      console.error('SearchItemHandleSearchTitleButtonClickError: ', err);
-      handleOpenSnackbar({
-        message: `出错了：${err.message}`,
-      })
-    }
-  }
+  useEffect(() => {
+    fetchItemSkuList();
+  }, [itemList]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  async function handleWomenItemListUrlButtonClick() {
-    if(!womenItemListUrl) {
-      handleOpenSnackbar({
-        message: '请输入女装网商品列表地址',
-      })
-      return
-    }
-    try {
-      const { data } = await axios.post('/womenItemListUrl', {
-        womenItemListUrl,
-      });
-      if(data === 'ok') {
-        handleOpenSnackbar({
-          message: '操作成功',
-        })
-        setWomenItemListUrl('');
-        fetchItemList();
-      } else {
-        handleOpenSnackbar({
-          message: `出错了：${data}`,
-        })
-      }
-    }
-    catch(err) {
-      console.error('SearchItemHandleWomenItemListUrlButtonClickError: ', err);
-      handleOpenSnackbar({
-        message: `出错了：${err.message}`,
-      })
-    }
-  }
+  useEffect(() => {
+    fetchItemTypeList();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCloseSnackbar = () => {
     setState({
@@ -147,23 +303,51 @@ function SearchItem() {
     });
   }
 
-  const [ columns ] = useState([
+  const [ columns, setColumns ] = useState([]);
+
+  const [ itemSkuListColumns ] = useState([
     {
-      title: "searchId",
-      field: "searchId",
-      type: "numeric",
+      title: "id",
+      field: "id",
       editable: "never",
+    },
+    {
+      title: "sku",
+      field: "skuName",
+      editable: "never",
+    },
+    {
+      title: "价格",
+      field: "price",
+      editable: "never",
+    },
+    {
+      title: "库存",
+      field: "canBookCount",
+      editable: "never",
+    },
+    {
+      title: "简写",
+      field: "shortSkuName",
+    },
+    {
+      title: "编码",
+      field: "shortSkuNum",
+    },
+  ]);
+
+  const [ pddItemSkuListColumns ] = useState([
+    {
+      title: "sku名称",
+      field: "skuName",
       render: rowData => {
         const {
-          searchId,
+          skuName,
         } = rowData;
         return (
           <div>
-            <RouterLink to={`/product/select/${searchId}`}>
-              {searchId}
-            </RouterLink>
             <CopyToClipboard
-              text={searchId}
+              text={skuName}
               onCopy={() =>
                 handleOpenSnackbar({
                   message: '已复制',
@@ -175,7 +359,7 @@ function SearchItem() {
                 style={{
                   marginLeft: 10,
                 }}>
-                {searchId}
+                {skuName}
               </Button>
             </CopyToClipboard>
           </div>
@@ -183,46 +367,33 @@ function SearchItem() {
       },
     },
     {
-      title: "主图",
-      field: "imgUrl",
+      title: "sku编码",
+      field: "skuNum",
       render: rowData => {
         const {
-          imgUrl,
+          skuNum,
         } = rowData;
         return (
           <div>
-            <img
-              src={imgUrl}
-              width='100'
-              height='100'
-              alt=''
-            />
+            <CopyToClipboard
+              text={skuNum}
+              onCopy={() =>
+                handleOpenSnackbar({
+                  message: '已复制',
+                })
+              }>
+              <Button
+                variant='outlined'
+                size='small'
+                style={{
+                  marginLeft: 10,
+                }}>
+                {skuNum}
+              </Button>
+            </CopyToClipboard>
           </div>
         );
       },
-    },
-    {
-      title: "标题",
-      field: "name",
-      render: rowData => {
-        const {
-          detailUrl,
-          name,
-        } = rowData;
-        return (
-          <div>
-            <Link
-              href={detailUrl}
-              target='_blank'>
-              {name}
-            </Link>
-          </div>
-        );
-      },
-    },
-    {
-      title: "关键词",
-      field: "keyName",
     },
     {
       title: "价格",
@@ -233,24 +404,8 @@ function SearchItem() {
         } = rowData;
         return (
           <div>
-            {price}
-          </div>
-        );
-      },
-    },
-    {
-      title: "毛利率28.7%零售价格",
-      field: "price10",
-      render: rowData => {
-        const {
-          price,
-        } = rowData;
-        const sellPrice = Math.round((price + 5.5 + 6) / (1 - 0.287 - 0.006));
-        //const bidPrice = Math.round(sellPrice * 0.187);
-        return (
-          <div>
             <CopyToClipboard
-              text={sellPrice}
+              text={price}
               onCopy={() =>
                 handleOpenSnackbar({
                   message: '已复制',
@@ -258,126 +413,13 @@ function SearchItem() {
               }>
               <Button
                 variant='outlined'
-                size='small'>
-                {sellPrice}
+                size='small'
+                style={{
+                  marginLeft: 10,
+                }}>
+                {price}
               </Button>
             </CopyToClipboard>
-            {/*
-            <CopyToClipboard
-              text={bidPrice}
-              onCopy={() =>
-                handleOpenSnackbar({
-                  message: '已复制',
-                })
-              }>
-              <Button
-                variant='outlined'
-                size='small'>
-                出价：{bidPrice}
-              </Button>
-            </CopyToClipboard>
-            */}
-          </div>
-        );
-      },
-    },
-    /*
-    {
-      title: "毛利率50%零售价格",
-      field: "sellPrice",
-      render: rowData => {
-        const {
-          sellPrice,
-        } = rowData;
-        return (
-          <div>
-            <div>
-            {sellPrice}
-            </div>
-          </div>
-        );
-      },
-    },
-    */
-    /*
-    {
-      title: "抖音设置利润",
-      render: rowData => {
-        const {
-          price,
-          sellPrice,
-        } = rowData;
-        return (
-          <div>
-            <div>
-              设置利润：{sellPrice - price}
-            </div>
-            <div>
-              佣金：{sellPrice * 0.4}
-            </div>
-            <div>
-              利润：{sellPrice * 0.1}
-            </div>
-            <div>
-              佣金比例：40%
-            </div>
-          </div>
-        );
-      },
-    },
-    */
-    {
-      title: "女装网id",
-      field: "womenProductId",
-      type: "numeric",
-    },
-    {
-      title: "拼多多标题",
-      field: "goodsName",
-    },
-    {
-      title: "获取数据",
-      field: "getData",
-      render: rowData => {
-        const {
-          detailUrl,
-          id,
-        } = rowData;
-        return (
-          <div>
-            <Button
-              variant="outlined"
-              color="primary"
-              size="small"
-              style={{
-                marginTop: 10,
-              }}
-              onClick={async () => {
-                try {
-                  const { data } = await axios.post('/getWomenDetailData', {
-                    id,
-                    detailUrl,
-                  });
-                  if(data === 'ok') {
-                    handleOpenSnackbar({
-                      message: '操作成功',
-                    })
-                  } else {
-                    console.error('SearchItemGetDataErrorData: ', data);
-                    handleOpenSnackbar({
-                      message: `出错了：${data}`,
-                    })
-                  }
-                }
-                catch(err) {
-                  console.error('SearchItemGetDataCatchError: ', err);
-                  handleOpenSnackbar({
-                    message: `出错了：${err.message}`,
-                  })
-                }
-              }}>
-              获取数据
-            </Button>
           </div>
         );
       },
@@ -391,13 +433,15 @@ function SearchItem() {
           display: 'flex',
         }}>
         <TextField
-          label="搜索货号"
+          label="搜索商品"
+          fullWidth
+          type="search"
           value={keyword}
           style={{
             marginBottom: 10,
           }}
           onChange={(event) => {
-            setKeyword(event.target.value)
+            setKeyword(event.target.value.trim())
           }}
           InputProps={{
             startAdornment: (
@@ -411,20 +455,20 @@ function SearchItem() {
       <MaterialTable
         icons={tableIcons}
         options={{
-          search: false,
           filtering: true,
           actionsColumnIndex: -1,
+          toolbar: false,
+          paging: false,
         }}
         columns={columns}
         data={itemList}
-        title="女装网商品列表"
         editable={{
           onRowUpdate: (newData, oldData) =>
             new Promise(async (resolve, reject) => {
               try {
                 const { data } = await axios.post('/updateSearchTitle', newData);
                 if(data === 'ok') {
-                  itemList[itemList.indexOf(oldData)] = newData;
+                  fetchItemList(keyword);
                   handleOpenSnackbar({
                     message: '操作成功',
                   })
@@ -468,43 +512,65 @@ function SearchItem() {
             })
         }}
       />
-      <TextField
-        label="输入女装网商品列表地址"
-        fullWidth
-        value={womenItemListUrl}
-        onChange={(event) => {
-          setWomenItemListUrl(event.target.value)
+      <MaterialTable
+        icons={tableIcons}
+        options={{
+          search: false,
+          filtering: false,
+          actionsColumnIndex: -1,
+          toolbar: false,
+          paging: false,
+        }}
+        columns={itemSkuListColumns}
+        data={itemSkuList}
+        style={{
+          marginTop: 20,
+        }}
+        editable={{
+          onRowUpdate: (newData, oldData) =>
+            new Promise(async (resolve, reject) => {
+              try {
+                const { data } = await axios.post('/itemSkuUpdate', newData);
+                if(data === 'ok') {
+                  fetchItemSkuList();
+                  handleOpenSnackbar({
+                    message: '操作成功',
+                  })
+                } else {
+                  handleOpenSnackbar({
+                    message: `出错了：${data}`,
+                  })
+                }
+              }
+              catch(err) {
+                console.error('SearchItemItemSkuUpdateError: ', err);
+                handleOpenSnackbar({
+                  message: `出错了：${err.message}`,
+                })
+              }
+              resolve();
+            }),
         }}
       />
-      <Button
-        variant="outlined"
-        color="primary"
-        fullWidth
-        style={{
-          marginTop: 10,
+      <MaterialTable
+        icons={tableIcons}
+        options={{
+          search: false,
+          filtering: false,
+          actionsColumnIndex: -1,
+          toolbar: false,
+          paging: false,
+          rowStyle: rowData => ({
+            backgroundColor: (selectedRow && selectedRow.tableData.id === rowData.tableData.id) ? '#EEE' : '#fff',
+          }),
         }}
-        onClick={handleWomenItemListUrlButtonClick}
-      >
-        确定
-      </Button>
-      <TextField
-        label="输入商品标题"
-        fullWidth
-        value={searchTitle}
-        onChange={(event) => {
-          setSearchTitle(event.target.value)
+        onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow))}
+        columns={pddItemSkuListColumns}
+        data={pddItemSkuList}
+        style={{
+          marginTop: 20,
         }}
       />
-      <Button
-        variant="outlined"
-        color="primary"
-        style={{
-          marginTop: 10,
-        }}
-        onClick={handleSearchTitleButtonClick}
-      >
-        确定
-      </Button>
       <Snackbar
         anchorOrigin={{
           horizontal: "center",

@@ -183,6 +183,7 @@ function PddItem() {
           isOnsale,
           name,
           detailUrl,
+          keyName,
         } = rowData;
         return (
           <div style={{
@@ -271,6 +272,9 @@ function PddItem() {
                 <RouterLink to={`/pddCompetitorItem/${pddId}`}>
                   竞争对手商品
                 </RouterLink>
+              </div>
+              <div>
+                {keyName}
               </div>
             </div>
           </div>
@@ -527,6 +531,17 @@ function PddItem() {
     {
       title: '商品名称',
       field: 'name',
+      cellStyle: {
+        fontSize: 12,
+        color: '#9B59B6',
+      },
+      headerStyle: {
+        color: '#9B59B6',
+      },
+    },
+    {
+      title: '女装网货号',
+      field: 'keyName',
       cellStyle: {
         fontSize: 12,
         color: '#9B59B6',

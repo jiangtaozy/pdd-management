@@ -41,7 +41,7 @@ import AdUnit from './AdUnit';
 import AdUnitData from './AdUnitData';
 import Stall from './Stall';
 import AdUnitList from './AdUnitList';
-import DashBoard from './DashBoard';
+//import DashBoard from './DashBoard';
 import Order1688 from './Order1688';
 import AdHead from './AdHead';
 import PddActivity from './PddActivity';
@@ -56,6 +56,7 @@ import PddCompetitorItem from './pdd-competitor/PddCompetitorItem';
 import PddCompetitorItemSale from './pdd-competitor/PddCompetitorItemSale';
 import ItemStockCheck from './item/ItemStockCheck';
 import AfterSalesOrder from './AfterSalesOrder';
+import ItemType from './ItemType';
 
 const drawerWidth = 180;
 
@@ -257,8 +258,11 @@ function DrawerMenu(props) {
             <Route path="/afterSalesOrder">
               <AfterSalesOrder />
             </Route>
+            <Route path="/itemType">
+              <ItemType />
+            </Route>
             <Route path="/">
-              <DashBoard />
+              <Order />
             </Route>
           </Switch>
         </main>
@@ -341,6 +345,19 @@ function DrawerMenu(props) {
                   <FormatListBulletedIcon />
                 </ListItemIcon>
                 <ListItemText primary="订单" />
+              </ListItem>
+            </Link>
+            <Divider />
+            <Link to="/itemType"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="商品类型" />
               </ListItem>
             </Link>
             <Divider />
