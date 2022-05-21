@@ -58,6 +58,7 @@ function ItemType() {
         icons={tableIcons}
         options={{
           actionsColumnIndex: -1,
+          paging: false,
         }}
         localization={{
           header: {

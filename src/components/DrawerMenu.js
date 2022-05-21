@@ -57,6 +57,7 @@ import PddCompetitorItemSale from './pdd-competitor/PddCompetitorItemSale';
 import ItemStockCheck from './item/ItemStockCheck';
 import AfterSalesOrder from './AfterSalesOrder';
 import ItemType from './ItemType';
+import PlaceOrder from './PlaceOrder';
 
 const drawerWidth = 180;
 
@@ -141,41 +142,39 @@ function DrawerMenu(props) {
     <Router>
       <div className={classes.root}>
         <CssBaseline />
-        <HideOnScroll {...props}>
-          <AppBar
-            color="inherit"
-            position="fixed"
-            className={clsx(classes.appBar, {
-              [classes.appBarShift]: open,
-            })}
-          >
-            <Toolbar>
-              <Typography
-                variant="h6"
-                noWrap
+        <AppBar
+          color="inherit"
+          position="fixed"
+          className={clsx(classes.appBar, {
+            [classes.appBarShift]: open,
+          })}
+        >
+          <Toolbar>
+            <Typography
+              variant="h6"
+              noWrap
+              style={{
+                flexGrow: 1,
+              }}>
+              <Link to="/"
                 style={{
-                  flexGrow: 1,
+                  textDecoration: 'none',
+                  color: 'inherit',
                 }}>
-                <Link to="/"
-                  style={{
-                    textDecoration: 'none',
-                    color: 'inherit',
-                  }}>
-                    小木电商系统
-                </Link>
-              </Typography>
-              <IconButton
-                color="inherit"
-                aria-label="打开菜单"
-                onClick={handleDrawerOpen}
-                edge="end"
-                className={clsx(open && classes.hide)}
-              >
-                <Menu />
-              </IconButton>
-            </Toolbar>
-          </AppBar>
-        </HideOnScroll>
+                  小木电商系统
+              </Link>
+            </Typography>
+            <IconButton
+              color="inherit"
+              aria-label="打开菜单"
+              onClick={handleDrawerOpen}
+              edge="end"
+              className={clsx(open && classes.hide)}
+            >
+              <Menu />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
         <main className={clsx(classes.content, {
           [classes.contentShift]: open,
         })}>
@@ -262,7 +261,7 @@ function DrawerMenu(props) {
               <ItemType />
             </Route>
             <Route path="/">
-              <Order />
+              <PlaceOrder />
             </Route>
           </Switch>
         </main>

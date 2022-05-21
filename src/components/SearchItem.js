@@ -9,34 +9,25 @@ import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
-import Snackbar from '@material-ui/core/Snackbar';
 import MaterialTable from 'material-table';
 import tableIcons from './utils/TableIcons';
 import Link from '@material-ui/core/Link';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
+//import Backdrop from '@material-ui/core/Backdrop';
+//import CircularProgress from '@material-ui/core/CircularProgress';
 
 function SearchItem() {
 
   const [ keyword, setKeyword ] = useState('');
   const [ itemList, setItemList ] = useState([]);
   const [ itemSkuList, setItemSkuList ] = useState([]);
-  const [ pddItemSkuList, setPddItemSkuList ] = useState([]);
-  const [ showLoading, setShowLoading ] = useState(false);
-  const [state, setState] = useState({
-    open: false,
-    message: '',
-  });
-  const {
-    open,
-    message,
-  } = state;
+  //const [ pddItemSkuList, setPddItemSkuList ] = useState([]);
+  //const [ showLoading, setShowLoading ] = useState(false);
 
   const fetchItemList = async (keyword) => {
-    setShowLoading(true);
+    //setShowLoading(true);
     try {
       let { data } = await axios.get('/searchTitleList', {
         params: {
@@ -44,14 +35,11 @@ function SearchItem() {
         },
       });
       setItemList(data || []);
-      setShowLoading(false);
+      //setShowLoading(false);
     }
     catch(err) {
       console.error('SearchItemGetItemListError: ', err);
-      setShowLoading(false);
-      handleOpenSnackbar({
-        message: `出错了：${err.message}`,
-      })
+      //setShowLoading(false);
     }
   }
 
@@ -66,7 +54,14 @@ function SearchItem() {
           searchId,
         },
       });
+      for(let i = 0; i < itemSkuList.length; i++) {
+        itemSkuList[i].sellPrice =  Math.round((itemSkuList[i].price / 100 + 3.3 + 0.35) / 0.7 * 100) / 100;
+        //itemSkuList[i].discount =  Math.round((itemSkuList[i].price * 2 / 100 + 3.3 + 0.35 + 0.5) / 0.7 / itemSkuList[i].sellPrice / 2  * 100) / 10;
+        itemSkuList[i].itemSkuNum = `${itemList[0].itemNum}-${itemSkuList[i].shortSkuNum}`;
+        itemSkuList[i].index = i + 1;
+      }
       setItemSkuList(itemSkuList || []);
+      /*
       if(itemSkuList) {
         const pddItemSkuList = [];
         const skuLength = itemSkuList.length;
@@ -102,12 +97,10 @@ function SearchItem() {
         }
         setPddItemSkuList(pddItemSkuList);
       }
+      */
     }
     catch(err) {
       console.error('SearchItemFetchItemSkuListError: ', err);
-      handleOpenSnackbar({
-        message: `出错了：${err.message}`,
-      })
     }
   }
 
@@ -129,11 +122,9 @@ function SearchItem() {
                 <div>
                   <CopyToClipboard
                     text={searchId}
-                    onCopy={() =>
-                      handleOpenSnackbar({
-                        message: '已复制',
-                      })
-                    }>
+                    onCopy={() => {
+                      console.log("已复制");
+                    }}>
                     <Button
                       variant='outlined'
                       size='small'
@@ -248,11 +239,9 @@ function SearchItem() {
                   {pddId ?
                     <CopyToClipboard
                       text={pddId}
-                      onCopy={() =>
-                        handleOpenSnackbar({
-                          message: '已复制',
-                        })
-                      }>
+                      onCopy={() => {
+                        console.log("已复制");
+                      }}>
                       <Button
                         variant='outlined'
                         size='small'>
@@ -270,10 +259,12 @@ function SearchItem() {
     }
     catch(err) {
       console.error('SearchItemFetchItemTypeListError: ', err);
-      handleOpenSnackbar({
-        message: `出错了：${err.message}`,
-      })
     }
+  }
+
+  const onRefresh = async () => {
+    fetchItemList(keyword);
+    fetchItemSkuList();
   }
 
   useEffect(() => {
@@ -288,19 +279,7 @@ function SearchItem() {
     fetchItemTypeList();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleCloseSnackbar = () => {
-    setState({
-      ...state,
-      open: false,
-    });
-  }
 
-  const handleOpenSnackbar = (state) => {
-    setState({
-      ...state,
-      open: true,
-    });
-  }
 
   const [ columns, setColumns ] = useState([]);
 
@@ -321,6 +300,64 @@ function SearchItem() {
       editable: "never",
     },
     {
+      title: "售价",
+      field: "sellPrice",
+      editable: "never",
+      render: rowData => {
+        const {
+          sellPrice,
+        } = rowData;
+        return (
+          <div>
+            <CopyToClipboard
+              text={sellPrice}
+              onCopy={() => {
+                console.log("已复制");
+              }}>
+              <Button
+                variant='outlined'
+                size='small'
+                style={{
+                  marginLeft: 10,
+                }}>
+                {sellPrice}
+              </Button>
+            </CopyToClipboard>
+          </div>
+        );
+      },
+    },
+    /*
+    {
+      title: "两件折扣",
+      field: "discount",
+      editable: "never",
+      render: rowData => {
+        const {
+          discount,
+        } = rowData;
+        return (
+          <div>
+            <CopyToClipboard
+              text={discount}
+              onCopy={() => {
+                console.log("已复制");
+              }}>
+              <Button
+                variant='outlined'
+                size='small'
+                style={{
+                  marginLeft: 10,
+                }}>
+                {discount}
+              </Button>
+            </CopyToClipboard>
+          </div>
+        );
+      },
+    },
+    */
+    {
       title: "库存",
       field: "canBookCount",
       editable: "never",
@@ -328,6 +365,62 @@ function SearchItem() {
     {
       title: "简写",
       field: "shortSkuName",
+      render: rowData => {
+        const {
+          shortSkuName,
+        } = rowData;
+        return (
+          <div>
+            <CopyToClipboard
+              text={shortSkuName}
+              onCopy={() => {
+                console.log("已复制");
+              }}>
+              <Button
+                variant='outlined'
+                size='small'
+                style={{
+                  marginLeft: 10,
+                }}>
+                {shortSkuName}
+              </Button>
+            </CopyToClipboard>
+          </div>
+        );
+      },
+    },
+    {
+      title: "index",
+      field: "index",
+      editable: "never",
+    },
+    {
+      title: "商品编码",
+      field: "itemSkuNum",
+      editable: "never",
+      render: rowData => {
+        const {
+          itemSkuNum,
+        } = rowData;
+        return (
+          <div>
+            <CopyToClipboard
+              text={itemSkuNum}
+              onCopy={() => {
+                console.log("已复制");
+              }}>
+              <Button
+                variant='outlined'
+                size='small'
+                style={{
+                  marginLeft: 10,
+                }}>
+                {itemSkuNum}
+              </Button>
+            </CopyToClipboard>
+          </div>
+        );
+      },
     },
     {
       title: "编码",
@@ -335,6 +428,7 @@ function SearchItem() {
     },
   ]);
 
+  /*
   const [ pddItemSkuListColumns ] = useState([
     {
       title: "sku名称",
@@ -347,11 +441,9 @@ function SearchItem() {
           <div>
             <CopyToClipboard
               text={skuName}
-              onCopy={() =>
-                handleOpenSnackbar({
-                  message: '已复制',
-                })
-              }>
+              onCopy={() => {
+                console.log("已复制");
+              }}>
               <Button
                 variant='outlined'
                 size='small'
@@ -376,11 +468,9 @@ function SearchItem() {
           <div>
             <CopyToClipboard
               text={skuNum}
-              onCopy={() =>
-                handleOpenSnackbar({
-                  message: '已复制',
-                })
-              }>
+              onCopy={() => {
+                console.log("已复制");
+              }}>
               <Button
                 variant='outlined'
                 size='small'
@@ -405,11 +495,9 @@ function SearchItem() {
           <div>
             <CopyToClipboard
               text={price}
-              onCopy={() =>
-                handleOpenSnackbar({
-                  message: '已复制',
-                })
-              }>
+              onCopy={() => {
+                console.log("已复制");
+              }}>
               <Button
                 variant='outlined'
                 size='small'
@@ -424,6 +512,7 @@ function SearchItem() {
       },
     },
   ]);
+  */
 
   return (
     <div>
@@ -451,6 +540,11 @@ function SearchItem() {
           }}
         />
       </div>
+      <Button
+        variant='outlined'
+        onClick={onRefresh}>
+        刷新
+      </Button>
       <MaterialTable
         icons={tableIcons}
         options={{
@@ -468,20 +562,13 @@ function SearchItem() {
                 const { data } = await axios.post('/updateSearchTitle', newData);
                 if(data === 'ok') {
                   fetchItemList(keyword);
-                  handleOpenSnackbar({
-                    message: '操作成功',
-                  })
+                  console.log("操作成功");
                 } else {
-                  handleOpenSnackbar({
-                    message: `出错了：${data}`,
-                  })
+                  console.error("出错了: ", data);
                 }
               }
               catch(err) {
                 console.error('SearchItemUpdateSearchTitleError: ', err);
-                handleOpenSnackbar({
-                  message: `出错了：${err.message}`,
-                })
               }
               resolve();
             }),
@@ -492,20 +579,13 @@ function SearchItem() {
                 if(data === 'ok') {
                   itemList.splice(itemList.indexOf(newData), 1)
                   setItemList(itemList);
-                  handleOpenSnackbar({
-                    message: '操作成功',
-                  })
+                  console.log("操作成功");
                 } else {
-                  handleOpenSnackbar({
-                    message: `出错了：${data}`,
-                  })
+                  console.error("出错了: ", data);
                 }
               }
               catch(err) {
                 console.error('DeleteItemUpdateSearchTitleError: ', err);
-                handleOpenSnackbar({
-                  message: `出错了：${err.message}`,
-                })
               }
               resolve();
             })
@@ -518,7 +598,7 @@ function SearchItem() {
           filtering: false,
           actionsColumnIndex: -1,
           toolbar: false,
-          paging: false,
+          pageSize: 50,
         }}
         columns={itemSkuListColumns}
         data={itemSkuList}
@@ -531,26 +611,20 @@ function SearchItem() {
               try {
                 const { data } = await axios.post('/itemSkuUpdate', newData);
                 if(data === 'ok') {
-                  fetchItemSkuList();
-                  handleOpenSnackbar({
-                    message: '操作成功',
-                  })
+                  //fetchItemSkuList();
+                  console.log("操作成功");
                 } else {
-                  handleOpenSnackbar({
-                    message: `出错了：${data}`,
-                  })
+                  console.error("出错了: ", data);
                 }
               }
               catch(err) {
                 console.error('SearchItemItemSkuUpdateError: ', err);
-                handleOpenSnackbar({
-                  message: `出错了：${err.message}`,
-                })
               }
               resolve();
             }),
         }}
       />
+      {/*
       <MaterialTable
         icons={tableIcons}
         options={{
@@ -566,16 +640,8 @@ function SearchItem() {
           marginTop: 20,
         }}
       />
-      <Snackbar
-        anchorOrigin={{
-          horizontal: "center",
-          vertical: "top",
-        }}
-        autoHideDuration={2000}
-        open={open}
-        onClose={handleCloseSnackbar}
-        message={message}
-      />
+      */}
+      {/*
       <Backdrop
         style={{
           zIndex: 11,
@@ -584,6 +650,7 @@ function SearchItem() {
         open={showLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
+      */}
     </div>
   );
 }

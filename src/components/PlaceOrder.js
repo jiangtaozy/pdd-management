@@ -1,7 +1,8 @@
 /*
- * Maintained by jemo from 2020.5.17 to now
- * Created by jemo on 2020.5.17 21:11:35
- * Order
+ * Maintained by jemo from 2022.5.21 to now
+ * Created by jemo on 2022.5.21 16:00:43
+ * Place Order
+ * 待发货订单列表
  */
 
 import React, { useState, useEffect } from 'react';
@@ -13,7 +14,7 @@ import Link from '@material-ui/core/Link';
 import { GetTimeString } from './utils/Time';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-function Order() {
+function PlaceOrder() {
 
   const [ orderList, setOrderList ] = useState([]);
   const [ columns ] = useState([
@@ -143,7 +144,6 @@ function Order() {
         fontSize: 12,
       },
       editable: "never",
-      defaultFilter: ["待发货"],
     },
     {
       title: "售后状态",
@@ -358,7 +358,7 @@ function Order() {
 
   const fetchOrderList = async () => {
     try {
-      const { data } = await axios.get('/orderList');
+      const { data } = await axios.get('/placeOrderList');
       for(let i = 0; i < data.length; i++) {
         data[i].merchantReceivedAmount = (data[i].productTotalPrice - data[i].storeDiscount) / 100;
         data[i].productTotalPrice = data[i].productTotalPrice / 100;
@@ -380,7 +380,7 @@ function Order() {
         icons={tableIcons}
         columns={columns}
         data={orderList}
-        title="订单列表"
+        title="待发货订单列表"
         options={{
           filtering: true,
           actionsColumnIndex: 9,
@@ -411,4 +411,4 @@ function Order() {
   );
 }
 
-export default Order;
+export default PlaceOrder;
