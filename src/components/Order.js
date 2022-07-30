@@ -371,6 +371,7 @@ function Order() {
     }
     catch(err) {
       console.error('order-fetch-order-list-error: ', err);
+      alert(err);
     }
   }
 

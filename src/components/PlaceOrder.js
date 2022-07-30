@@ -61,7 +61,7 @@ function PlaceOrder() {
       render: rowData => {
         return (
           <div style={{
-            width: 200,
+            width: 300,
           }}>
             <div style={{
               fontSize: 12,
@@ -79,15 +79,24 @@ function PlaceOrder() {
             }}>
               {rowData.productName}
             </div>
+            <CopyToClipboard
+              text={rowData.productSku}
+              onCopy={() => {
+                console.log("已复制");
+              }}>
+              <Button
+                variant="outlined"
+                style={{
+                  fontSize: 25,
+                }}
+                size="small">
+                {rowData.productSku}
+              </Button>
+            </CopyToClipboard>
             <div style={{
               fontSize: 12,
             }}>
-              {rowData.productSku}
-            </div>
-            <div style={{
-              fontSize: 12,
-            }}>
-              数量：{rowData.numberOfProducts}
+              数量：<span style={{fontSize: 30}}>{rowData.numberOfProducts}</span>
             </div>
             <div style={{
               fontSize: 12,
@@ -358,7 +367,8 @@ function PlaceOrder() {
 
   const fetchOrderList = async () => {
     try {
-      const { data } = await axios.get('/placeOrderList');
+      const res = await axios.get('/placeOrderList');
+      const data = res.data || [];
       for(let i = 0; i < data.length; i++) {
         data[i].merchantReceivedAmount = (data[i].productTotalPrice - data[i].storeDiscount) / 100;
         data[i].productTotalPrice = data[i].productTotalPrice / 100;
@@ -371,6 +381,7 @@ function PlaceOrder() {
     }
     catch(err) {
       console.error('order-fetch-order-list-error: ', err);
+      alert(err);
     }
   }
 
