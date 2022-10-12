@@ -293,6 +293,29 @@ function SearchItem() {
       title: "sku",
       field: "skuName",
       editable: "never",
+      render: rowData => {
+        const {
+          skuName,
+        } = rowData;
+        return (
+          <div>
+            <CopyToClipboard
+              text={skuName}
+              onCopy={() => {
+                console.log("已复制");
+              }}>
+              <Button
+                variant='outlined'
+                size='small'
+                style={{
+                  marginLeft: 10,
+                }}>
+                {skuName}
+              </Button>
+            </CopyToClipboard>
+          </div>
+        );
+      },
     },
     {
       title: "价格",
