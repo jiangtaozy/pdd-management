@@ -16,8 +16,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import useScrollTrigger from '@material-ui/core/useScrollTrigger';
-import Slide from '@material-ui/core/Slide';
+//import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+//import Slide from '@material-ui/core/Slide';
 import Menu from '@material-ui/icons/Menu';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
@@ -114,6 +114,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/*
 function HideOnScroll(props) {
   const { children, window } = props;
   const trigger = useScrollTrigger({ target: window ? window() : undefined });
@@ -124,6 +125,7 @@ function HideOnScroll(props) {
     </Slide>
   );
 }
+*/
 
 function DrawerMenu(props) {
 

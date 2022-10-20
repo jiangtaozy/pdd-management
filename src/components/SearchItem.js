@@ -331,6 +331,7 @@ function SearchItem() {
           price,
         } = rowData;
         const sellPrice =  Math.round((price / 100 + 3 + 0.35) / 0.6 * 100) / 100;
+        const sellPriceFreePostage =  Math.round((price / 100) / 0.67 * 100) / 100;
         const twoSellPrice =  Math.round((price * 2 / 100 + 3 + 0.35) / 0.6 * 100) / 100;
         return (
           <div>
@@ -346,6 +347,20 @@ function SearchItem() {
                   marginLeft: 10,
                 }}>
                 {sellPrice}
+              </Button>
+            </CopyToClipboard>
+            <CopyToClipboard
+              text={sellPriceFreePostage}
+              onCopy={() => {
+                console.log("已复制");
+              }}>
+              <Button
+                variant='outlined'
+                size='small'
+                style={{
+                  marginLeft: 10,
+                }}>
+                {sellPriceFreePostage}
               </Button>
             </CopyToClipboard>
             <CopyToClipboard
