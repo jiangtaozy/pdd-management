@@ -20,7 +20,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 function SearchItem() {
 
-  const [ keyword, setKeyword ] = useState('');
+  const [ keyword, setKeyword ] = useState('key');
   const [ itemList, setItemList ] = useState([]);
   const [ itemSkuList, setItemSkuList ] = useState([]);
   //const [ pddItemSkuList, setPddItemSkuList ] = useState([]);
@@ -55,7 +55,7 @@ function SearchItem() {
         },
       });
       for(let i = 0; i < itemSkuList.length; i++) {
-        itemSkuList[i].sellPrice =  Math.round((itemSkuList[i].price / 100 + 3.3 + 0.35) / 0.7 * 100) / 100;
+        //itemSkuList[i].sellPrice =  Math.round((itemSkuList[i].price / 100 + 3.3 + 0.35) / 0.7 * 100) / 100;
         //itemSkuList[i].discount =  Math.round((itemSkuList[i].price * 2 / 100 + 3.3 + 0.35 + 0.5) / 0.7 / itemSkuList[i].sellPrice / 2  * 100) / 10;
         itemSkuList[i].itemSkuNum = `${itemList[0].itemNum}-${itemSkuList[i].shortSkuNum}`;
         itemSkuList[i].index = i + 1;
@@ -290,6 +290,11 @@ function SearchItem() {
       editable: "never",
     },
     {
+      title: "index",
+      field: "index",
+      editable: "never",
+    },
+    {
       title: "sku",
       field: "skuName",
       editable: "never",
@@ -321,6 +326,16 @@ function SearchItem() {
       title: "价格",
       field: "price",
       editable: "never",
+      render: rowData => {
+        const {
+          price,
+        } = rowData;
+        return (
+          <div>
+            {price / 100}
+          </div>
+        );
+      },
     },
     {
       title: "售价",
@@ -330,9 +345,10 @@ function SearchItem() {
         const {
           price,
         } = rowData;
-        const sellPrice =  Math.round((price / 100 + 3 + 0.35) / 0.6 * 100) / 100;
-        const sellPriceFreePostage =  Math.round((price / 100) / 0.67 * 100) / 100;
-        const twoSellPrice =  Math.round((price * 2 / 100 + 3 + 0.35) / 0.6 * 100) / 100;
+        const sellPrice =  Math.round((price / 100 + 3) / 0.8 * 100) / 100;
+        const sellPriceFreePostage =  Math.round((price / 100) / 0.8 * 100) / 100;
+        const twoSellPrice =  Math.round((price * 2 / 100 + 3) / 0.8 * 100) / 100;
+        const twoSellPriceFreePostage =  Math.round(price * 2 / 100 / 0.8 * 100) / 100;
         return (
           <div>
             <CopyToClipboard
@@ -346,7 +362,7 @@ function SearchItem() {
                 style={{
                   marginLeft: 10,
                 }}>
-                {sellPrice}
+                20%-3元邮费: {sellPrice}
               </Button>
             </CopyToClipboard>
             <CopyToClipboard
@@ -360,7 +376,7 @@ function SearchItem() {
                 style={{
                   marginLeft: 10,
                 }}>
-                {sellPriceFreePostage}
+                20%-免邮费{sellPriceFreePostage}
               </Button>
             </CopyToClipboard>
             <CopyToClipboard
@@ -374,7 +390,21 @@ function SearchItem() {
                 style={{
                   marginLeft: 10,
                 }}>
-                {twoSellPrice}
+                20%2个3元邮费: {twoSellPrice}
+              </Button>
+            </CopyToClipboard>
+            <CopyToClipboard
+              text={twoSellPriceFreePostage}
+              onCopy={() => {
+                console.log("已复制");
+              }}>
+              <Button
+                variant='outlined'
+                size='small'
+                style={{
+                  marginLeft: 10,
+                }}>
+                20%2个免邮费: {twoSellPriceFreePostage}
               </Button>
             </CopyToClipboard>
           </div>
@@ -442,11 +472,6 @@ function SearchItem() {
           </div>
         );
       },
-    },
-    {
-      title: "index",
-      field: "index",
-      editable: "never",
     },
     {
       title: "商品编码",
