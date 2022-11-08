@@ -20,13 +20,16 @@ import SearchIcon from '@material-ui/icons/Search';
 
 function SearchItem() {
 
-  const [ keyword, setKeyword ] = useState('key');
+  const [ keyword, setKeyword ] = useState('');
   const [ itemList, setItemList ] = useState([]);
   const [ itemSkuList, setItemSkuList ] = useState([]);
   //const [ pddItemSkuList, setPddItemSkuList ] = useState([]);
   //const [ showLoading, setShowLoading ] = useState(false);
 
   const fetchItemList = async (keyword) => {
+    if(keyword === '') {
+      return
+    }
     //setShowLoading(true);
     try {
       let { data } = await axios.get('/searchTitleList', {
