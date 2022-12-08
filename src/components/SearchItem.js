@@ -353,6 +353,7 @@ function SearchItem() {
         const sellPriceFreePostage =  Math.round((price / 100) / 0.8 * 100) / 100;
         const twoSellPrice =  Math.round((price * 2 / 100 + 3) / 0.8 * 100) / 100;
         const twoSellPriceFreePostage =  Math.round(price * 2 / 100 / 0.8 * 100) / 100;
+        const sellPrice50 =  Math.round(price * 2) / 100;
         return (
           <div>
             <CopyToClipboard
@@ -423,6 +424,20 @@ function SearchItem() {
                   marginLeft: 10,
                 }}>
                 20%-4元邮费: {sellPrice4}
+              </Button>
+            </CopyToClipboard>
+            <CopyToClipboard
+              text={sellPrice50}
+              onCopy={() => {
+                console.log("已复制");
+              }}>
+              <Button
+                variant='outlined'
+                size='small'
+                style={{
+                  marginLeft: 10,
+                }}>
+                50%: {sellPrice50}
               </Button>
             </CopyToClipboard>
           </div>
